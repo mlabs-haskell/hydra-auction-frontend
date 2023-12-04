@@ -8,6 +8,11 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* background-color: rgb(20, 26, 35); */
+  /* color: white;   */
+}
+input {
+  border: 1px solid grey;
 }
 
 code {

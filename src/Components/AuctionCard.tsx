@@ -1,24 +1,4 @@
-import React from 'react';
-
-// Define the structure of auction terms
-interface AuctionTerms {
-  auctionFeePerDelegate: string;
-  auctionLot: Array<{
-    cs: string;
-    quantity: string;
-    tn: string;
-  }>;
-  biddingEnd: string;
-  biddingStart: string;
-  cleanup: string;
-  delegates: string[];
-  minBidIncrement: string;
-  minDepositAmount: string;
-  purchaseDeadline: string;
-  sellerPkh: string;
-  sellerVk: string;
-  startingBid: string;
-}
+import { AuctionTerms } from 'public/dist/types';
 
 // Define the structure of the auction object
 type AuctionCardProps = {
@@ -40,7 +20,6 @@ export default function AuctionCard({
 }: AuctionCardProps) {
   const renderObject = (obj: any): JSX.Element[] => {
     return Object.entries(obj).map(([key, value]) => {
-      // Check if the value is an object and recursively render its properties
       if (typeof value === 'object' && value !== null) {
         return (
           <div key={key} className="text-left">

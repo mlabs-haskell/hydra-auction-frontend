@@ -4,10 +4,6 @@ window.queryAuctions = async function () {
   return await queryAuctions('Nami');
 };
 
-window.announceAuction = announceAuction;
-
-// const run = async function () {
-//   const auc = await queryAuctions('Nami');
-//   //  console.log(auc);
-// };
-// run();
+window.announceAuction = async function (walletApp, params) {
+  return await announceAuction(walletApp, params);
+};
