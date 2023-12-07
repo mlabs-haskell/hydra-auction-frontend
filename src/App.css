@@ -1,49 +1,21 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
 
 /* //////////////////////////// */
 
-.header {
-  font-size: 2rem;
+@layer components {
+  .header {
+    font-size: 2rem;
+  }
+  input {
+    transition: background-color 0.3s ease-in-out;
+    @apply p-[4px] ps-3 pe-3 rounded-md border-gray-300 w-full mb-3  hover:bg-gray-200;
+  }
+  .submit-btn {
+    transition: background-color 0.3s ease-in-out;
+    @apply mt-3 p-2 border border-gray-400 rounded-md w-40 hover:bg-slate-400 cursor-pointer;
+  }
 }
 
 /* //////////////////////////// */
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { AuctionInfo } from 'public/dist/types';
-import AuctionList from './pages/AuctionList';
-import AnnounceAuction from './Components/AnnounceAuction';
+import AuctionList from './Components/AuctionList/AuctionList';
+import AnnounceAuction from './Components/AnnounceAuction/AnnounceAuction';
 import './App.css';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import EnterAuction from './Components/EnterAuction/EnterAuction';
+import PlaceBid from './Components/PlaceBid';
+import AuctionDetail from './Components/AuctionDetail/AuctionDetail';
 
 function App() {
   const [queryAuctions, setQueryAuctions] = useState<
@@ -37,23 +40,39 @@ function App() {
     <BrowserRouter>
       <div>
         {/* Header with links */}
-        <header>
-          <nav>
-            <ul>
-              <li>
+        <header className="bg-white border-b-2 border-gray-300">
+          <nav className="">
+            <ul className="flex p-2 ">
+              <li className="pe-3 border-r-2 border-gray-200">
                 <Link
-                  className="hover:underline text-blue-400"
+                  className="hover:text-black text-slate-700"
                   to="/auction-list"
                 >
                   Auction List
                 </Link>
               </li>
-              <li>
+              <li className="ms-3 pe-3 border-r-2 border-gray-200">
                 <Link
-                  className="hover:underline text-blue-400"
+                  className="hover:text-black text-slate-700"
                   to="/announce-auction"
                 >
                   Announce Auction
+                </Link>
+              </li>
+              <li className="ms-3 pe-3 border-r-2 border-gray-200">
+                <Link
+                  className="hover:text-black text-slate-700"
+                  to="/enter-auction"
+                >
+                  Enter Auction
+                </Link>
+              </li>
+              <li className="ms-3 pe-3 border-r-2 border-gray-200">
+                <Link
+                  className="hover:text-black text-slate-700"
+                  to="/place-bid"
+                >
+                  Place Bid
                 </Link>
               </li>
             </ul>
@@ -64,7 +83,9 @@ function App() {
         <Routes>
           <Route path="/auction-list" element={<AuctionList />} />
           <Route path="/announce-auction" element={<AnnounceAuction />} />
-          {/* Add other routes here */}
+          <Route path="/enter-auction" element={<EnterAuction />} />
+          <Route path="/place-bid" element={<PlaceBid />} />
+          <Route path="/auction" element={<AuctionDetail />} />
         </Routes>
       </div>
     </BrowserRouter>

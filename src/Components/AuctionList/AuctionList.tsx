@@ -1,8 +1,10 @@
-import { useQueryAuctions } from '../hooks/auctions';
-import AuctionCard from '../Components/AuctionCard';
+import { MOCK_QUERY_AUCTIONS_RESPONSE } from 'src/mocks/queryAuctions.mock';
+import { useQueryAuctions } from '../../hooks/auctions';
+import AuctionCard from './AuctionCard';
 
 export default function AuctionList() {
-  const { data: auctions } = useQueryAuctions();
+  // const { data: auctions } = useQueryAuctions();
+  const auctions = MOCK_QUERY_AUCTIONS_RESPONSE;
 
   return (
     <div className="container mx-auto p-4">

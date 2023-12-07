@@ -44,14 +44,16 @@ export default function AuctionCard({
 
   return (
     <div className="border p-4 rounded-lg shadow-md hover:bg-slate-200">
-      {renderObject({
-        auctionEscrowAddr,
-        auctionId,
-        auctionTerms,
-        bidderDepositAddr,
-        feeEscrowAddr,
-        standingBidAddr,
-      })}
+      <a href={`/auction?auctionId=${auctionId}`}>
+        {renderObject({
+          auctionEscrowAddr,
+          auctionId,
+          auctionTerms,
+          bidderDepositAddr,
+          feeEscrowAddr,
+          standingBidAddr,
+        })}
+      </a>
     </div>
   );
 }

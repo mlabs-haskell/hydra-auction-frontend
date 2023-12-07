@@ -1,6 +1,21 @@
 import { useEffect, useState } from 'react';
 import { AuctionInfo } from 'public/dist/types';
 
+// import {
+//   announceAuction,
+//   awaitTxConfirmed,
+//   mintTokenUsingAlwaysMints,
+//   queryAuctions
+// } from "hydra-auction-offchain";
+// import type {
+//   AnnounceAuctionContractParams,
+//   ContractOutput,
+//   POSIXTime,
+//   TokenName,
+//   TransactionHash,
+//   WalletApp
+// } from "hydra-auction-offchain";
+
 interface CustomWindow extends Window {
   queryAuctions?: () => Promise<AuctionInfo[] | undefined>;
 }
