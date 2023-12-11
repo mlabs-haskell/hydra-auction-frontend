@@ -13,5 +13,8 @@ export const authorizeBidders = async (
   auctionCs: CurrencySymbol,
   biddersToAuthorize: Array<VerificationKey>
 ): Promise<ContractOutput<TransactionHash>> => {
-  return MOCK_AUTHORIZE_BIDDERS;
+  return {
+    tag: 'result',
+    value: MOCK_AUTHORIZE_BIDDERS,
+  };
 };

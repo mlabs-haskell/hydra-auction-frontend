@@ -45,8 +45,8 @@ const AnnounceAuctionForm = ({ className }: AnnounceAuctionFormProps) => {
         additionalAuctionLotOrefs:
           MOCK_ANNOUNCE_AUCTION_PARAMS.additionalAuctionLotOrefs,
       };
-
-      // TODO: remove and replace with actual api functions
+      console.log(params);
+      // TODO: Replace window function with npm package, and use api function in react query
       if (customWindow?.announceAuction) {
         const announceAuctionResponse = await customWindow.announceAuction(
           walletApp,

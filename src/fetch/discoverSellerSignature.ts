@@ -9,5 +9,8 @@ export const discoverSellerSignature = async (
   auctionCs: CurrencySymbol,
   bidderVk: VerificationKey
 ): Promise<ContractOutput<ByteArray>> => {
-  return MOCK_SELLER_SIGNATURE;
+  return {
+    tag: 'result',
+    value: MOCK_SELLER_SIGNATURE,
+  };
 };

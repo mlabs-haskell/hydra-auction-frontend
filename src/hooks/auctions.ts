@@ -1,51 +1,69 @@
-import { AuctionInfo } from 'public/dist/types';
-import { useQuery } from '@tanstack/react-query';
-import { MOCK_QUERY_AUCTIONS_RESPONSE } from 'src/mocks/queryAuctions.mock';
 import { useEffect, useState } from 'react';
+import { AuctionInfo } from 'public/dist/index';
 
 interface CustomWindow extends Window {
   queryAuctions?: () => Promise<AuctionInfo[] | undefined>;
 }
 
-export type QueryAuctionsResponse = {
+export type HookResponse = {
   data: AuctionInfo[] | undefined;
-  error?: string;
-  loading: boolean;
+  isError?: string;
+  isLoading: boolean;
 };
 
-const AUCTION_LIST_QUERY_KEY = 'auction-list';
+export const useActiveAuctions = (): HookResponse => {
+  const [data, setData] = useState<AuctionInfo[] | undefined>(undefined);
+  const [error, setError] = useState<string | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(true);
 
-export const useQueryAuctions = () => {
-  const { data, isError, isLoading } = useQuery({
-    queryKey: [AUCTION_LIST_QUERY_KEY],
-    // TODO: replace with real queryAuctions query
-    queryFn: async () => {
-      return MOCK_QUERY_AUCTIONS_RESPONSE;
-    },
-  });
-  // const [data, setData] = useState<AuctionInfo[] | undefined>(undefined);
-  // const [isError, setError] = useState<string | undefined>(undefined);
-  // const [isLoading, setLoading] = useState<boolean>(true);
+  const delay = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
 
-  // useEffect(() => {
-  //   const fetchAuctions = async () => {
-  //     try {
-  //       const customWindow = window as CustomWindow;
-  //       const auctions = await customWindow.queryAuctions?.();
-  //       if (auctions) {
-  //         setData(auctions);
-  //       } else {
-  //         setError('No auctions found');
-  //       }
-  //     } catch (err) {
-  //       setError('Error fetching auctions');
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  const retryFetch = async (
+    fn: () => Promise<AuctionInfo[] | undefined>,
+    retries: number,
+    delayMs: number
+  ): Promise<AuctionInfo[] | undefined> => {
+    try {
+      return await fn();
+    } catch (err) {
+      if (retries > 0) {
+        await delay(delayMs);
+        return retryFetch(fn, retries - 1, delayMs);
+      } else {
+        throw err;
+      }
+    }
+  };
 
-  //   fetchAuctions();
-  // }, []);
+  useEffect(() => {
+    const fetchAuctions = async () => {
+      setLoading(true);
 
-  return { data, isError, isLoading };
+      try {
+        const customWindow = window as CustomWindow;
+        // Provide a default function if testAuctions is undefined
+        const safeTestAuctions =
+          customWindow.queryAuctions || (() => Promise.resolve(undefined));
+
+        // Use retryFetch with 3 retries and a delay of 500ms
+        const auctions = await retryFetch(safeTestAuctions, 5, 500);
+
+        if (auctions) {
+          setData(auctions);
+        } else {
+          // console.log({ auctions });
+          // setError('No auctions found');
+        }
+      } catch (err) {
+        setError('Error fetching auctions');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAuctions();
+  }, []);
+
+  return { data, isError: error, isLoading: loading };
 };

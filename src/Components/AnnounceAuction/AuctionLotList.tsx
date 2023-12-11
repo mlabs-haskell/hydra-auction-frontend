@@ -1,5 +1,5 @@
 import { ValueEntry } from 'public/dist/types';
-import { AuctionLot, EMPTY_AUCTION_LOT } from './AuctionLot';
+import { AuctionLot, MOCK_AUCTION_LOT } from './AuctionLot';
 import { useEffect, useState } from 'react';
 
 type AuctionLotListProps = {
@@ -10,12 +10,12 @@ export const AuctionLotList = ({
   onChangeAuctionLotList,
 }: AuctionLotListProps) => {
   const [auctionLots, setAuctionLots] = useState<ValueEntry[]>([
-    EMPTY_AUCTION_LOT,
+    MOCK_AUCTION_LOT,
   ]);
 
   const handleAddAuctionLot = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setAuctionLots([...auctionLots, EMPTY_AUCTION_LOT]);
+    setAuctionLots([...auctionLots, MOCK_AUCTION_LOT]);
   };
 
   const handleRemoveAuctionLot = (

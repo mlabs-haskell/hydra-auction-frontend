@@ -24,8 +24,16 @@ export type AuctionTerms = {
     minBidIncrement: BigInt;
     minDepositAmount: BigInt;
 };
-export type WalletApp = "Nami" | "Gero" | "Flint" | "Eternl" | "Lode" | "NuFi" | "Lace";
-export type ContractOutput<T> = T | ContractError;
+export type WalletApp = "Nami" | "Gero" | "Flint" | "Eternl" | "Lode" | "NuFi" | "Lace" | "Plutip";
+export type ContractOutput<T> = ContractOutputResult<T> | ContractOutputError;
+export type ContractOutputResult<T> = {
+    tag: "result";
+    value: T;
+};
+export type ContractOutputError = {
+    tag: "error";
+    value: ContractError;
+};
 export type ContractError = {
     errorCode: string;
     message: string;

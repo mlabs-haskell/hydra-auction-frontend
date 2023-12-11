@@ -115,7 +115,7 @@ export default function EnterAuction({ auction }: EnterAuctionFormProps) {
 // For its own card/page
 export const EnterAuctionPage = () => {
   return (
-    <div className="container flex items-center justify-center">
+    <div className="flex items-center justify-center">
       <div className="w-[600px]">
         <h1 className="header text-center">Enter Auction</h1>
         <EnterAuctionForm />

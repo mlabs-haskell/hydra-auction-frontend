@@ -1,8 +1,8 @@
-import { useQueryAuctions } from '../../hooks/auctions';
+import { useActiveAuctions } from '../../hooks/auctions';
 import AuctionCard from './AuctionCard';
 
 export default function AuctionList() {
-  const { data: auctions } = useQueryAuctions();
+  const { data: auctions } = useActiveAuctions();
 
   return (
     <div className="flex justify-center items-center">

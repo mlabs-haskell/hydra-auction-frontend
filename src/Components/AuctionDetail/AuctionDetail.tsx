@@ -1,4 +1,4 @@
-import { useQueryAuctions } from 'src/hooks/auctions';
+import { useActiveAuctions } from 'src/hooks/auctions';
 import { getUrlParams } from 'src/utils/getUrlParams';
 import { useUser } from 'src/hooks/user';
 import PlaceBidCompact from '../PlaceBid/PlaceBidCompact';
@@ -14,7 +14,7 @@ export default function AuctionDetail() {
   const auctionId = urlParams.get('auctionId');
   const userDetails = useUser();
 
-  const { data, isLoading, isError } = useQueryAuctions();
+  const { data, isLoading, isError } = useActiveAuctions();
 
   // With auctionId we find the acution details from the queryAuctions cache
   const auctionData = data?.find((auction) => auction.auctionId === auctionId);

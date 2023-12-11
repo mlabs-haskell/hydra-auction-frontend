@@ -13,5 +13,8 @@ export const placeBid = async (
   bidAmount: BigInt,
   sellerSignature: ByteArray
 ): Promise<ContractOutput<TransactionHash>> => {
-  return MOCK_PLACE_BID_RESPONSE;
+  return {
+    tag: 'result',
+    value: MOCK_PLACE_BID_RESPONSE,
+  };
 };
