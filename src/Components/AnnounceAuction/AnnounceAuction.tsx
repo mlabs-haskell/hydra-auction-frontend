@@ -9,7 +9,6 @@ import {
 import { useRef } from 'react';
 import { MOCK_ANNOUNCE_AUCTION_PARAMS } from 'src/mocks/announceAuction.mock';
 import { auctionFormSchema } from 'src/schemas/auctionFormSchema';
-import { z } from 'zod';
 import { StringInput } from '../Inputs/StringInput';
 import { NumberInput } from '../Inputs/NumberInput';
 import { DateInput } from '../Inputs/DateInput';
@@ -27,7 +26,6 @@ type AnnounceAuctionFormProps = {
   className?: string;
 };
 
-// TODO: lets move this to a components directory, name the file something like AnnounceAuctionForm.tsx
 const AnnounceAuctionForm = ({ className }: AnnounceAuctionFormProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -48,6 +46,7 @@ const AnnounceAuctionForm = ({ className }: AnnounceAuctionFormProps) => {
           MOCK_ANNOUNCE_AUCTION_PARAMS.additionalAuctionLotOrefs,
       };
 
+      // TODO: remove and replace with actual api functions
       if (customWindow?.announceAuction) {
         const announceAuctionResponse = await customWindow.announceAuction(
           walletApp,
@@ -84,9 +83,6 @@ const AnnounceAuctionForm = ({ className }: AnnounceAuctionFormProps) => {
 
   return (
     <div className="p-3 mb-3 w-full">
-      <div className="flex items-center justify-center">
-        <div className="border-b border-gray-400 w-32"></div>
-      </div>
       <form className="block" onSubmit={handleSubmit}>
         <AuctionLotList onChangeAuctionLotList={handleAuctionLotsChange} />
 
@@ -164,9 +160,12 @@ const AnnounceAuctionForm = ({ className }: AnnounceAuctionFormProps) => {
 
 export default function AnnounceAuction() {
   return (
-    <div className="p-6 flex items-center justify-center">
-      <div className="w-[600px]">
-        <h1 className="header text-center">Announce Auction</h1>
+    <div className="flex justify-center items-center">
+      <div className="container">
+        <h1 className="header text-center mb-3">Announce Auction</h1>
+        <div className="flex items-center justify-center">
+          <div className="border-b border-gray-400 w-32"></div>
+        </div>
         <AnnounceAuctionForm />
       </div>
     </div>

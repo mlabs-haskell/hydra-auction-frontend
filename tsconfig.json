@@ -21,9 +21,14 @@
     "jsx": "react-jsx",
     "baseUrl": "./",
     "paths": {
-      "api": ["./public/dist/api.d.ts"]
+      "api": [
+        "./public/dist/api.d.ts"
+      ]
     },
-    "typeRoots": [ "./public/dist", "./public"],
+    "typeRoots": [
+      "./public/dist",
+      "./public"
+    ],
   },
   "include": [
     "src"
