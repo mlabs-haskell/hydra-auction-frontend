@@ -128,6 +128,7 @@ recovering the min 2 ADA inside it.
 </td></tr></table>
 
 ## User Needs Overview
+Note: the assumption for v1 of this specification is that transactions which require delegate signatures, such as MoveToL2, will be handled separately by delegate infrastructure.
 
 <table><tr><td>
 
@@ -155,30 +156,26 @@ recovering the min 2 ADA inside it.
         </tr>
 		<tr>
             <th colspan=2>Announced</td>
-			<td></td>
-            <td>Start Bidding, Cancel Auction?</td>
-            <td></td>
+			      <td rowspan=5> View Auction Details</td>
+            <td>Authorize Bidders, Start Bidding, Cancel Auction?</td>
+            <td>Place Deposit</td>
             <td></td>
             <td></td>
         </tr>
 		<tr>
             <th rowspan=2>Ongoing</td>
             <th>Bidding on L1</td>
-            <td> View Auction Details, Move to L2</td>
-			<td></td>
-            <td rowspan=2 colspan=2>Place Bids</td>
+			      <td rowspan=2>Authorize Bidders</td>
+            <td rowspan=2 colspan=2>Place Deposit, Bid</td>
             <td></td>
         </tr>
 		<tr>
             <th>Bidding on L2</td>
-            <td>View Auction Details</td>
-            <td></td>
             <td></td>
         </tr>
 		<tr>
             <th rowspan=2>Resolution</td>
             <th>Voucher Active</td>
-            <td></td>
             <td></td>
             <td>Claim Lot</td>
             <td rowspan=3> Refund Deposit </td>
@@ -186,15 +183,13 @@ recovering the min 2 ADA inside it.
         </tr>
 		<tr>
             <th>Voucher Unclaimed</td>
-            <td></td>
             <td>Reclaim Lot</td>
             <td>Refund Deposit</td>
             <td></td>
         </tr>
 		<tr>
             <th colspan=2>Concluded</td>
-            <td></td>
-            <td>Recover Standing Bid</td>
+            <td>Cleanup Auction, View Auction Results?</td>
             <td></td>
             <td></td>
             <td></td>
@@ -202,37 +197,116 @@ recovering the min 2 ADA inside it.
     </tbody>
 </table>
 
+## General User Needs
+### ∅ (All States)
+ - Browse Auctions
+### Announced, Ongoing, Resolution
+- View Auction Details
+### Concluded
+- View Auction Results?
 ## Seller Needs
 
-### ∅ (Unannounced)
+### ∅ (All States)
+- Announce Auction
 ### Announced 
-### Ongoing
-#### Bidding on L1
-#### Bidding on L2
+- Start Auction
+- Cancel Auction?
 ### Resolution
-#### Voucher Active
 #### Voucher Expired
+- Reclaim Lot
 ### Concluded
+- Cleanup Auction
 
 ## Bidder Needs
 
-### ∅ (Unannounced)
+### ∅ (All States)
 ### Announced 
 ### Ongoing
-#### Bidding on L1
-#### Bidding on L2
+- Place Bid
 ### Resolution
 #### Voucher Active
+- Claim Lot
+- Reclaim Deposit (Losers Only)
 #### Voucher Expired
+- Reclaim Deposit
 ### Concluded
+- Reclaim Deposit
 
 ## Delegate Needs
-### ∅ (Unannounced)
-### Announced 
-### Ongoing
-#### Bidding on L1
-#### Bidding on L2
-### Resolution
-#### Voucher Active
-#### Voucher Expired
-### Concluded
+### ∅ (All States)
+ - Register as Delegate
+ - Update Delegate Registration
+
+# Pages
+## Browse
+Display:
+- Active Auctions
+
+## Create Auction
+Allow Seller:
+  - Define Auction Terms (Probably want to abstract some of these)
+    - Lot
+    - Start, End & Purchase, and Cleanup Times
+    - Starting Bid
+    - Minimum Increment?
+    - Minimum Deposit?
+    - Delegates?
+    - Delegate Fees?
+  - Submit Auction Creation Tx
+
+## Auction Details
+This could be a single page or split into multiple. In some form these need to:
+
+Display:
+ - Auction Lot Details (Assume single NFT for now?)
+ - Standing Bid
+
+### Upcoming Auction Details
+Display:
+  - Auction Start Time | "Waiting for Seller..."
+    - This is the *earliest* start time, seller determines actual start with the StartBidding tx. 
+
+Allow Seller:
+  - Authorize Bidders
+  - Start Bidding
+  - Cancel Auction?
+
+Allow Bidders:
+  - Place Deposit
+
+### Ongoing Auction Details
+Display:
+  - Time Left
+
+Allow Bidder:
+  - Place Deposit
+  - Bid
+
+### Ended/Resolving Auction
+
+Display:
+ - Reclaim Deadline
+
+Allow Winner:
+  - Claim Lot (Before Purchase Deadline)
+  - Reclaim Deposit (After Purchase Deadline)
+
+Allow Loser:
+  - Reclaim Deposit
+
+Allow Seller:
+ - Reclaim Lot (After Purchase Deadline)
+
+Allow Any?:
+- Cleanup Auction (After Cleanup)
+
+## Delegate Portal
+On load we query for existing registrations that match the user's wallet & display if found.
+This means we do not support multiple registrations with one wallet for v1.
+
+Display: 
+- Existing Registration
+
+Allow:
+ - New Registration
+ - Update Registration
