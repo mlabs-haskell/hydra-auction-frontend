@@ -209,8 +209,11 @@ Note: the assumption for v1 of this specification is that transactions which req
 ### ∅ (All States)
 - Announce Auction
 ### Announced 
-- Start Auction
+- Authorize Bidders
+- Start Bidding
 - Cancel Auction?
+### Ongoing
+- Authorize Bidders
 ### Resolution
 #### Voucher Expired
 - Reclaim Lot
@@ -221,8 +224,10 @@ Note: the assumption for v1 of this specification is that transactions which req
 
 ### ∅ (All States)
 ### Announced 
+- Place Deposit
 ### Ongoing
-- Place Bid
+- Place Deposit
+- Bid
 ### Resolution
 #### Voucher Active
 - Claim Lot
@@ -267,7 +272,7 @@ Display:
     - This is the *earliest* start time, seller determines actual start with the StartBidding tx. 
 
 Allow Seller:
-  - Authorize Bidders
+  - View & Authorize Bidders (should this be a new page?)
   - Start Bidding
   - Cancel Auction?
 
@@ -277,6 +282,9 @@ Allow Bidders:
 ### Ongoing Auction Details
 Display:
   - Time Left
+
+Allow Seller:
+  - View & Authorize Bidders (should this be a new page?)
 
 Allow Bidder:
   - Place Deposit
