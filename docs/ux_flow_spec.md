@@ -165,7 +165,7 @@ Note: the assumption for v1 of this specification is that transactions which req
 		<tr>
             <th rowspan=2>Ongoing</td>
             <th>Bidding on L1</td>
-			      <td rowspan=2>Authorize Bidders</td>
+            <td rowspan=2>Authorize Bidders</td>
             <td rowspan=2 colspan=2>Place Deposit, Bid</td>
             <td></td>
         </tr>
@@ -184,7 +184,7 @@ Note: the assumption for v1 of this specification is that transactions which req
 		<tr>
             <th>Voucher Unclaimed</td>
             <td>Reclaim Lot</td>
-            <td>Refund Deposit</td>
+            <td></td>
             <td></td>
         </tr>
 		<tr>
@@ -229,13 +229,11 @@ Note: the assumption for v1 of this specification is that transactions which req
 - Place Deposit
 - Bid
 ### Resolution
-#### Voucher Active
-- Claim Lot
 - Reclaim Deposit (Losers Only)
-#### Voucher Expired
-- Reclaim Deposit
+#### Voucher Active
+- Claim Lot (Winner Only)
 ### Concluded
-- Reclaim Deposit
+- Reclaim Deposit (Losers Only)
 
 ## Delegate Needs
 ### ∅ (All States)
@@ -297,7 +295,6 @@ Display:
 
 Allow Winner:
   - Claim Lot (Before Purchase Deadline)
-  - Reclaim Deposit (After Purchase Deadline)
 
 Allow Loser:
   - Reclaim Deposit
