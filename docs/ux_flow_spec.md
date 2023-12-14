@@ -1,4 +1,10 @@
-# User Lifecycles
+# Contents
+1. [Users and Lifecycle](#users-and-lifecycle)
+2. [User Needs](#user-needs)
+3. [Pages](#pages)
+4. [Appendix](#appendix---auction-state-machine)
+
+# Users and Lifecycle
 
 ## Types of Users
 
@@ -9,8 +15,7 @@
 - Delegates
 
 ## Auction Lifecycle
-
-### States from a User perspective
+Based on auction state machine from protocol spec - appended at end of doc.
 
 - ∅ (Unannounced)
 - Announced 
@@ -23,7 +28,204 @@
 - Concluded
 
 
-## Auction state machine
+# User Needs
+Note: the assumption for v1 of this specification is that transactions which require delegate signatures, such as MoveToL2, will be handled separately by delegate infrastructure.
+
+## Overview
+
+<table><tr><td>
+
+<table>
+    <thead>
+        <tr>
+            <th rowspan=2 colspan=2>User Needs</th>
+            <th rowspan=2>All Users</th>
+            <th rowspan=2>Seller</th>
+            <th colspan=2>Bidder</th>
+			<th rowspan=2>Delegate</th>
+        </tr>
+		<tr>
+            <th>Winner</th>
+            <th>Loser</th>
+		</tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th colspan=2>∅</td>
+			<td>Browse Auctions</td>
+            <td>Announce Auction</td>
+            <td colspan=2></td>
+            <td>Register as Delegate, Update Delegate Info</td>
+        </tr>
+		<tr>
+            <th colspan=2>Announced</td>
+			      <td rowspan=5> View Auction Details</td>
+            <td>Authorize Bidders, Start Bidding</td>
+            <td>Place Deposit</td>
+            <td></td>
+            <td></td>
+        </tr>
+		<tr>
+            <th rowspan=2>Ongoing</td>
+            <th>Bidding on L1</td>
+            <td rowspan=2>Authorize Bidders</td>
+            <td rowspan=2 colspan=2>Place Deposit, Bid</td>
+            <td></td>
+        </tr>
+		<tr>
+            <th>Bidding on L2</td>
+            <td></td>
+        </tr>
+		<tr>
+            <th rowspan=2>Resolution</td>
+            <th>Voucher Active</td>
+            <td></td>
+            <td>Claim Lot</td>
+            <td rowspan=3> Refund Deposit </td>
+            <td></td>
+        </tr>
+		<tr>
+            <th>Voucher Unclaimed</td>
+            <td>Reclaim Lot</td>
+            <td></td>
+            <td></td>
+        </tr>
+		<tr>
+            <th colspan=2>Concluded</td>
+            <td>Cleanup Auction, View Auction Results?</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+## General User Needs
+#### ∅ (All States)
+ - Browse Auctions
+#### Announced, Ongoing, Resolution
+- View Auction Details
+#### Concluded
+- View Auction Results?
+## Seller Needs
+
+#### ∅ (All States)
+- Announce Auction
+#### Announced 
+- Authorize Bidders
+- Start Bidding
+- Cancel Auction?
+#### Ongoing
+- Authorize Bidders
+#### Resolution
+###### When Voucher Expired:
+- Reclaim Lot
+#### Concluded
+- Cleanup Auction
+
+## Bidder Needs
+
+#### ∅ (All States)
+#### Announced 
+- Place Deposit
+#### Ongoing
+- Place Deposit
+- Bid
+#### Resolution
+- Reclaim Deposit (Losers Only)
+###### When Voucher Active:
+- Claim Lot (Winner Only)
+#### Concluded
+- Reclaim Deposit (Losers Only)
+
+## Delegate Needs
+#### ∅ (All States)
+ - Register as Delegate
+ - Update Delegate Registration
+
+# Pages
+## Browse
+Display:
+- Active Auctions
+
+## Create Auction
+Allow Seller:
+  - Define Auction Terms (Probably want to abstract some of these)
+    - Lot
+    - Start, End & Purchase, and Cleanup Times
+    - Starting Bid
+    - Minimum Increment?
+    - Minimum Deposit?
+    - Delegates?
+    - Delegate Fees?
+  - Submit Auction Creation Tx
+
+## Auction Details
+This page will have four separate states - Upcoming/Announced, Ongoing, Resolving, Concluded
+
+Display:
+ - Auction Lot Details (Assume single NFT for now?)
+ - Standing Bid
+
+### Upcoming Auction Details
+Display:
+  - Auction Start Time | "Waiting for Seller..."
+    - This is the *earliest* start time, seller determines actual start with the StartBidding tx. 
+
+Allow Seller:
+  - View & Authorize Bidders (should this be a new page?)
+  - Start Bidding
+
+Allow Bidders:
+  - Place Deposit
+
+### Ongoing Auction Details
+Display:
+  - Time Left
+
+Allow Seller:
+  - View & Authorize Bidders (should this be a new page?)
+
+Allow Bidder:
+  - Place Deposit
+  - Bid
+
+### Resolving Auction
+
+Display:
+ - Reclaim Deadline
+
+Allow Winner:
+  - Claim Lot (Before Purchase Deadline)
+
+Allow Loser:
+  - Reclaim Deposit
+
+Allow Seller:
+ - Reclaim Lot (After Purchase Deadline)
+
+Allow Any?:
+- Cleanup Auction (After Cleanup Deadline)
+
+### Concluded Auction
+Display:
+ - Auction Result
+
+Allow Loser:
+ - Reclaim Deposit
+
+## Delegate Portal
+On load we query for existing registrations that match the user's wallet & display if found.
+This means we do not support multiple registrations with one wallet for v1.
+
+Display: 
+- Existing Registration
+
+Allow:
+ - New Registration
+ - Update Registration
+
+# Appendix - Auction State Machine
 (copied from https://github.com/mlabs-haskell/hydra-auction/blob/c3169e8cd531225412c7b09cc4687fdded9b0e6a/docs/domain_logic.md)
 
 An auction can be modelled by the following state machine.
@@ -126,192 +328,3 @@ the seller can spend the standing bid utxo,
 recovering the min 2 ADA inside it.
 
 </td></tr></table>
-
-## User Needs Overview
-Note: the assumption for v1 of this specification is that transactions which require delegate signatures, such as MoveToL2, will be handled separately by delegate infrastructure.
-
-<table><tr><td>
-
-<table>
-    <thead>
-        <tr>
-            <th rowspan=2 colspan=2>User Needs</th>
-            <th rowspan=2>All Users</th>
-            <th rowspan=2>Seller</th>
-            <th colspan=2>Bidder</th>
-			<th rowspan=2>Delegate</th>
-        </tr>
-		<tr>
-            <th>Winner</th>
-            <th>Loser</th>
-		</tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th colspan=2>∅</td>
-			<td>Browse Auctions</td>
-            <td>Announce Auction</td>
-            <td colspan=2></td>
-            <td>Register as Delegate, Update Delegate Info</td>
-        </tr>
-		<tr>
-            <th colspan=2>Announced</td>
-			      <td rowspan=5> View Auction Details</td>
-            <td>Authorize Bidders, Start Bidding, Cancel Auction?</td>
-            <td>Place Deposit</td>
-            <td></td>
-            <td></td>
-        </tr>
-		<tr>
-            <th rowspan=2>Ongoing</td>
-            <th>Bidding on L1</td>
-            <td rowspan=2>Authorize Bidders</td>
-            <td rowspan=2 colspan=2>Place Deposit, Bid</td>
-            <td></td>
-        </tr>
-		<tr>
-            <th>Bidding on L2</td>
-            <td></td>
-        </tr>
-		<tr>
-            <th rowspan=2>Resolution</td>
-            <th>Voucher Active</td>
-            <td></td>
-            <td>Claim Lot</td>
-            <td rowspan=3> Refund Deposit </td>
-            <td></td>
-        </tr>
-		<tr>
-            <th>Voucher Unclaimed</td>
-            <td>Reclaim Lot</td>
-            <td></td>
-            <td></td>
-        </tr>
-		<tr>
-            <th colspan=2>Concluded</td>
-            <td>Cleanup Auction, View Auction Results?</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-    </tbody>
-</table>
-
-## General User Needs
-### ∅ (All States)
- - Browse Auctions
-### Announced, Ongoing, Resolution
-- View Auction Details
-### Concluded
-- View Auction Results?
-## Seller Needs
-
-### ∅ (All States)
-- Announce Auction
-### Announced 
-- Authorize Bidders
-- Start Bidding
-- Cancel Auction?
-### Ongoing
-- Authorize Bidders
-### Resolution
-#### Voucher Expired
-- Reclaim Lot
-### Concluded
-- Cleanup Auction
-
-## Bidder Needs
-
-### ∅ (All States)
-### Announced 
-- Place Deposit
-### Ongoing
-- Place Deposit
-- Bid
-### Resolution
-- Reclaim Deposit (Losers Only)
-#### Voucher Active
-- Claim Lot (Winner Only)
-### Concluded
-- Reclaim Deposit (Losers Only)
-
-## Delegate Needs
-### ∅ (All States)
- - Register as Delegate
- - Update Delegate Registration
-
-# Pages
-## Browse
-Display:
-- Active Auctions
-
-## Create Auction
-Allow Seller:
-  - Define Auction Terms (Probably want to abstract some of these)
-    - Lot
-    - Start, End & Purchase, and Cleanup Times
-    - Starting Bid
-    - Minimum Increment?
-    - Minimum Deposit?
-    - Delegates?
-    - Delegate Fees?
-  - Submit Auction Creation Tx
-
-## Auction Details
-This could be a single page or split into multiple. In some form these need to:
-
-Display:
- - Auction Lot Details (Assume single NFT for now?)
- - Standing Bid
-
-### Upcoming Auction Details
-Display:
-  - Auction Start Time | "Waiting for Seller..."
-    - This is the *earliest* start time, seller determines actual start with the StartBidding tx. 
-
-Allow Seller:
-  - View & Authorize Bidders (should this be a new page?)
-  - Start Bidding
-  - Cancel Auction?
-
-Allow Bidders:
-  - Place Deposit
-
-### Ongoing Auction Details
-Display:
-  - Time Left
-
-Allow Seller:
-  - View & Authorize Bidders (should this be a new page?)
-
-Allow Bidder:
-  - Place Deposit
-  - Bid
-
-### Ended/Resolving Auction
-
-Display:
- - Reclaim Deadline
-
-Allow Winner:
-  - Claim Lot (Before Purchase Deadline)
-
-Allow Loser:
-  - Reclaim Deposit
-
-Allow Seller:
- - Reclaim Lot (After Purchase Deadline)
-
-Allow Any?:
-- Cleanup Auction (After Cleanup)
-
-## Delegate Portal
-On load we query for existing registrations that match the user's wallet & display if found.
-This means we do not support multiple registrations with one wallet for v1.
-
-Display: 
-- Existing Registration
-
-Allow:
- - New Registration
- - Update Registration
