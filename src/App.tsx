@@ -8,8 +8,10 @@ import { EnterAuctionPage } from './Components/EnterAuction/EnterAuction';
 import PlaceBid from './Components/PlaceBid/PlaceBid';
 import AuctionDetail from './Components/AuctionDetail/AuctionDetail';
 import ReactQueryProvider from './providers/ReactQueryProvider';
-import Topbar from './Components/Navbar/Topbar';
 import Layout from './Components/layout';
+import TopBar from './Components/Navbar/TopBar';
+import { MeshProvider } from '@meshsdk/react';
+import AnnounceAuctionList from './Components/AnnounceAuction/AnnounceAuctionList';
 
 function App() {
   const [queryAuctions, setQueryAuctions] = useState<
@@ -42,24 +44,31 @@ function App() {
 
   return (
     <BrowserRouter>
-      <ReactQueryProvider>
-        <>
-          {/* Navbar */}
-          <Topbar />
+      <MeshProvider>
+        <ReactQueryProvider>
+          <>
+            {/* Navbar */}
+            <TopBar />
 
-          {/* Route configuration */}
-          <Layout>
-            <Routes>
-              <Route path="/auction-list" element={<AuctionList />} />
-              <Route path="/announce-auction" element={<AnnounceAuction />} />
-              <Route path="/enter-auction" element={<EnterAuctionPage />} />
-              <Route path="/place-bid" element={<PlaceBid />} />
-              <Route path="/auction" element={<AuctionDetail />} />
-              {/* TODO: collection/wallet routes */}
-            </Routes>
-          </Layout>
-        </>
-      </ReactQueryProvider>
+            {/* Route configuration */}
+            <Layout>
+              <Routes>
+                <Route path="/" element={<AuctionList />} />
+                <Route path="/auction-list" element={<AuctionList />} />
+                <Route path="/announce-auction" element={<AnnounceAuction />} />
+                <Route path="/enter-auction" element={<EnterAuctionPage />} />
+                <Route path="/place-bid" element={<PlaceBid />} />
+                <Route path="/auction" element={<AuctionDetail />} />
+                <Route
+                  path="/announce-auction-list"
+                  element={<AnnounceAuctionList />}
+                />
+                {/* TODO: collection/wallet routes */}
+              </Routes>
+            </Layout>
+          </>
+        </ReactQueryProvider>
+      </MeshProvider>
     </BrowserRouter>
   );
 }

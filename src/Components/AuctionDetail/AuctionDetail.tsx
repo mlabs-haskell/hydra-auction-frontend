@@ -4,6 +4,7 @@ import { useUser } from 'src/hooks/user';
 import PlaceBidCompact from '../PlaceBid/PlaceBidCompact';
 import { TimeRemaining } from '../Time/TimeRemaining';
 import EnterAuction from '../EnterAuction/EnterAuction';
+import { MOCK_NFT_IMAGE_URL } from 'src/mocks/images.mock';
 
 const MOCK_NFT_DESCRIPTION = "Your favorite founder's favorite dog 🐶";
 export default function AuctionDetail() {
@@ -34,7 +35,7 @@ export default function AuctionDetail() {
             className="blur-sm"
             width={500}
             alt=""
-            src="/images/sample_nft.png"
+            src={MOCK_NFT_IMAGE_URL}
           />
         </div>
 

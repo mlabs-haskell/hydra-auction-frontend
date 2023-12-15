@@ -6,13 +6,18 @@ import {
   ValueEntry,
   WalletApp,
 } from 'public/dist/types';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { MOCK_ANNOUNCE_AUCTION_PARAMS } from 'src/mocks/announceAuction.mock';
 import { auctionFormSchema } from 'src/schemas/auctionFormSchema';
 import { StringInput } from '../Inputs/StringInput';
 import { NumberInput } from '../Inputs/NumberInput';
 import { DateInput } from '../Inputs/DateInput';
 import { AuctionLotList } from './AuctionLotList';
+import WalletNfts from '../WalletNfts/WalletNfts';
+import { TimeRemaining } from '../Time/TimeRemaining';
+import { getUrlParams } from 'src/utils/getUrlParams';
+import AnnounceAuctionTabs from '../AnnounceTabs/AnnounceTabs';
+import { useAssets } from '@meshsdk/react';
 
 interface CustomWindow extends Window {
   queryAuctions?: () => Promise<AuctionInfo[] | undefined>;
@@ -23,10 +28,14 @@ interface CustomWindow extends Window {
 }
 
 type AnnounceAuctionFormProps = {
+  selectedNft: string;
   className?: string;
 };
 
-const AnnounceAuctionForm = ({ className }: AnnounceAuctionFormProps) => {
+const AnnounceAuctionForm = ({
+  selectedNft,
+  className,
+}: AnnounceAuctionFormProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -84,6 +93,7 @@ const AnnounceAuctionForm = ({ className }: AnnounceAuctionFormProps) => {
   return (
     <div className="p-3 mb-3 w-full">
       <form className="block" onSubmit={handleSubmit}>
+        {selectedNft}
         <AuctionLotList onChangeAuctionLotList={handleAuctionLotsChange} />
 
         <StringInput
@@ -158,15 +168,53 @@ const AnnounceAuctionForm = ({ className }: AnnounceAuctionFormProps) => {
   );
 };
 
-export default function AnnounceAuction() {
+const CurrentListing = ({
+  name,
+  price,
+  biddingEnd,
+}: {
+  name: string;
+  price: number;
+  biddingEnd?: string;
+}) => {
+  const priceUsd = price;
   return (
-    <div className="flex justify-center items-center">
-      <div className="container">
-        <h1 className="header text-center mb-3">Announce Auction</h1>
-        <div className="flex items-center justify-center">
-          <div className="border-b border-gray-400 w-32"></div>
-        </div>
-        <AnnounceAuctionForm />
+    <div className="w-[342px]">
+      <div className="mb-4 text-start text-body font-semibold">
+        Current Listing:
+      </div>
+      <img
+        className="blur-sm"
+        width={342}
+        alt=""
+        src="/images/sample_nft.png"
+      />
+      <div className="font-bold">{name}</div>
+      <div className="text-end font-bold">{price} ADA</div>
+      <div className="text-end text-dim">${priceUsd}</div>
+      <div className="flex justify-center items-center">
+        <TimeRemaining endDate={Number(biddingEnd) || 0} />
+      </div>
+    </div>
+  );
+};
+
+export default function AnnounceAuction() {
+  // Use url params to get the assetUnit
+  const urlParams = getUrlParams();
+  const assetUnit = urlParams.get('assetUnit');
+
+  //TODO: which details we need to pass to the tabs
+  const assets = useAssets();
+  const assetToList = assets?.find((asset) => asset.unit === assetUnit);
+  return (
+    <div className="flex items-center justify-center">
+      <div className="container grid grid-cols-2">
+        <div></div>
+        <div className="text-title2 font-bold mb-6">List an nft</div>
+        <CurrentListing name="My Nft" price={100} />
+
+        <AnnounceAuctionTabs assetToList={assetToList} />
       </div>
     </div>
   );

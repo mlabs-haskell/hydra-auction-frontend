@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@meshsdk/core": "^1.5.11-beta.3",
+    "@meshsdk/react": "^1.1.9",
     "@tanstack/react-query": "^5.12.2",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -12,20 +14,27 @@
     "@types/react": "^18.2.39",
     "@types/react-dom": "^18.2.17",
     "autoprefixer": "^10.4.16",
-    "hydra-auction-offchain": "git+ssh://git@github.com:mlabs-haskell/hydra-auction-offchain#dshuiski/npm-package",
+    "buffer": "^6.0.3",
+    "clsx": "^2.0.0",
+    "esbuild": "0.18.11",
+    "esbuild-plugin-polyfill-node": "^0.3.0",
+    "esbuild-plugin-wasm": "^1.1.0",
+    "events": "^3.3.0",
     "postcss": "^8.4.31",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.20.1",
     "react-scripts": "5.0.1",
+    "stream-browserify": "^3.0.0",
+    "tailwind-merge": "^2.1.0",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4",
     "zod": "^3.22.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -47,6 +56,7 @@
     ]
   },
   "devDependencies": {
+    "@craco/craco": "^7.1.0",
     "tailwindcss": "^3.3.5"
   }
 }
