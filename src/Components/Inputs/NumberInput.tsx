@@ -13,15 +13,15 @@ export const NumberInput = ({
   placeholder,
 }: NumberInputProps) => {
   return (
-    <div className="mb-2">
-      <div className="text-sm mb-1 text-gray-700">
+    <div className="border-b-2 border-black">
+      <div className="text-callout mb-1 text-gray-700">
         <label htmlFor={inputId}>{label}</label>
       </div>
 
       <input
         onChange={(e) => onChange && onChange(inputId, e.target.value)}
         id={inputId}
-        className=""
+        className="border-none p-1 m-0 mb-1"
         placeholder={placeholder ? placeholder : ''}
         type="number"
       />

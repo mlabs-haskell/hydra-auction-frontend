@@ -1,15 +1,28 @@
 import { Asset } from '@meshsdk/core';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import CustomButton from '../CustomButton/CustomButton';
+import { useAssets } from '@meshsdk/react';
+import { getUrlParams } from 'src/utils/getUrlParams';
+import { StringInput } from '../Inputs/StringInput';
+import { DateInput } from '../Inputs/DateInput';
+import { NumberInput } from '../Inputs/NumberInput';
+import { MOCK_ANNOUNCE_AUCTION_PARAMS } from 'src/mocks/announceAuction.mock';
+import {
+  AnnounceAuctionContractParams,
+  AuctionInfo,
+  ContractOutput,
+  TransactionHash,
+  ValueEntry,
+  WalletApp,
+} from 'public/dist';
+import { AuctionLotList } from '../AnnounceAuction/AuctionLotList';
+import { auctionFormSchema } from 'src/schemas/auctionFormSchema';
+import { getDelegates } from 'src/fetch/getDelegates';
+import { DropDown } from '../DropDown/DropDown';
 
-type AnnouneAuctionTabsProps = {
+type AnnounceAuctionTabsProps = {
   assetToList: Asset | undefined;
 };
-
-// enum AnnounceAuctionTabs {
-//   SELECT = 'select',
-//   ANNOUNCE = 'announce',
-// }
 
 const announceAuctionTabs = [
   {
@@ -74,7 +87,10 @@ const AnnounceNav = ({ activeTab, setActiveTab }: AnnounceNavProps) => {
   );
 };
 
-const SelectNft = () => {
+const SelectTab = () => {
+  const assets = useAssets();
+  const urlParams = getUrlParams();
+  const assetToList = urlParams.get('assetUnit');
   return (
     <>
       <div className="flex mb-6">
@@ -85,21 +101,189 @@ const SelectNft = () => {
       <div className="mb-8">
         <div className="font-semibold">NFT</div>
       </div>
-      <div className="text-dim border-b-2 w-60 border-black p-2 mb-6">
-        Select an nft
-      </div>
+      <DropDown
+        options={assets?.map((asset) => {
+          return {
+            label: asset.unit || '',
+            accessor: asset.unit || '',
+          };
+        })}
+        title={assetToList || 'Select NFT'}
+      />
     </>
   );
 };
 
-const TabSwitch = ({ tab }: { tab: string }) => {
-  if (tab === 'select') {
-    return <SelectNft />;
-  }
-  return <></>;
+interface CustomWindow extends Window {
+  queryAuctions?: () => Promise<AuctionInfo[] | undefined>;
+  announceAuction?: (
+    walletApp: WalletApp,
+    params: AnnounceAuctionContractParams
+  ) => Promise<ContractOutput<TransactionHash>>;
+}
+
+type AnnounceAuctionFormProps = {
+  className?: string;
+};
+const AnnounceAuctionForm = ({ className }: AnnounceAuctionFormProps) => {
+  const delegateGroup = getDelegates();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const auctionForm = auctionFormSchema.safeParse(auctionFormData.current);
+
+    if (!auctionForm.success) {
+      console.log(auctionForm.error);
+    } else {
+      console.log('success', auctionForm.data);
+
+      const customWindow = window as CustomWindow;
+
+      const walletApp = 'Nami';
+      const params = {
+        auctionTerms: auctionForm.data.auctionTerms,
+        additionalAuctionLotOrefs:
+          MOCK_ANNOUNCE_AUCTION_PARAMS.additionalAuctionLotOrefs,
+      };
+      console.log(params);
+      // TODO: Replace window function with npm package, and use api function in react query
+      if (customWindow?.announceAuction) {
+        const announceAuctionResponse = await customWindow.announceAuction(
+          walletApp,
+          params
+        );
+        console.log({ announceAuctionResponse });
+      }
+    }
+  };
+
+  const auctionFormData = useRef<AnnounceAuctionContractParams>(
+    MOCK_ANNOUNCE_AUCTION_PARAMS
+  );
+
+  const handleAuctionInputChange = (inputId: string, value: any) => {
+    auctionFormData.current = {
+      ...auctionFormData.current,
+      auctionTerms: {
+        ...auctionFormData.current.auctionTerms,
+        [inputId]: value,
+      },
+    };
+  };
+
+  const handleAuctionLotsChange = (auctionLots: ValueEntry[]) => {
+    auctionFormData.current = {
+      ...auctionFormData.current,
+      auctionTerms: {
+        ...auctionFormData.current.auctionTerms,
+        auctionLot: auctionLots,
+      },
+    };
+  };
+
+  // TDO: Figure out which fields are actually going to be input vs coming from api
+  return (
+    <div className="p-3 mb-3 w-full">
+      <form className="block" onSubmit={handleSubmit}>
+        {/* <AuctionLotList onChangeAuctionLotList={handleAuctionLotsChange} /> */}
+        {/* <StringInput
+          label="Seller Public Key Hash"
+          inputId="sellerPkh"
+          onChange={handleAuctionInputChange}
+          placeholder={auctionFormData.current.auctionTerms.sellerPkh}
+        />
+        <StringInput
+          label="Seller Verification Key"
+          inputId="sellerVk"
+          onChange={handleAuctionInputChange}
+          placeholder={auctionFormData.current.auctionTerms.sellerVk}
+        /> */}
+        <div className="text-callout mb-1 text-gray-700">Delegates</div>
+        <DropDown
+          options={delegateGroup.delegates.map((delegate) => {
+            return {
+              label: delegate,
+              accessor: delegate,
+            };
+          })}
+          title="Delegates"
+        />
+        <NumberInput
+          label="Auction Fee Per Delegate"
+          inputId="auctionFeePerDelegate"
+          onChange={handleAuctionInputChange}
+          placeholder={
+            auctionFormData.current.auctionTerms.auctionFeePerDelegate
+          }
+        />
+        <div className="mb-8"></div>
+        <div className="grid md:grid-cols-2 gap-4 mb-8">
+          <DateInput
+            label="Bidding Start"
+            inputId="biddingStart"
+            onChange={handleAuctionInputChange}
+            placeholder={auctionFormData.current.auctionTerms.biddingStart}
+          />
+          <DateInput
+            label="Bidding End"
+            inputId="biddingEnd"
+            onChange={handleAuctionInputChange}
+            placeholder={auctionFormData.current.auctionTerms.biddingEnd}
+          />
+          <DateInput
+            label="Purchase Deadline"
+            inputId="purchaseDeadline"
+            onChange={handleAuctionInputChange}
+            placeholder={auctionFormData.current.auctionTerms.purchaseDeadline}
+          />
+          <DateInput
+            label="Cleanup"
+            inputId="cleanup"
+            onChange={handleAuctionInputChange}
+            placeholder={auctionFormData.current.auctionTerms.cleanup}
+          />
+        </div>
+
+        <NumberInput
+          label="Starting Bid"
+          inputId="startingBid"
+          onChange={handleAuctionInputChange}
+          placeholder={auctionFormData.current.auctionTerms.startingBid}
+        />
+        <NumberInput
+          label="Min Bid Increment"
+          inputId="minBidIncrement"
+          onChange={handleAuctionInputChange}
+          placeholder={auctionFormData.current.auctionTerms.minBidIncrement}
+        />
+        <NumberInput
+          label="Min Deposit Amount"
+          inputId="minDepositAmount"
+          onChange={handleAuctionInputChange}
+          placeholder={auctionFormData.current.auctionTerms.minDepositAmount}
+        />
+
+        <input type="submit" className="submit-btn"></input>
+      </form>
+    </div>
+  );
 };
 
-export default function AnnounceTabs({ assetToList }: AnnouneAuctionTabsProps) {
+const DetailTab = () => {
+  return <AnnounceAuctionForm />;
+};
+
+const TabSwitch = ({ tab }: { tab: string }) => {
+  if (tab === 'select') {
+    return <SelectTab />;
+  }
+  return <DetailTab />;
+};
+
+export default function AnnounceTabs({
+  assetToList,
+}: AnnounceAuctionTabsProps) {
   const [activeTab, setActiveTab] = useState(0);
 
   const handleNext = () => {
@@ -112,7 +296,9 @@ export default function AnnounceTabs({ assetToList }: AnnouneAuctionTabsProps) {
       <TabSwitch tab={announceAuctionTabs[activeTab].accessor} />
 
       <div className="grid grid-cols-2 mt-auto">
-        <CustomButton onClick={handleNext} label="Next" className="w-full" />
+        {activeTab < announceAuctionTabs.length - 1 && (
+          <CustomButton onClick={handleNext} label="Next" className="w-full" />
+        )}
         <CustomButton label="Save" className="w-full bg-white text-black" />
       </div>
     </div>
