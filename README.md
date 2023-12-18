@@ -1,3 +1,8 @@
+# Installation
+npm install
+
+# Start server
+npm start
 
 # Link helpers
 Flow - https://github.com/mlabs-haskell/hydra-auction/blob/staging/docs/off_chain_spec.md
@@ -89,9 +94,38 @@ AS BIDDER:
 
 
 # Needed endpoints from off_chain_spec.md
- - L2 Endpoints are most of whats missing, otherwise
- - showUtxos
- - showAllUtxos
+ - L2 Endpoints are most of whats missing, otherwise  -- Right now they are focusing on L1 endpoints and getting a full auction flow done on L1. 
+ - showUtxos -- No answer yet 
+ - showAllUtxos -- No answer yet
 
- * Is there going to be an endpoint for the state of an auction? Since this will most likely be set and managed by back-end.
+ * Is there going to be an endpoint for the state of an auction? Since this will most likely be set and managed by back-end. -- No answer yet
 
+
+
+# 12/7
+ - Added more apis as fetch endpoints
+ - Added utils, time component, and show/hide button components for enterAuction, place bid
+ - Added refinement, form now goes to useQuery for enterAuction
+ - Implemented the Auction Detail Page 
+ - Implemented react query with mutation for the enter auction form so we can see if user has already entered the auction and can now bid
+    * We can use this to also see our auctions we are bidding on
+
+# TEST
+    - Click Query Auctions in topbar
+    - Click on any auction
+    - See new auction detail page
+    - Click enter auction, scroll down and click submit(the details are auto filled in)
+    - You should now see you can place bid on the auction
+
+# Updated Questions 
+ - As the bidder, how do we get the bidderVK since it is needed for `enterAuction()` and `discoverSellerSignature()` - both are requirements to place a bid
+    * Is it suppose to come from our wallet? Is it unique across auctions? Which endpoint can we get the bidderVk from?
+
+ - All the "would be" number types are strings in types.d.ts
+    * Is this correct or will these values come as numbers. This needs to be known if we have to convert the strings to numbers in js.
+
+ - `enterAuction()` parameter `auctionCs` is a singular value, but an `auctionLot` for an auction which the bidder is entering is an array of {`auctionCs`, ...}
+    * Since I presume entering the auction you are bidding on the `auctionLot`, how do you enter the auction for an auction with multiple lots and different `auctionCs`?
+
+# 12/14
+Is the asset unit the same as the aucitonCs?
