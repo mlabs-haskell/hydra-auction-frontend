@@ -29,7 +29,8 @@
     "tailwind-merge": "^2.1.0",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "hydra-auction-offchain": "github:mlabs-haskell/hydra-auction-offchain#dshuiski/npm-package"
   },
   "scripts": {
     "start": "craco start",
