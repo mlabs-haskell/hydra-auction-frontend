@@ -20,16 +20,16 @@ const CurrentListing = ({
       </div>
       <img
         className="blur-sm"
-        width={342}
+        width={246}
         alt=""
         src="/images/sample_nft.png"
       />
       <div className="font-bold">{name}</div>
-      <div className="text-end font-bold">{price} ADA</div>
+      {/* <div className="text-end font-bold">{price} ADA</div>
       <div className="text-end text-dim">${priceUsd}</div>
       <div className="flex justify-center items-center">
         <TimeRemaining endDate={Number(biddingEnd) || 0} />
-      </div>
+      </div> */}
     </div>
   );
 };
@@ -38,18 +38,22 @@ export default function AnnounceAuction() {
   // Use url params to get the assetUnit
   const urlParams = getUrlParams();
   const assetUnit = urlParams.get('assetUnit');
+  const assetName = urlParams.get('assetName');
 
   //TODO: which details we need to pass to the tabs
   const assets = useAssets();
   const assetToList = assets?.find((asset) => asset.unit === assetUnit);
   return (
     <div className="flex items-center justify-center">
-      <div className="container grid grid-cols-2">
-        <div></div>
-        <div className="text-title2 font-bold mb-6">List an nft</div>
-        <CurrentListing name="My Nft" price={100} />
+      <div className="container grid grid-cols-8">
+        <div className="col-span-3 mt-12 ">
+          <CurrentListing name={assetName ?? ''} price={100} />
+        </div>
+        <div className="col-span-5">
+          <div className="text-title2 font-bold mb-6">List an nft</div>
 
-        <AnnounceAuctionTabs assetToList={assetToList} />
+          <AnnounceAuctionTabs assetToList={assetToList} />
+        </div>
       </div>
     </div>
   );

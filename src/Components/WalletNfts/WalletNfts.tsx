@@ -1,6 +1,8 @@
-import { Asset } from '@meshsdk/core';
-import { useAssets } from '@meshsdk/react';
+import { resolveMedia } from '@meshsdk/react';
+import { useExtendedAssets } from 'src/hooks/assets';
 import { MOCK_NFT_IMAGE_URL } from 'src/mocks/images.mock';
+
+const IPFS_BASE_URL = 'https://ipfs.grabbit.market/ipfs/'; //'https://ipfs.io/ipfs/';
 
 type WalletNftsProps = {
   setSelectedNft: (unit: string) => void;
@@ -17,34 +19,33 @@ const WalletNftCard = ({
   assetName = 'Name',
   assetUnit,
 }: WalletNftCardProps) => {
+  // Resolve IPFS image URL using resolveMedia
+  const ipfsHash = resolveMedia(assetUnit);
+  const imageSrc = ipfsHash ? `${IPFS_BASE_URL}${ipfsHash}` : assetImageSrc;
+
   return (
-    <a href={`/announce-auction?assetUnit=${assetUnit}`}>
+    <a href={`/announce-auction?assetUnit=${assetUnit}&assetName=${assetName}`}>
       <div className="flex justify-center items-center mb-3">
-        <img className="blur-sm" width={342} alt="" src={assetImageSrc} />
+        {imageSrc && (
+          <img className="" width={342} alt={assetName} src={imageSrc} />
+        )}
       </div>
       <div className="text-center">{assetName}</div>
     </a>
   );
 };
-// TODO: IPFS to get the asset image, we also need the name which is suppose to come from useAssets
-// On website it shows unit, policyId, assetName, fingerprint, quantity as the response from useAssets
-// so something is off
+// TODO: IPFS to get the asset image
 export default function WalletNfts() {
-  const assets = useAssets();
+  const { assets, isError } = useExtendedAssets();
 
+  if (isError) return null;
   return (
     <ol className="grid sm:grid-cols-2 md:grid-cols-4 gap-5">
-      {assets &&
-        assets.slice(0, 10).map((asset: Asset, i) => {
-          return (
-            <li key={i} className="p-2">
-              {/* <div className="overflow-hidden">
-                  {asset.unit} (x{asset.quantity})
-                </div> */}
-              <WalletNftCard assetUnit={asset.unit} assetName={'Name'} />
-            </li>
-          );
-        })}
+      {assets?.slice(0, 10).map((asset, i) => (
+        <li key={i} className="p-2">
+          <WalletNftCard assetUnit={asset.unit} assetName={asset.assetName} />
+        </li>
+      ))}
     </ol>
   );
 }

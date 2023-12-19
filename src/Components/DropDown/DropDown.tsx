@@ -8,11 +8,13 @@ type DropDownItem = {
 
 type DropDownProps = {
   options?: DropDownItem[];
+  indexIn?: number;
   title: string;
 };
 
-export const DropDown = ({ options, title }: DropDownProps) => {
-  const [activeIndex, setActiveIndex] = useState(0);
+// TODO: Should changing the nft re render the page(ie link to new assetUnit query params in url)
+export const DropDown = ({ options, title, indexIn = 0 }: DropDownProps) => {
+  const [activeIndex, setActiveIndex] = useState(indexIn);
   const [activeTitle, setTitle] = useState<string | null>(null);
   const [show, setShow] = useState(false);
 

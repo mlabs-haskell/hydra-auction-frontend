@@ -19,6 +19,7 @@ import { AuctionLotList } from '../AnnounceAuction/AuctionLotList';
 import { auctionFormSchema } from 'src/schemas/auctionFormSchema';
 import { getDelegates } from 'src/fetch/getDelegates';
 import { DropDown } from '../DropDown/DropDown';
+import { useExtendedAssets } from 'src/hooks/assets';
 
 type AnnounceAuctionTabsProps = {
   assetToList: Asset | undefined;
@@ -88,9 +89,16 @@ const AnnounceNav = ({ activeTab, setActiveTab }: AnnounceNavProps) => {
 };
 
 const SelectTab = () => {
-  const assets = useAssets();
+  const { assets, isError } = useExtendedAssets();
+  if (isError) {
+    return <></>;
+  }
   const urlParams = getUrlParams();
-  const assetToList = urlParams.get('assetUnit');
+  const assetUnitToList = urlParams.get('assetUnit');
+  const assetToList = assets?.findIndex(
+    (asset) => asset.unit === assetUnitToList
+  );
+  console.log({ assetToList });
   return (
     <>
       <div className="flex mb-6">
@@ -104,11 +112,12 @@ const SelectTab = () => {
       <DropDown
         options={assets?.map((asset) => {
           return {
-            label: asset.unit || '',
+            label: asset.assetName || '',
             accessor: asset.unit || '',
           };
         })}
-        title={assetToList || 'Select NFT'}
+        title={'Select NFT'}
+        indexIn={assetToList || 0}
       />
     </>
   );
