@@ -231,12 +231,14 @@ const AnnounceAuctionForm = ({ className }: AnnounceAuctionFormProps) => {
             onChange={handleAuctionInputChange}
             placeholder={auctionFormData.current.auctionTerms.biddingStart}
           />
+          {/* TODO: Add validation on submit to make sure bidding end is after bidding start */}
           <DateTimeInput
             label="Bidding End"
             inputId="biddingEnd"
             onChange={handleAuctionInputChange}
             placeholder={auctionFormData.current.auctionTerms.biddingEnd}
           />
+          {/* TODO: Add validation on submit to make sure purchase deadline  is after bidding end */}
           <DateTimeInput
             label="Purchase Deadline"
             inputId="purchaseDeadline"
