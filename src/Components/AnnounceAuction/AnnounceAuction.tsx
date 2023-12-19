@@ -1,4 +1,4 @@
-import { TimeRemaining } from '../Time/TimeRemaining';
+//import { TimeRemaining } from '../Time/TimeRemaining';
 import { getUrlParams } from 'src/utils/getUrlParams';
 import AnnounceAuctionTabs from '../AnnounceTabs/AnnounceTabs';
 import { useAssets } from '@meshsdk/react';
@@ -12,7 +12,6 @@ const CurrentListing = ({
   price: number;
   biddingEnd?: string;
 }) => {
-  const priceUsd = price;
   return (
     <div className="w-[342px]">
       <div className="mb-4 text-start text-body font-semibold">

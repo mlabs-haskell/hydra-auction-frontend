@@ -15,7 +15,6 @@ import {
   ValueEntry,
   WalletApp,
 } from 'public/dist';
-import { AuctionLotList } from '../AnnounceAuction/AuctionLotList';
 import { auctionFormSchema } from 'src/schemas/auctionFormSchema';
 import { getDelegates } from 'src/fetch/getDelegates';
 import { DropDown } from '../DropDown/DropDown';
@@ -98,7 +97,7 @@ const SelectTab = () => {
   const assetToList = assets?.findIndex(
     (asset) => asset.unit === assetUnitToList
   );
-  console.log({ assetToList });
+
   return (
     <>
       <div className="flex mb-6">
