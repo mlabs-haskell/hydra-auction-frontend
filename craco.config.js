@@ -6,14 +6,32 @@ module.exports = {
       const wasmExtensionRegExp = /\.wasm$/;
       webpackConfig.resolve.extensions.push('.wasm');
       webpackConfig.experiments = {
-        asyncWebAssembly: false,
+        asyncWebAssembly: true,
         lazyCompilation: true,
         syncWebAssembly: true,
         topLevelAwait: true,
       };
       webpackConfig.resolve.fallback = {
-        buffer: require.resolve('buffer/'),
+        ...webpackConfig.resolve.fallback,
+        fs: false, // fs is not typically available in the browser
+        crypto: require.resolve('crypto-browserify'),
         stream: require.resolve('stream-browserify'),
+        util: require.resolve('util'),
+        os: require.resolve('os-browserify/browser'),
+        path: require.resolve('path-browserify'),
+        http: require.resolve('stream-http'),
+        https: require.resolve('https-browserify'),
+        net: false, // net is not typically available in the browser
+        tls: false, // tls is not typically available in the browser
+        dns: require.resolve('dns.js'),
+        zlib: require.resolve('browserify-zlib'),
+        url: require.resolve('url'),
+        buffer: require.resolve('buffer/'),
+        //        process: require.resolve('process/browser'),
+        assert: require.resolve('assert/'),
+        http2: require.resolve('http2/'), // Note: There may not be a direct browser equivalent for http2
+        dgram: false, // dgram is not typically available in the browser
+        process: require.resolve('process'),
       };
       webpackConfig.module.rules.forEach((rule) => {
         (rule.oneOf || []).forEach((oneOf) => {
@@ -24,6 +42,9 @@ module.exports = {
       });
       webpackConfig.plugins.push(
         new webpack.ProvidePlugin({
+          //          process: 'process/browser',
+          process: 'process', // Changed from 'process/browser' to 'process'
+
           Buffer: ['buffer', 'Buffer'],
         })
       );
