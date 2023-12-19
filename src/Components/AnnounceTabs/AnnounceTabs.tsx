@@ -1,10 +1,7 @@
 import { Asset } from '@meshsdk/core';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import CustomButton from '../CustomButton/CustomButton';
-import { useAssets } from '@meshsdk/react';
 import { getUrlParams } from 'src/utils/getUrlParams';
-import { StringInput } from '../Inputs/StringInput';
-import { DateInput } from '../Inputs/DateInput';
 import { NumberInput } from '../Inputs/NumberInput';
 import { MOCK_ANNOUNCE_AUCTION_PARAMS } from 'src/mocks/announceAuction.mock';
 import {
@@ -19,6 +16,7 @@ import { auctionFormSchema } from 'src/schemas/auctionFormSchema';
 import { getDelegates } from 'src/fetch/getDelegates';
 import { DropDown } from '../DropDown/DropDown';
 import { useExtendedAssets } from 'src/hooks/assets';
+import { DateTimeInput } from '../Inputs/DateInput';
 
 type AnnounceAuctionTabsProps = {
   assetToList: Asset | undefined;
@@ -227,25 +225,25 @@ const AnnounceAuctionForm = ({ className }: AnnounceAuctionFormProps) => {
         />
         <div className="mb-8"></div>
         <div className="grid md:grid-cols-2 gap-4 mb-8">
-          <DateInput
+          <DateTimeInput
             label="Bidding Start"
             inputId="biddingStart"
             onChange={handleAuctionInputChange}
             placeholder={auctionFormData.current.auctionTerms.biddingStart}
           />
-          <DateInput
+          <DateTimeInput
             label="Bidding End"
             inputId="biddingEnd"
             onChange={handleAuctionInputChange}
             placeholder={auctionFormData.current.auctionTerms.biddingEnd}
           />
-          <DateInput
+          <DateTimeInput
             label="Purchase Deadline"
             inputId="purchaseDeadline"
             onChange={handleAuctionInputChange}
             placeholder={auctionFormData.current.auctionTerms.purchaseDeadline}
           />
-          <DateInput
+          <DateTimeInput
             label="Cleanup"
             inputId="cleanup"
             onChange={handleAuctionInputChange}
