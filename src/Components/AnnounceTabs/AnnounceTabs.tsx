@@ -45,7 +45,7 @@ const NavPiece = ({
   setActiveTab: (tab: number) => void;
 }) => {
   const isActive = announceAuctionTabs[activeTab].accessor === accessor;
-  const className = `me-3 md:me-6 ${isActive ? 'opacity-100' : 'opacity-60'}`;
+  const className = `mr-3 md:mr-6 ${isActive ? 'opacity-100' : 'opacity-60'}`;
   return (
     <button
       onClick={() =>
@@ -226,7 +226,7 @@ const AnnounceAuctionForm = ({ className }: AnnounceAuctionFormProps) => {
           }
         />
         <div className="mb-8"></div>
-        <div className="grid md:grid-cols-2 gap-4 mb-8">
+        <div className="flex gap-4 mb-8 flex-wrap">
           <DateTimeInput
             label="Bidding Start"
             inputId="biddingStart"
@@ -274,7 +274,7 @@ const AnnounceAuctionForm = ({ className }: AnnounceAuctionFormProps) => {
           placeholder={auctionFormData.current.auctionTerms.minDepositAmount}
         />
 
-        <input type="submit" className="submit-btn"></input>
+        <input type="submit" className="mt-8 submit-btn"></input>
       </form>
     </div>
   );
@@ -305,7 +305,7 @@ export default function AnnounceTabs({
 
       <TabSwitch tab={announceAuctionTabs[activeTab].accessor} />
 
-      <div className="grid grid-cols-2 mt-auto">
+      <div className="flex mt-6">
         {activeTab < announceAuctionTabs.length - 1 && (
           <CustomButton onClick={handleNext} label="Next" className="w-full" />
         )}
