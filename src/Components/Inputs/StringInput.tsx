@@ -11,7 +11,7 @@ export const StringInput = ({
   placeholder,
 }: StringInputProps) => {
   return (
-    <div className=" border-b-2 border-black">
+    <div className=" border-b border-black">
       <div className="text-callout text-gray-700">
         <label htmlFor={inputId}>{label}</label>
       </div>

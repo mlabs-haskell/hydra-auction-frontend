@@ -24,8 +24,8 @@ const CurrentListing = ({
         src="/images/sample_nft.png"
       />
       <div className="font-bold">{name}</div>
-      {/* <div className="text-end font-bold">{price} ADA</div>
-      <div className="text-end text-dim">${priceUsd}</div>
+      <div className="text-end font-bold">{price} ADA</div>
+      {/* <div className="text-end text-dim">${priceUsd}</div>
       <div className="flex justify-center items-center">
         <TimeRemaining endDate={Number(biddingEnd) || 0} />
       </div> */}

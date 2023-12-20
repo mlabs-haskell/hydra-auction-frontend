@@ -38,13 +38,13 @@ export const DropDown = ({ options, title, indexIn = 0 }: DropDownProps) => {
           {activeTitle || title}
         </div>
         {show && (
-          <div className="absolute z-10 bg-gray-100 w-full">
+          <div className="absolute z-10 bg-white w-full border border-gray-700">
             {options?.length &&
               options.map((option, index) => {
                 return (
                   <div
                     key={index}
-                    className="text-dim p-2 cursor-pointer p-2 border-b overflow-hidden"
+                    className=" p-2 cursor-pointer p-2 border-b overflow-hidden"
                     onClick={() => handleItemClick(index)}
                   >
                     {option.label}

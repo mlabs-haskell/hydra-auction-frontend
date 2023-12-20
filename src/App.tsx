@@ -12,6 +12,7 @@ import Layout from './Components/layout';
 import TopBar from './Components/Navbar/TopBar';
 import { MeshProvider } from '@meshsdk/react';
 import AnnounceAuctionList from './Components/AnnounceAuction/AnnounceAuctionList';
+import Footer from './Components/Footer/Footer';
 
 function App() {
   const [queryAuctions, setQueryAuctions] = useState<
@@ -66,6 +67,7 @@ function App() {
                 {/* TODO: collection/wallet routes */}
               </Routes>
             </Layout>
+            <Footer />
           </>
         </ReactQueryProvider>
       </MeshProvider>

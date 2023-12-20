@@ -10,7 +10,7 @@
   }
   input {
     transition: background-color 0.3s ease-in-out;
-    @apply p-[4px] ps-3 pe-3 rounded-md border-gray-300 w-full mb-3;
+    @apply p-[4px] ps-3 pe-3 w-full;
   }
   .submit-btn {
     transition: background-color 0.3s ease-in-out;
