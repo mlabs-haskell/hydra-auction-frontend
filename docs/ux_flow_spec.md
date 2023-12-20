@@ -23,8 +23,8 @@ Based on auction state machine from protocol spec - appended at end of doc.
 	- Bidding on L1
 	- Bidding on L2
 - Resolution
-	- Voucher Active
-	- Voucher Expired
+	- Pre Claim Deadline
+	- Post Claim Deadline
 - Concluded
 
 
@@ -42,7 +42,7 @@ Note: the assumption for v1 of this specification is that transactions which req
             <th rowspan=2>All Users</th>
             <th rowspan=2>Seller</th>
             <th colspan=2>Bidder</th>
-			<th rowspan=2>Delegate</th>
+			      <th rowspan=2>Delegate (N/A for v1 UX Spec)</th>
         </tr>
 		<tr>
             <th>Winner</th>
@@ -78,14 +78,14 @@ Note: the assumption for v1 of this specification is that transactions which req
         </tr>
 		<tr>
             <th rowspan=2>Resolution</td>
-            <th>Voucher Active</td>
+            <th>Pre Claim Deadline</td>
             <td></td>
             <td>Claim Lot</td>
             <td rowspan=3> Refund Deposit </td>
             <td></td>
         </tr>
 		<tr>
-            <th>Voucher Unclaimed</td>
+            <th>Post Claim Deadline</td>
             <td>Reclaim Lot</td>
             <td></td>
             <td></td>
@@ -118,7 +118,7 @@ Note: the assumption for v1 of this specification is that transactions which req
 #### Ongoing
 - Authorize Bidders
 #### Resolution
-###### When Voucher Expired:
+###### Post Claim Deadline:
 - Reclaim Lot
 #### Concluded
 - Cleanup Auction
@@ -133,15 +133,10 @@ Note: the assumption for v1 of this specification is that transactions which req
 - Bid
 #### Resolution
 - Reclaim Deposit (Losers Only)
-###### When Voucher Active:
+###### Before Claim Deadline:
 - Claim Lot (Winner Only)
 #### Concluded
 - Reclaim Deposit (Losers Only)
-
-## Delegate Needs
-#### ∅ (All States)
- - Register as Delegate
- - Update Delegate Registration
 
 # Pages
 ## Browse
@@ -196,13 +191,13 @@ Display:
  - Reclaim Deadline
 
 Allow Winner:
-  - Claim Lot (Before Purchase Deadline)
+  - Claim Lot (Before Claim Deadline)
 
 Allow Loser:
   - Reclaim Deposit
 
 Allow Seller:
- - Reclaim Lot (After Purchase Deadline)
+ - Reclaim Lot (After Claim Deadline)
 
 Allow Any?:
 - Cleanup Auction (After Cleanup Deadline)
@@ -213,17 +208,6 @@ Display:
 
 Allow Loser:
  - Reclaim Deposit
-
-## Delegate Portal
-On load we query for existing registrations that match the user's wallet & display if found.
-This means we do not support multiple registrations with one wallet for v1.
-
-Display: 
-- Existing Registration
-
-Allow:
- - New Registration
- - Update Registration
 
 # Appendix - Auction State Machine
 (copied from https://github.com/mlabs-haskell/hydra-auction/blob/c3169e8cd531225412c7b09cc4687fdded9b0e6a/docs/domain_logic.md)
