@@ -16,11 +16,11 @@ export default function CreateAuction() {
     <>
       <h2 className="text-title2 text-center font-bold mb-12">List an NFT</h2>
 
-      <div className="flex flex-col lg:flex-row gap-28 justify-center md:justify-start items-start">
-        <div className="self-center md:self-start">
+      <div className="flex flex-col lg:flex-row gap-28 justify-center lg:justify-start items-start">
+        <div className="self-center lg:self-start">
           <CurrentListing name={assetName ?? ''} price={100} />
         </div>
-        <div className="self-center md:self-start">
+        <div className="self-center lg:self-start">
           <CreateAuctionTabs assetToList={assetToList} />
         </div>
       </div>

@@ -85,7 +85,7 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
 
   // TODO: Figure out which fields are actually going to be input vs coming from api
   return (
-    <div className="p-0 md:p-3 mb-3 w-full">
+    <div className="p-0 lg:p-3 mb-3 w-full">
       <form className="block" onSubmit={handleSubmit}>
         {/* <AuctionLotList onChangeAuctionLotList={handleAuctionLotsChange} /> */}
         {/* <StringInput

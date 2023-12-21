@@ -18,7 +18,7 @@ const NavPiece = ({
     <button onClick={onClick} className="flex items-center">
       <div
         className={clsx(
-          'mr-3 md:mr-6',
+          'mr-3 lg:mr-6',
           isActive ? 'opacity-100' : 'opacity-60'
         )}
       >
@@ -26,7 +26,7 @@ const NavPiece = ({
       </div>
       <div
         className={clsx(
-          'mr-3 md:mr-6',
+          'mr-3 lg:mr-6',
           isActive ? 'opacity-100' : 'opacity-60',
           isLastIndex ? 'hidden' : 'block'
         )}
