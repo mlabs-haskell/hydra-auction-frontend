@@ -13,16 +13,17 @@ export default function CreateAuction() {
   const assets = useAssets();
   const assetToList = assets?.find((asset) => asset.unit === assetUnit);
   return (
-    <div className="flex items-center justify-center md:justify-start">
-      <div className="flex flex-col lg:flex-row gap-28 items-start">
-        <div className="mt-12 self-center md:self-start">
+    <>
+      <h2 className="text-title2 text-center font-bold mb-12">List an NFT</h2>
+
+      <div className="flex flex-col lg:flex-row gap-28 justify-center md:justify-start items-start">
+        <div className="self-center md:self-start">
           <CurrentListing name={assetName ?? ''} price={100} />
         </div>
-        <div className="">
-          <div className="text-title2 font-bold mb-6">List an NFT</div>
+        <div className="self-center md:self-start">
           <CreateAuctionTabs assetToList={assetToList} />
         </div>
       </div>
-    </div>
+    </>
   );
 }
