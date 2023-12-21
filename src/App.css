@@ -12,7 +12,7 @@
   }
   .submit-btn {
     transition: background-color 0.3s ease-in-out;
-    @apply px-4 py-1 bg-black text-white cursor-pointer;
+    @apply bg-black text-white cursor-pointer;
   }
 
   .text-dim {

@@ -118,8 +118,7 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
             auctionFormData.current.auctionTerms.auctionFeePerDelegate
           }
         />
-        <div className="mb-8"></div>
-        <div className="flex gap-4 mb-8 flex-wrap">
+        <div className="flex gap-4 my-8 flex-wrap">
           <DateTimeInput
             label="Bidding Start"
             inputId="biddingStart"
@@ -148,24 +147,26 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
           />
         </div>
 
-        <NumberInput
-          label="Starting Bid"
-          inputId="startingBid"
-          onChange={handleAuctionInputChange}
-          placeholder={auctionFormData.current.auctionTerms.startingBid}
-        />
-        <NumberInput
-          label="Min Bid Increment"
-          inputId="minBidIncrement"
-          onChange={handleAuctionInputChange}
-          placeholder={auctionFormData.current.auctionTerms.minBidIncrement}
-        />
-        <NumberInput
-          label="Min Deposit Amount"
-          inputId="minDepositAmount"
-          onChange={handleAuctionInputChange}
-          placeholder={auctionFormData.current.auctionTerms.minDepositAmount}
-        />
+        <div className="flex flex-col gap-4">
+          <NumberInput
+            label="Starting Bid"
+            inputId="startingBid"
+            onChange={handleAuctionInputChange}
+            placeholder={auctionFormData.current.auctionTerms.startingBid}
+          />
+          <NumberInput
+            label="Min Bid Increment"
+            inputId="minBidIncrement"
+            onChange={handleAuctionInputChange}
+            placeholder={auctionFormData.current.auctionTerms.minBidIncrement}
+          />
+          <NumberInput
+            label="Min Deposit Amount"
+            inputId="minDepositAmount"
+            onChange={handleAuctionInputChange}
+            placeholder={auctionFormData.current.auctionTerms.minDepositAmount}
+          />
+        </div>
 
         <input type="submit" className="mt-8 submit-btn"></input>
       </form>

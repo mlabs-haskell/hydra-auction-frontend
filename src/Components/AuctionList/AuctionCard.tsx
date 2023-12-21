@@ -10,7 +10,7 @@ type AuctionCardProps = {
   standingBidAddr: string;
 };
 
-export default function AuctionCard({
+function AuctionCard({
   auctionEscrowAddr,
   auctionId,
   auctionTerms,
@@ -50,3 +50,5 @@ export default function AuctionCard({
     </div>
   );
 }
+
+export default AuctionCard;

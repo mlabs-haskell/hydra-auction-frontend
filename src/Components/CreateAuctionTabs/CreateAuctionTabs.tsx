@@ -1,9 +1,9 @@
 import { Asset } from '@meshsdk/core';
 import { useState } from 'react';
-import CustomButton from '../CustomButton/CustomButton';
 import NavPiece from './NavPiece';
 import SelectTab from './SelectTab';
 import CreateAuctionForm from '../CreateAuction/CreateAuctionForm';
+import Button from '../Button/Button';
 
 type CreateAuctionTabsProps = {
   assetToList: Asset | undefined;
@@ -71,9 +71,9 @@ export default function AnnounceTabs({ assetToList }: CreateAuctionTabsProps) {
 
       <div className="flex mt-12">
         {activeTab !== ANNOUNCE_AUCTION_TABS.length - 1 && (
-          <CustomButton onClick={handleNext} label="Next" className="px-32" />
+          <Button onClick={handleNext} label="Next" className="!px-32" />
         )}
-        {/* <CustomButton label="Save" className="w-full bg-white text-black" /> */}
+        {/* <Button label="Save" className="w-full bg-white text-black" /> */}
       </div>
     </div>
   );
