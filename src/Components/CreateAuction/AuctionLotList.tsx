@@ -36,7 +36,7 @@ export const AuctionLotList = ({
 
   useEffect(() => {
     onChangeAuctionLotList && onChangeAuctionLotList(auctionLots);
-  }, [auctionLots]);
+  }, [auctionLots, onChangeAuctionLotList]);
 
   return (
     <div className="flex mb-3">

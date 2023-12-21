@@ -20,7 +20,7 @@ const WalletNftCard = ({
   const imageSrc = getImageUrl(assetUnit) ?? assetImageSrc;
 
   return (
-    <a href={`/announce-auction?assetUnit=${assetUnit}&assetName=${assetName}`}>
+    <a href={`/create-auction?assetUnit=${assetUnit}&assetName=${assetName}`}>
       <div className="flex justify-center items-center mb-3">
         {imageSrc && (
           <img

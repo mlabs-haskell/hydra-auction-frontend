@@ -13,7 +13,6 @@ type DropDownProps = {
   onChange?: (index: number) => void;
 };
 
-// TODO: Changing the nft should re-render the page (ie link to new assetUnit query params in url) - use onChange to do this
 export const DropDown = ({
   options,
   title,
@@ -24,17 +23,20 @@ export const DropDown = ({
   const [activeTitle, setTitle] = useState<string | null>(null);
   const [show, setShow] = useState(false);
 
+  useEffect(() => {
+    options?.length && setTitle(options[activeIndex].label);
+  }, [activeIndex, options]);
+
   const handleClick = () => {
     setShow(!show);
   };
+
   const handleItemClick = (index: number) => {
     setActiveIndex(index);
     setShow(false);
     onChange?.(index);
   };
-  useEffect(() => {
-    options?.length && setTitle(options[activeIndex].label);
-  }, [activeIndex]);
+
   return (
     <OutsideAlerter onOutsideClick={() => setShow(false)}>
       <div className="relative">
@@ -51,7 +53,7 @@ export const DropDown = ({
                 return (
                   <div
                     key={index}
-                    className=" p-2 cursor-pointer p-2 border-b overflow-hidden"
+                    className="cursor-pointer p-2 border-b overflow-hidden"
                     onClick={() => handleItemClick(index)}
                   >
                     {option.label}

@@ -31,7 +31,7 @@ export default function TopBar() {
           <li className="ml-3 pr-3 ">
             <Link
               className="hover:text-black text-slate-700"
-              to="/announce-auction-list"
+              to="/create-auction-list"
             >
               Create
             </Link>
@@ -39,7 +39,7 @@ export default function TopBar() {
           {/* <li className="ml-3 pr-3 ">
             <Link
               className="hover:text-black text-slate-700"
-              to="/announce-auction"
+              to="/create-auction"
             >
               Announce Auction Form
             </Link>

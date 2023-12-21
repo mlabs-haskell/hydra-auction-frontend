@@ -56,12 +56,12 @@ function App() {
               <Routes>
                 <Route path="/" element={<AuctionList />} />
                 <Route path="/auction-list" element={<AuctionList />} />
-                <Route path="/announce-auction" element={<CreateAuction />} />
+                <Route path="/create-auction" element={<CreateAuction />} />
                 <Route path="/enter-auction" element={<EnterAuctionPage />} />
                 <Route path="/place-bid" element={<PlaceBid />} />
                 <Route path="/auction" element={<AuctionDetail />} />
                 <Route
-                  path="/announce-auction-list"
+                  path="/create-auction-list"
                   element={<CreateAuctionList />}
                 />
                 {/* TODO: collection/wallet routes */}
