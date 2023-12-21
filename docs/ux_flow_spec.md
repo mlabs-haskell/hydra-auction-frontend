@@ -139,6 +139,12 @@ Note: the assumption for v1 of this specification is that transactions which req
 - Reclaim Deposit (Losers Only)
 
 # Pages
+![Alt text](image.png)
+
+Figma available to view [here](https://www.figma.com/file/E3pEaCHWDZG4mN21nHhXje/Hydra-UX-Design?type=design&node-id=0%3A1&mode=design&t=JQLt5enItpF7pOFF-1).
+
+Note: the delegate portal page shown here will not be included in v1 of the UI design.
+
 ## Browse
 Display:
 - Active Auctions
@@ -179,7 +185,7 @@ Display:
   - Time Left
 
 Allow Seller:
-  - View & Authorize Bidders (should this be a new page?)
+  - View & Authorize Bidders
 
 Allow Bidder:
   - Place Deposit
