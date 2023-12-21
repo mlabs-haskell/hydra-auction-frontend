@@ -1,3 +1,5 @@
+import { StringInput } from '../Inputs/StringInput';
+
 export default function Footer() {
   return (
     <footer className="bg-black w-full h-96 flex justify-between px-6 py-16">
@@ -21,11 +23,13 @@ export default function Footer() {
             </a>
           </div>
           <div className="flex ">
-            <input
-              className="mr-3"
-              type="string"
+            <StringInput
+              className="mr-3 w-96"
+              inputClassName="p-2"
               placeholder="Email Address"
-            ></input>
+              label=""
+              inputId="email"
+            ></StringInput>
             <button className="border border-white text-white px-5 text-callout font-semibold">
               Subscribe
             </button>

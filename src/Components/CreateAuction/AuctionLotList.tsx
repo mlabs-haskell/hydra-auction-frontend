@@ -23,12 +23,14 @@ export const AuctionLotList = ({
     index: number
   ) => {
     e.preventDefault();
-    setAuctionLots(auctionLots.filter((_, i) => i !== index));
+    setAuctionLots(auctionLots.filter((_, lotIndex) => lotIndex !== index));
   };
 
   const handleChangeAuctionLot = (index: number, auctionLot: ValueEntry) => {
     setAuctionLots(
-      auctionLots.map((lot, i) => (i === index ? auctionLot : lot))
+      auctionLots.map((lot, lotIndex) =>
+        lotIndex === index ? auctionLot : lot
+      )
     );
   };
 

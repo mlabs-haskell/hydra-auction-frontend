@@ -6,6 +6,7 @@ type StringInputProps = {
   placeholder?: string;
   onChange?: (inputId: string, value: string) => void;
   className?: string;
+  inputClassName?: string;
 };
 export const StringInput = ({
   label,
@@ -13,6 +14,7 @@ export const StringInput = ({
   onChange,
   placeholder,
   className,
+  inputClassName,
 }: StringInputProps) => {
   return (
     <div className={clsx(' border-b border-black', className)}>
@@ -22,7 +24,10 @@ export const StringInput = ({
       <input
         onChange={(e) => onChange && onChange(inputId, e.target.value)}
         id={inputId}
-        className="border-none px-1 m-0 focus-visible:ring-0 focus-visible:outline-none "
+        className={clsx(
+          'border-none px-1 m-0 focus-visible:ring-0 focus-visible:outline-none',
+          inputClassName
+        )}
         placeholder={placeholder ? placeholder : ''}
         type="text"
       />

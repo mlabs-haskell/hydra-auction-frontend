@@ -79,7 +79,7 @@ export default function AnnounceTabs({ assetToList }: CreateAuctionTabsProps) {
         {activeTab < ANNOUNCE_AUCTION_TABS.length - 1 && (
           <CustomButton onClick={handleNext} label="Next" className="w-full" />
         )}
-        <CustomButton label="Save" className="w-full bg-white text-black" />
+        {/* <CustomButton label="Save" className="w-full bg-white text-black" /> */}
       </div>
     </div>
   );

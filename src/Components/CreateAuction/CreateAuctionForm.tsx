@@ -131,7 +131,7 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
             onChange={handleAuctionInputChange}
             placeholder={auctionFormData.current.auctionTerms.biddingEnd}
           />
-          {/* TODO: Add validation on submit to make sure purchase deadline  is after bidding end */}
+          {/* TODO: Add validation on submit to make sure purchase deadline is after bidding end */}
           <DateTimeInput
             label="Purchase Deadline"
             inputId="purchaseDeadline"

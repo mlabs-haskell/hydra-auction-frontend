@@ -1,5 +1,5 @@
 import { useActiveAuctions } from '../../hooks/auctions';
-import AuctionCard from './AuctionCard';
+import AuctionCard from '../AuctionCard/AuctionCard';
 
 export default function AuctionList() {
   const { data: auctions } = useActiveAuctions();

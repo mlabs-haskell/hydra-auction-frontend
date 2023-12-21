@@ -27,7 +27,6 @@ module.exports = {
         zlib: require.resolve('browserify-zlib'),
         url: require.resolve('url'),
         buffer: require.resolve('buffer/'),
-        //        process: require.resolve('process/browser'),
         assert: require.resolve('assert/'),
         http2: require.resolve('http2/'), // Note: There may not be a direct browser equivalent for http2
         dgram: false, // dgram is not typically available in the browser
@@ -42,9 +41,7 @@ module.exports = {
       });
       webpackConfig.plugins.push(
         new webpack.ProvidePlugin({
-          //          process: 'process/browser',
-          process: 'process', // Changed from 'process/browser' to 'process'
-
+          process: 'process',
           Buffer: ['buffer', 'Buffer'],
         })
       );

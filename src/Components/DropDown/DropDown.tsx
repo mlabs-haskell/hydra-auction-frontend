@@ -10,13 +10,15 @@ type DropDownProps = {
   options?: DropDownItem[];
   defaultIndex?: number;
   title: string;
+  onChange?: (index: number) => void;
 };
 
-// TODO: Should changing the nft re render the page(ie link to new assetUnit query params in url)
+// TODO: Changing the nft should re-render the page (ie link to new assetUnit query params in url) - use onChange to do this
 export const DropDown = ({
   options,
   title,
   defaultIndex = 0,
+  onChange,
 }: DropDownProps) => {
   const [activeIndex, setActiveIndex] = useState(defaultIndex);
   const [activeTitle, setTitle] = useState<string | null>(null);
@@ -28,6 +30,7 @@ export const DropDown = ({
   const handleItemClick = (index: number) => {
     setActiveIndex(index);
     setShow(false);
+    onChange?.(index);
   };
   useEffect(() => {
     options?.length && setTitle(options[activeIndex].label);
@@ -37,7 +40,7 @@ export const DropDown = ({
       <div className="relative">
         <div
           onClick={handleClick}
-          className="text-dim cursor-pointer border-b-2 w-60 border-black p-2 mb-6"
+          className="text-dim cursor-pointer border-b-2 w-60 border-black p-2 mb-2"
         >
           {activeTitle || title}
         </div>
