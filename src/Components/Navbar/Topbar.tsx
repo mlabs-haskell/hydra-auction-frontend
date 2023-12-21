@@ -9,12 +9,12 @@ export default function TopBar() {
     <header className="bg-white shadow-sm">
       <nav className="flex">
         <ul className="flex ml-10 items-center">
-          <li className="mr-10">
+          <li className="mr-10 hidden md:block">
             <a href="/">
               <img src="/images/mlabs.png" alt="MLabs" className="w-20 h-20" />
             </a>
           </li>
-          <li className="flex items-center relative">
+          <li className=" items-center relative hidden md:flex">
             <MagnifyingGlassIcon className="text-black w-4 h-4 absolute left-0" />
             <StringInput label="" inputId="search" className="pl-6" />
           </li>
