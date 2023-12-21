@@ -39,7 +39,7 @@ export const AuctionLotList = ({
   return (
     <div className="flex mb-3">
       {auctionLots.map((_, index) => (
-        <div key={index} className="me-2">
+        <div key={index} className="mr-2">
           <div className="grid grid-cols-2 items-center p-1 mb-2">
             <div className="text-sm text-gray-700">Auction Lot {index + 1}</div>
             <button

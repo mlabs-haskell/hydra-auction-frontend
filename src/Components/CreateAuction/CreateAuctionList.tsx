@@ -1,6 +1,6 @@
 import WalletNfts from '../WalletNfts/WalletNfts';
 
-export default function AnnounceAuctionList() {
+export default function CreateAuctionList() {
   return (
     <div className="flex justify-center items-center">
       <div className="container">

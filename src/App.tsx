@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AuctionInfo } from 'public/dist/types';
 import AuctionList from './Components/AuctionList/AuctionList';
-import AnnounceAuction from './Components/AnnounceAuction/AnnounceAuction';
+import CreateAuction from './Components/CreateAuction/CreateAuction';
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { EnterAuctionPage } from './Components/EnterAuction/EnterAuction';
@@ -11,7 +11,7 @@ import ReactQueryProvider from './providers/ReactQueryProvider';
 import Layout from './Components/layout';
 import TopBar from './Components/Navbar/TopBar';
 import { MeshProvider } from '@meshsdk/react';
-import AnnounceAuctionList from './Components/AnnounceAuction/AnnounceAuctionList';
+import CreateAuctionList from './Components/CreateAuction/CreateAuctionList';
 import Footer from './Components/Footer/Footer';
 
 function App() {
@@ -56,13 +56,13 @@ function App() {
               <Routes>
                 <Route path="/" element={<AuctionList />} />
                 <Route path="/auction-list" element={<AuctionList />} />
-                <Route path="/announce-auction" element={<AnnounceAuction />} />
+                <Route path="/announce-auction" element={<CreateAuction />} />
                 <Route path="/enter-auction" element={<EnterAuctionPage />} />
                 <Route path="/place-bid" element={<PlaceBid />} />
                 <Route path="/auction" element={<AuctionDetail />} />
                 <Route
                   path="/announce-auction-list"
-                  element={<AnnounceAuctionList />}
+                  element={<CreateAuctionList />}
                 />
                 {/* TODO: collection/wallet routes */}
               </Routes>

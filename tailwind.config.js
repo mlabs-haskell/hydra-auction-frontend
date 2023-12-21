@@ -12,6 +12,9 @@ module.exports = {
         title1: ['1.75rem', '2.25rem'],
         'large-title': ['2.125rem', '2.625rem'],
       },
+      fontFamily: {
+        sans: ['Montserrat', 'Helvetica', 'Arial'],
+      },
       colors: {},
     },
   },

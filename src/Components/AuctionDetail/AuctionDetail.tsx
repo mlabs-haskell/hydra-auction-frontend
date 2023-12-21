@@ -26,7 +26,7 @@ export default function AuctionDetail() {
     <div className="flex items-center justify-center">
       <div className="container ">
         <div className="text-center items-center mb-6">
-          <h1 className="header me-2">Auction</h1>
+          <h1 className="header mr-2">Auction</h1>
           <div className="text-xs text-gray-500">{auctionId}</div>
         </div>
 
