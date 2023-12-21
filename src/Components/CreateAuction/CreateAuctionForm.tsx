@@ -45,13 +45,15 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
         additionalAuctionLotOrefs:
           MOCK_ANNOUNCE_AUCTION_PARAMS.additionalAuctionLotOrefs,
       };
-      console.log(params);
+      console.log({ params });
       // TODO: Replace window function with npm package, and use api function in react query
       if (customWindow?.announceAuction) {
         const announceAuctionResponse = await customWindow.announceAuction(
           walletApp,
           params
         );
+
+        // TODO: Get a passing announceAuctionResponse - look at the inputs for hydra-auction-offchain
         console.log({ announceAuctionResponse });
       }
     }

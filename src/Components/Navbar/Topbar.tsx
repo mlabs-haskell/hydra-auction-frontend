@@ -10,7 +10,7 @@ export default function TopBar() {
       <nav className="flex">
         <ul className="flex ml-10 items-center">
           <li className="mr-10">
-            <a href="http://mlabs.com/" target="_blank" rel="noreferrer">
+            <a href="/">
               <img src="/images/mlabs.png" alt="MLabs" className="w-20 h-20" />
             </a>
           </li>

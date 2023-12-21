@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { formatDate } from 'src/utils/date';
+
 type DateTimeInputProps = {
   label: string;
   inputId: string;
@@ -11,6 +14,7 @@ export const DateTimeInput = ({
   onChange,
   placeholder,
 }: DateTimeInputProps) => {
+  const [value, setValue] = useState<string>('');
   // If we want to set the date value on the input from epoch time we need this
   // const splitDate = new Date(Number(placeholder) ).toLocaleDateString().replaceAll('/', '-').split('-');
   // const formattedDate = `${splitDate[2]}-${Number(splitDate[0]) < 10 ? '0' + splitDate[0] : splitDate[0]}-${Number(splitDate[1]) < 10 ? '0' + splitDate[1] : splitDate[1]}`;
@@ -21,13 +25,25 @@ export const DateTimeInput = ({
       </div>
 
       <input
-        onChange={(e) =>
+        onChange={(e) => {
+          const formattedDate = formatDate(new Date(e.target.value));
           onChange &&
-          onChange(inputId, new Date(e.target.value).getTime().toString())
-        }
+            onChange(inputId, new Date(formattedDate).getTime().toString());
+          setValue(formattedDate);
+        }}
+        onBlur={(e) => {
+          console.log({ val: e.target.value });
+          if (e.target.value !== '') return;
+
+          const formattedDate = formatDate(new Date());
+          onChange &&
+            onChange(inputId, new Date(formattedDate).getTime().toString());
+          setValue(formattedDate);
+        }}
         id={inputId}
         className="border-none p-1 m-0 mb-1"
         type="datetime-local"
+        value={value}
       />
     </div>
   );
