@@ -24,7 +24,7 @@ export default function Footer() {
           </div>
           <div className="flex ">
             <StringInput
-              className="mr-3 w-96"
+              className="mr-3 w-48 md:w-96"
               inputClassName="p-2"
               placeholder="Email Address"
               label=""

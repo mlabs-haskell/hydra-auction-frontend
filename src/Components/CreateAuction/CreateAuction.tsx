@@ -13,9 +13,9 @@ export default function CreateAuction() {
   const assets = useAssets();
   const assetToList = assets?.find((asset) => asset.unit === assetUnit);
   return (
-    <div className="flex items-center">
+    <div className="flex items-center justify-center md:justify-start">
       <div className="flex flex-col lg:flex-row gap-28 items-start">
-        <div className="mt-12">
+        <div className="mt-12 self-center md:self-start">
           <CurrentListing name={assetName ?? ''} price={100} />
         </div>
         <div className="">
