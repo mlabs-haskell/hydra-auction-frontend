@@ -49,7 +49,7 @@ function PlaceBid() {
   return (
     <div className="p-6 flex items-center justify-center">
       <div className="w-[600px]">
-        <h1 className="header text-center">Place Bid</h1>
+        <h1 className="text-title1 text-center">Place Bid</h1>
         <PlaceBidForm />
       </div>
     </div>

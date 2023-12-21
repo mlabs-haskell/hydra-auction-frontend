@@ -117,7 +117,7 @@ export const EnterAuctionPage = () => {
   return (
     <div className="flex items-center justify-center">
       <div className="w-[600px]">
-        <h1 className="header text-center">Enter Auction</h1>
+        <h1 className="text-title1 text-center">Enter Auction</h1>
         <EnterAuctionForm />
       </div>
     </div>

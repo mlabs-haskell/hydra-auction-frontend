@@ -44,7 +44,10 @@ export default function WalletNfts() {
   return (
     <ul className="grid sm:grid-cols-2 md:grid-cols-4 gap-5">
       {assets?.map((asset, index) => (
-        <li key={index} className="p-2">
+        <li
+          key={index}
+          className=" border p-4 rounded-lg shadow-md hover:bg-slate-200"
+        >
           <WalletNftCard assetUnit={asset.unit} assetName={asset.assetName} />
         </li>
       ))}

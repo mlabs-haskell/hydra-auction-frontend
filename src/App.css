@@ -6,9 +6,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100&display=swap');
 
 @layer components {
-  .header {
-    font-size: 2rem;
-  }
   input {
     transition: background-color 0.3s ease-in-out;
     @apply p-[4px] pl-3 pr-3 w-full;

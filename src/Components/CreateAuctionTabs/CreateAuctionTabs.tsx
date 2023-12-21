@@ -12,11 +12,11 @@ type CreateAuctionTabsProps = {
 const ANNOUNCE_AUCTION_TABS = [
   {
     label: 'Select NFT',
-    accessor: 'select',
+    key: 'select',
   },
   {
     label: 'Auction Details',
-    accessor: 'details',
+    key: 'details',
   },
 ];
 
@@ -35,16 +35,11 @@ const CreateAuctionNav = ({
           <NavPiece
             key={index}
             label={tab.label}
-            accessor={tab.accessor}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            isActive={
-              ANNOUNCE_AUCTION_TABS[activeTab].accessor === tab.accessor
-            }
+            isActive={ANNOUNCE_AUCTION_TABS[activeTab].key === tab.key}
             onClick={() =>
               setActiveTab(
                 ANNOUNCE_AUCTION_TABS.findIndex(
-                  (auctionTab) => auctionTab.accessor === tab.accessor
+                  (auctionTab) => auctionTab.key === tab.key
                 )
               )
             }
@@ -72,12 +67,11 @@ export default function AnnounceTabs({ assetToList }: CreateAuctionTabsProps) {
   return (
     <div className="flex flex-col h-full">
       <CreateAuctionNav activeTab={activeTab} setActiveTab={setActiveTab} />
+      <TabSwitch tab={ANNOUNCE_AUCTION_TABS[activeTab].key} />
 
-      <TabSwitch tab={ANNOUNCE_AUCTION_TABS[activeTab].accessor} />
-
-      <div className="flex mt-6">
-        {activeTab < ANNOUNCE_AUCTION_TABS.length - 1 && (
-          <CustomButton onClick={handleNext} label="Next" className="w-full" />
+      <div className="flex mt-12">
+        {activeTab !== ANNOUNCE_AUCTION_TABS.length - 1 && (
+          <CustomButton onClick={handleNext} label="Next" className="px-32" />
         )}
         {/* <CustomButton label="Save" className="w-full bg-white text-black" /> */}
       </div>

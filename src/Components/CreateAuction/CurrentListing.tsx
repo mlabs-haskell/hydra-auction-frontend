@@ -4,6 +4,9 @@ type CurrentListingProps = {
   biddingEnd?: string;
 };
 
+const IMAGE_WIDTH = 246;
+const CURRENCY_SYMBOL = 'ADA';
+
 const CurrentListing = ({ name, price, biddingEnd }: CurrentListingProps) => {
   return (
     <div className="w-[342px]">
@@ -11,13 +14,15 @@ const CurrentListing = ({ name, price, biddingEnd }: CurrentListingProps) => {
         Current Listing:
       </div>
       <img
-        className="blur-sm"
-        width={246}
+        width={IMAGE_WIDTH}
+        className="blur-sm w-full"
         alt=""
         src="/images/sample_nft.png"
       />
       <div className="font-bold">{name}</div>
-      <div className="text-end font-bold">{price} ADA</div>
+      <div className="text-end font-bold">
+        {price} {CURRENCY_SYMBOL}
+      </div>
       {/* <div className="text-end text-dim">${priceUsd}</div>
         <div className="flex justify-center items-center">
           <TimeRemaining endDate={Number(biddingEnd) || 0} />

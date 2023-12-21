@@ -53,7 +53,7 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
           params
         );
 
-        // TODO: Get a passing announceAuctionResponse - look at the inputs for hydra-auction-offchain
+        // TODO: Get a passing announceAuctionResponse - look at the inputs for hydra-auction-offchain's announceAuction
         console.log({ announceAuctionResponse });
       }
     }

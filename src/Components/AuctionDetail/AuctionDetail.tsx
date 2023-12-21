@@ -24,45 +24,38 @@ export default function AuctionDetail() {
   if (isError) return <div>Error...</div>;
   return (
     <div className="flex items-center justify-center">
-      <div className="container ">
-        <div className="text-center items-center mb-6">
-          <h1 className="header mr-2">Auction</h1>
-          <div className="text-xs text-gray-500">{auctionId}</div>
-        </div>
-
-        <div className="flex justify-center items-center mb-6">
-          <img
-            className="blur-sm"
-            width={500}
-            alt=""
-            src={MOCK_NFT_IMAGE_URL}
-          />
-        </div>
-
-        <div className="mb-6">
-          <div className="text-lg">Description</div>
-          <p className="text-gray-600 text-sm mb-4">{MOCK_NFT_DESCRIPTION}</p>
-          <div className="flex  justify-between">
-            <div>
-              <div className="text-lg">Bidding Ends</div>
-              <div className="text-sm text-gray-500">
-                <TimeRemaining
-                  endDate={Number(auctionData?.auctionTerms.biddingEnd) || 0}
-                />
-              </div>
-            </div>
-            {/* TODO: Current Bid */}
-          </div>
-        </div>
-        {/* If the user is a bidder, show the place bid form, otherwise show the enter auction form */}
-        {userDetails.data?.bidder.auctions?.some(
-          (obj) => obj.auctionId === auctionData?.auctionId
-        ) ? (
-          <PlaceBidCompact />
-        ) : (
-          auctionData && <EnterAuction auction={auctionData} />
-        )}
+      <div className="text-center items-center mb-6">
+        <h1 className="text-title1 mr-2">Auction</h1>
+        <div className="text-xs text-gray-500">{auctionId}</div>
       </div>
+
+      <div className="flex justify-center items-center mb-6">
+        <img className="blur-sm" width={500} alt="" src={MOCK_NFT_IMAGE_URL} />
+      </div>
+
+      <div className="mb-6">
+        <div className="text-lg">Description</div>
+        <p className="text-gray-600 text-sm mb-4">{MOCK_NFT_DESCRIPTION}</p>
+        <div className="flex  justify-between">
+          <div>
+            <div className="text-lg">Bidding Ends</div>
+            <div className="text-sm text-gray-500">
+              <TimeRemaining
+                endDate={Number(auctionData?.auctionTerms.biddingEnd) || 0}
+              />
+            </div>
+          </div>
+          {/* TODO: Current Bid */}
+        </div>
+      </div>
+      {/* If the user is a bidder, show the place bid form, otherwise show the enter auction form */}
+      {userDetails.data?.bidder.auctions?.some(
+        (obj) => obj.auctionId === auctionData?.auctionId
+      ) ? (
+        <PlaceBidCompact />
+      ) : (
+        auctionData && <EnterAuction auction={auctionData} />
+      )}
     </div>
   );
 }

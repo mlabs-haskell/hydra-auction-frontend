@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { OutsideAlerter } from '../OutsideAlerter/OutsideAlerter';
+import clsx from 'clsx';
 
 type DropDownItem = {
   label: string;
@@ -11,6 +12,7 @@ type DropDownProps = {
   defaultIndex?: number;
   title: string;
   onChange?: (index: number) => void;
+  className?: string;
 };
 
 export const DropDown = ({
@@ -18,6 +20,7 @@ export const DropDown = ({
   title,
   defaultIndex = 0,
   onChange,
+  className,
 }: DropDownProps) => {
   const [activeIndex, setActiveIndex] = useState(defaultIndex);
   const [activeTitle, setTitle] = useState<string | null>(null);
@@ -42,18 +45,21 @@ export const DropDown = ({
       <div className="relative">
         <div
           onClick={handleClick}
-          className="text-dim cursor-pointer border-b-2 w-60 border-black p-2 mb-2"
+          className={clsx(
+            'text-dim cursor-pointer border-b-2 min-w-60 border-black p-2 mb-2',
+            className
+          )}
         >
           {activeTitle || title}
         </div>
         {show && (
-          <div className="absolute z-10 bg-white w-full border border-gray-700">
+          <div className="absolute z-10 bg-white w-fit border border-gray-700">
             {options?.length &&
               options.map((option, index) => {
                 return (
                   <div
                     key={index}
-                    className="cursor-pointer p-2 border-b overflow-hidden"
+                    className="cursor-pointer px-4 py-2 border-b overflow-hidden  hover:bg-slate-100"
                     onClick={() => handleItemClick(index)}
                   >
                     {option.label}

@@ -21,28 +21,23 @@ const SelectTab = () => {
   };
 
   return (
-    <div className="flex flex-col gap-8 pt-6">
-      <div className="flex ">
-        <div className="font-semibold">List most recently minted</div>
-      </div>
-      <div className="text-dim ">Or choose</div>
+    <div className="flex flex-col pt-6">
+      <div className="font-semibold">List most recently minted</div>
+      <div className="text-dim mt-6">Or choose</div>
 
-      <div className="">
-        <div className="font-semibold">NFT</div>
-      </div>
-      <div>
-        <DropDown
-          options={assets?.map((asset) => {
-            return {
-              label: asset.assetName || '',
-              accessor: asset.unit || '',
-            };
-          })}
-          title={'Select NFT'}
-          defaultIndex={assetIndex || 0}
-          onChange={onChange}
-        />
-      </div>
+      <div className="font-semibold mt-8">NFT</div>
+      <DropDown
+        options={assets?.map((asset) => {
+          return {
+            label: asset.assetName || '',
+            accessor: asset.unit || '',
+          };
+        })}
+        title={'Select NFT'}
+        defaultIndex={assetIndex || 0}
+        onChange={onChange}
+        className="mt-4"
+      />
     </div>
   );
 };
