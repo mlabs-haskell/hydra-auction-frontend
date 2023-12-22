@@ -1,4 +1,4 @@
-import { AuctionTerms } from 'public/dist/types';
+import { AuctionTerms } from 'hydra-auction-offchain';
 
 // Define the structure of the auction object
 type AuctionCardProps = {

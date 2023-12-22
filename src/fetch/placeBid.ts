@@ -4,7 +4,7 @@ import {
   ContractOutput,
   CurrencySymbol,
   TransactionHash,
-} from 'public/dist/types';
+} from 'hydra-auction-offchain';
 
 const MOCK_PLACE_BID_RESPONSE = '0x0000';
 

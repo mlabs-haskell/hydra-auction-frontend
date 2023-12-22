@@ -1,4 +1,4 @@
-import { WalletApp } from 'public/dist/types';
+import { WalletApp } from 'hydra-auction-offchain';
 
 export type VerificationKey = string;
 

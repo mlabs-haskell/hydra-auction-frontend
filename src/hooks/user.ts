@@ -4,7 +4,7 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
-import { AuctionInfo } from 'public/dist/types';
+import { AuctionInfo } from 'hydra-auction-offchain';
 
 enum UserType {
   SELLER = 'SELLER',

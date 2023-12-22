@@ -1,4 +1,8 @@
-import { ByteArray, ContractOutput, CurrencySymbol } from 'public/dist/types';
+import {
+  ByteArray,
+  ContractOutput,
+  CurrencySymbol,
+} from 'hydra-auction-offchain';
 
 export type VerificationKey = string;
 

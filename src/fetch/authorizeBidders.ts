@@ -2,7 +2,7 @@ import {
   ContractOutput,
   CurrencySymbol,
   TransactionHash,
-} from 'public/dist/types';
+} from 'hydra-auction-offchain';
 
 export type VerificationKey = string;
 

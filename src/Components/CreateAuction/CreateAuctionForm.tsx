@@ -6,20 +6,9 @@ import { auctionFormSchema } from 'src/schemas/auctionFormSchema';
 import { getDelegates } from 'src/fetch/getDelegates';
 import {
   AnnounceAuctionContractParams,
-  AuctionInfo,
-  ContractOutput,
-  TransactionHash,
-  WalletApp,
-} from 'public/dist';
+  announceAuction,
+} from 'hydra-auction-offchain';
 import { MOCK_ANNOUNCE_AUCTION_PARAMS } from 'src/mocks/announceAuction.mock';
-
-interface CustomWindow extends Window {
-  queryAuctions?: () => Promise<AuctionInfo[] | undefined>;
-  announceAuction?: (
-    walletApp: WalletApp,
-    params: AnnounceAuctionContractParams
-  ) => Promise<ContractOutput<TransactionHash>>;
-}
 
 type CreateAuctionFormProps = {
   className?: string;
@@ -37,8 +26,6 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
     } else {
       console.log('success', auctionForm.data);
 
-      const customWindow = window as CustomWindow;
-
       const walletApp = 'Nami';
       const params = {
         auctionTerms: auctionForm.data.auctionTerms,
@@ -46,9 +33,8 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
           MOCK_ANNOUNCE_AUCTION_PARAMS.additionalAuctionLotOrefs,
       };
       console.log({ params });
-      // TODO: Replace window function with npm package, and use api function in react query
-      if (customWindow?.announceAuction) {
-        const announceAuctionResponse = await customWindow.announceAuction(
+      if (announceAuction) {
+        const announceAuctionResponse = await announceAuction(
           walletApp,
           params
         );

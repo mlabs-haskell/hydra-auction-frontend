@@ -7,7 +7,7 @@ import {
 import { StringInput } from '../Inputs/StringInput';
 import { NumberInput } from '../Inputs/NumberInput';
 import { useAddBidderAuction, useUser } from 'src/hooks/user';
-import { AuctionInfo } from 'public/dist/types';
+import { AuctionInfo } from 'hydra-auction-offchain';
 import { MOCK_QUERY_AUCTIONS_RESPONSE } from 'src/mocks/queryAuctions.mock';
 
 // For now we are passing the whole auction, but we will eventually only need the fields required to enter the auction

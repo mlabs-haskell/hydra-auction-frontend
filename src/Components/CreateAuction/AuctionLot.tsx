@@ -1,4 +1,4 @@
-import { ValueEntry } from 'public/dist/types';
+import { ValueEntry } from 'hydra-auction-offchain';
 import { useEffect, useState } from 'react';
 import { StringInput } from '../Inputs/StringInput';
 import { NumberInput } from '../Inputs/NumberInput';

@@ -1,4 +1,4 @@
-import { ValueEntry } from 'public/dist/types';
+import { ValueEntry } from 'hydra-auction-offchain';
 import { AuctionLot, MOCK_AUCTION_LOT } from './AuctionLot';
 import { useEffect, useState } from 'react';
 

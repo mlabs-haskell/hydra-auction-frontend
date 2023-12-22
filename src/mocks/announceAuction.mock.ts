@@ -1,4 +1,4 @@
-import { AnnounceAuctionContractParams } from 'public/dist/types';
+import { AnnounceAuctionContractParams } from 'hydra-auction-offchain';
 
 export const MOCK_ANNOUNCE_AUCTION_PARAMS: AnnounceAuctionContractParams = {
   auctionTerms: {
