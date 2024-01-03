@@ -6,14 +6,16 @@ export const TimeRemaining = ({ endDate }: { endDate: number }) => {
   const [timeRemaining, setTimeRemaining] = useState(calculateTimeRemaining());
 
   function calculateTimeRemaining() {
-    const currentTime = Math.floor(Date.now() / 1000);
+    const currentTime = Date.now();
     const timeDiff = endDate - currentTime;
 
     if (timeDiff < 0) return { days: null };
-    const days = Math.floor(timeDiff / (60 * 60 * 24));
-    const hours = Math.floor((timeDiff % (60 * 60 * 24)) / (60 * 60));
-    const minutes = Math.floor((timeDiff % (60 * 60)) / 60);
-    const seconds = timeDiff % 60;
+
+    const totalSeconds = Math.floor(timeDiff / 1000);
+    const days = Math.floor(totalSeconds / (60 * 60 * 24));
+    const hours = Math.floor((totalSeconds % (60 * 60 * 24)) / (60 * 60));
+    const minutes = Math.floor((totalSeconds % (60 * 60)) / 60);
+    const seconds = totalSeconds % 60;
 
     return { days, hours, minutes, seconds };
   }

@@ -129,3 +129,6 @@ AS BIDDER:
 
 # 12/14
 Is the asset unit the same as the aucitonCs?
+
+# 1/2/24
+All auctions from queryAuctions have the same auctionId. Why is this?

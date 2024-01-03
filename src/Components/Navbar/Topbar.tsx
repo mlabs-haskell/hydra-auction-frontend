@@ -9,9 +9,10 @@ export default function TopBar() {
     <header className="bg-white shadow-sm">
       <nav className="flex">
         <ul className="flex ml-10 items-center">
-          <li className="mr-10 hidden md:block">
+          <li className="mr-10 hidden md:block text-3xl">
             <a href="/">
-              <img src="/images/mlabs.png" alt="MLabs" className="w-20 h-20" />
+              {/* <img src="/images/mlabs.png" alt="MLabs" className="w-20 h-20" /> */}
+              Hydra Auction
             </a>
           </li>
           <li className=" items-center relative hidden md:flex">

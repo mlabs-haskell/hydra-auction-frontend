@@ -8,14 +8,31 @@ import {
   AnnounceAuctionContractParams,
   announceAuction,
 } from 'hydra-auction-offchain';
+
 import { MOCK_ANNOUNCE_AUCTION_PARAMS } from 'src/mocks/announceAuction.mock';
+import { getUrlParams } from 'src/utils/getUrlParams';
+import { useExtendedAssets } from 'src/hooks/assets';
+import { utf8ToHex } from 'src/utils/hex';
 
 type CreateAuctionFormProps = {
   className?: string;
 };
 const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
   const delegateGroup = getDelegates();
-
+  const urlParams = getUrlParams();
+  const assetUnit = urlParams.get('assetUnit');
+  const { assets, isError } = useExtendedAssets();
+  const auctionFormData = useRef<AnnounceAuctionContractParams>(
+    MOCK_ANNOUNCE_AUCTION_PARAMS
+  );
+  if (isError) {
+    return null;
+  }
+  const assetToList = assets?.find((asset) => asset.unit === assetUnit);
+  if (!assetToList) {
+    console.log('No asset found for this asset unit');
+    return null;
+  }
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -24,30 +41,39 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
     if (!auctionForm.success) {
       console.log(auctionForm.error);
     } else {
-      console.log('success', auctionForm.data);
-
       const walletApp = 'Nami';
-      const params = {
-        auctionTerms: auctionForm.data.auctionTerms,
-        additionalAuctionLotOrefs:
-          MOCK_ANNOUNCE_AUCTION_PARAMS.additionalAuctionLotOrefs,
+
+      //      const assetNameHex = assetName.toHex();
+
+      // const auctionLot = {
+      //   cs: policyId,
+      //   tn: assetNameHex, //convert to hex
+      //   quantity: '1',
+      // };
+      const auctionLot = {
+        cs: assetToList.policyId,
+        tn: utf8ToHex(assetToList.assetName),
+        quantity: assetToList.quantity,
       };
-      console.log({ params });
+
+      const params = {
+        auctionTerms: {
+          ...auctionForm.data.auctionTerms,
+          auctionLot: [auctionLot],
+        },
+        additionalAuctionLotOrefs:
+          MOCK_ANNOUNCE_AUCTION_PARAMS.additionalAuctionLotOrefs, // TODO: why do we pass this in instead of a form value (or a [] if no additional NFTs are included)
+      };
+      console.log({ announceAuctionParams: params });
       if (announceAuction) {
         const announceAuctionResponse = await announceAuction(
           walletApp,
           params
         );
-
-        // TODO: Get a passing announceAuctionResponse - look at the inputs for hydra-auction-offchain's announceAuction
         console.log({ announceAuctionResponse });
       }
     }
   };
-
-  const auctionFormData = useRef<AnnounceAuctionContractParams>(
-    MOCK_ANNOUNCE_AUCTION_PARAMS
-  );
 
   const handleAuctionInputChange = (inputId: string, value: any) => {
     auctionFormData.current = {

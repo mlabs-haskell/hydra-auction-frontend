@@ -16,7 +16,7 @@ export const PlaceBidForm = () => {
       <div className="flex items-center justify-center">
         <div className="border-b border-gray-400 w-32"></div>
       </div>
-      <form className="block" onSubmit={handleSubmit}>
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <StringInput
           label="Auction Currency Symbol"
           inputId="auctionCs"

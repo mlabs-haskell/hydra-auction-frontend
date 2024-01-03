@@ -5,6 +5,7 @@ import { AssetExtended } from '@meshsdk/core';
 
 const SelectTab = () => {
   const { assets, isError } = useExtendedAssets();
+
   if (isError) {
     return null;
   }
@@ -15,9 +16,9 @@ const SelectTab = () => {
   );
 
   const onChange = (index: number) => {
-    // redirect to the current page, but pass the new assetUnit, and assetName
+    // redirect to the current page, but pass the new assetUnit
     const asset: AssetExtended | undefined = assets?.[index];
-    window.location.href = `/create-auction?assetUnit=${asset?.unit}&assetName=${asset?.assetName}`;
+    window.location.href = `/create-auction?assetUnit=${asset?.unit}`;
   };
 
   return (

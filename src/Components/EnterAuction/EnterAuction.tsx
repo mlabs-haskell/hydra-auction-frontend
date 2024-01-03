@@ -8,7 +8,6 @@ import { StringInput } from '../Inputs/StringInput';
 import { NumberInput } from '../Inputs/NumberInput';
 import { useAddBidderAuction, useUser } from 'src/hooks/user';
 import { AuctionInfo } from 'hydra-auction-offchain';
-import { MOCK_QUERY_AUCTIONS_RESPONSE } from 'src/mocks/queryAuctions.mock';
 
 // For now we are passing the whole auction, but we will eventually only need the fields required to enter the auction
 type EnterAuctionFormProps = {
@@ -17,7 +16,6 @@ type EnterAuctionFormProps = {
 
 export const EnterAuctionForm = ({ auction }: EnterAuctionFormProps) => {
   // If we are not coming from the auction detail page, we will need an auction to enter
-  if (auction === undefined) auction = MOCK_QUERY_AUCTIONS_RESPONSE[0];
   // To add the auction to the user's list of auctions so we can determine if they can alread bid on it
   const addBidderAuction = useAddBidderAuction();
   // We need to get the bidderVk, other details from the user in order to enter the auction
@@ -64,7 +62,7 @@ export const EnterAuctionForm = ({ auction }: EnterAuctionFormProps) => {
       <div className="flex items-center justify-center">
         <div className="border-b border-gray-400 w-32"></div>
       </div>
-      <form className="block" onSubmit={handleSubmit}>
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <StringInput
           label="Wallet App"
           inputId="walletApp"

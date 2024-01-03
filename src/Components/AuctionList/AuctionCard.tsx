@@ -1,4 +1,5 @@
 import { AuctionTerms } from 'hydra-auction-offchain';
+import AuctionStateRemaining from '../Time/AuctionStateRemaining';
 
 // Define the structure of the auction object
 type AuctionCardProps = {
@@ -41,11 +42,25 @@ function AuctionCard({
   //     );
   //   });
   // };
-
   return (
     <div className="border p-4 rounded-lg shadow-md hover:bg-slate-200">
       <a href={`/auction?auctionId=${auctionId}`}>
-        <div className="overflow-hidden">{auctionId}</div>
+        <div className="overflow-hidden">Auction ID: {auctionId}</div>
+
+        {/* <div className="overflow-hidden">
+          Purchase Deadline: {purchaseDeadline}
+        </div>
+        TODO: Show whichever date label is next
+        <div className="overflow-hidden">Auction Start: {purchaseDeadline}</div>
+        <div className="overflow-hidden">Auction End: {purchaseDeadline}</div>
+        <div className="overflow-hidden">Starting Bid: {purchaseDeadline}</div>
+        <div className="overflow-hidden">
+          Minimum Deposit Amount: {minDepositAmount}
+        </div> */}
+        <div className="overflow-hidden">
+          Minimum Deposit: {auctionTerms.minDepositAmount}
+        </div>
+        <AuctionStateRemaining {...auctionTerms} />
       </a>
     </div>
   );
