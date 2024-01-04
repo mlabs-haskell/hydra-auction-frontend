@@ -1,8 +1,13 @@
 import { useActiveAuctions } from '../../hooks/auctions';
 import AuctionCard from './AuctionCard';
+import { useWallet } from '@meshsdk/react';
+import { WalletApp } from 'hydra-auction-offchain';
 
 export default function AuctionList() {
-  const { data: auctions } = useActiveAuctions();
+  const { name: walletName } = useWallet();
+  const walletApp: WalletApp = walletName as WalletApp;
+  const { data: auctions } = useActiveAuctions(walletApp || null);
+
   return (
     <>
       <div className="flex flex-col justify-center items-center">

@@ -3,8 +3,10 @@ import { getUrlParams } from 'src/utils/getUrlParams';
 import { useUser } from 'src/hooks/user';
 import PlaceBidCompact from '../PlaceBid/PlaceBidCompact';
 import EnterAuction from '../EnterAuction/EnterAuction';
-import { MOCK_NFT_IMAGE_URL } from 'src/mocks/images.mock';
 import AuctionStateRemaining from '../Time/AuctionStateRemaining';
+import IpfsImage from '../IpfsImage/IpfsImage';
+import { useWallet } from '@meshsdk/react';
+import { WalletApp } from 'hydra-auction-offchain';
 
 const MOCK_NFT_DESCRIPTION = 'Mock NFT Description 🐶';
 export default function AuctionDetail() {
@@ -14,18 +16,27 @@ export default function AuctionDetail() {
   const urlParams = getUrlParams();
   const auctionId = urlParams.get('auctionId');
   const userDetails = useUser();
+  const { name: walletName } = useWallet();
+  const walletApp: WalletApp = walletName as WalletApp;
 
-  const { data, isLoading, isError } = useActiveAuctions();
+  const {
+    data: auctions,
+    isLoading,
+    isError,
+  } = useActiveAuctions(walletApp || null);
 
-  console.log({ data });
+  console.log({ auctions });
+
   // With auctionId we find the auction details from the queryAuctions cache
-  const auctionData = data?.find((auction) => auction.auctionId === auctionId);
-
+  const auctionData = auctions?.find(
+    (auction) => auction.auctionId === auctionId
+  );
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error...</div>;
 
+  const assetUnit = `${auctionData?.auctionTerms?.auctionLot[0].cs}${auctionData?.auctionTerms?.auctionLot[0].tn}`;
+
   return (
-    // TODO: Show full auctionTerms -
     <div className="flex items-center justify-center">
       <div className="container ">
         <div className="text-center items-center mb-6">
@@ -34,12 +45,7 @@ export default function AuctionDetail() {
         </div>
 
         <div className="flex justify-center items-center mb-6">
-          <img
-            className="blur-sm"
-            width={500}
-            alt={MOCK_NFT_DESCRIPTION}
-            src={MOCK_NFT_IMAGE_URL}
-          />
+          <IpfsImage className="blur-sm" assetUnit={assetUnit} />
         </div>
 
         <div className="mb-6">

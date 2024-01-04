@@ -12,25 +12,23 @@ export const useExtendedAssets = (): UseExtendedAssetsResponse => {
   const [isError, setIsError] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [assets, setAssets] = useState<AssetExtended[]>([]);
-  const { name } = useWallet();
+  const { name: walletName } = useWallet();
 
   useEffect(() => {
     const fetchAssets = async () => {
       try {
-        if (name) {
-          const wallet = await BrowserWallet.enable(name);
-          const fetchedAssets = await wallet.getAssets();
-          setIsError(false);
-          setIsLoading(false);
-          setAssets(fetchedAssets);
-        }
+        const wallet = await BrowserWallet.enable(walletName);
+        const fetchedAssets = await wallet.getAssets();
+        setIsError(false);
+        setIsLoading(false);
+        setAssets(fetchedAssets);
       } catch (error) {
         console.error('Error fetching assets:', error);
         setIsError(true);
       }
     };
-    fetchAssets();
-  }, [name]);
+    walletName && fetchAssets();
+  }, [walletName]);
 
   return {
     isLoading: isLoading,

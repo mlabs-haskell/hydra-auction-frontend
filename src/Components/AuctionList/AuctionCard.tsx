@@ -1,6 +1,6 @@
 import { AuctionTerms } from 'hydra-auction-offchain';
 import AuctionStateRemaining from '../Time/AuctionStateRemaining';
-import { useIpfsImageSrc } from 'src/hooks/ipfsImageSrc';
+import IpfsImage from '../IpfsImage/IpfsImage';
 
 type AuctionCardProps = {
   auctionEscrowAddr: string;
@@ -22,15 +22,13 @@ function AuctionCard({
   // For now, since we are just listing singular assets, we use the auctionLot[0] object
   const tn = auctionTerms.auctionLot[0].tn;
   const cs = auctionTerms.auctionLot[0].cs;
-
-  const { ipfsImageSrc, isLoading } = useIpfsImageSrc(`${cs}${tn}`);
-  if (isLoading) return <div>Loading ...</div>;
+  const assetUnit = `${cs}${tn}`;
 
   return (
     <div className="border p-4 rounded-lg shadow-md hover:bg-slate-200">
       <a href={`/auction?auctionId=${auctionId}`}>
         <div className="flex justify-center items-center mb-3">
-          {ipfsImageSrc && <img className="" alt={'NFT'} src={ipfsImageSrc} />}
+          <IpfsImage assetUnit={assetUnit} />
         </div>
         <div className="overflow-hidden">Auction ID: {auctionId}</div>
 

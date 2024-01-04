@@ -145,3 +145,10 @@ QUESTIONS:
 If this hasn't already been covered, are we expecting multiple assets for the auction lot. Should we be structuring our code to map over the auctionLot?
 
 TODO: Add ipfs image to AuctionDetail and AnnounceAuction - use an IPFS image component with hook inside
+
+# 1/4/24
+Replaced mock image with ipfs image for auction detail, and create auction pages. 
+
+Added an ImageWrapper component, and IpfsImageComponent which uses the ipfsImageSrc hook so it can be reused without needing the hook in multiple components. 
+
+Turned queryAuctions into a reactQuery hook, so the announceAuction mutation can invalidate the queryAuctions query, and update the list with the new auction.

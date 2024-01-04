@@ -24,7 +24,7 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
   const auctionFormData = useRef<AnnounceAuctionContractParams>(
     MOCK_ANNOUNCE_AUCTION_PARAMS
   );
-  const { name: walletName, connected } = useWallet();
+  const { name: walletName } = useWallet();
   const announceAuction = useAnnounceAuction(walletName);
   if (isError) {
     return null;
