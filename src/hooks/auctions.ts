@@ -4,6 +4,7 @@ import {
   queryAuctions,
   type WalletApp,
 } from 'hydra-auction-offchain';
+import { useWallet } from '@meshsdk/react';
 
 export type HookResponse = {
   data: AuctionInfo[] | undefined;
@@ -11,19 +12,20 @@ export type HookResponse = {
   isLoading: boolean;
 };
 
-const WALLET_APP = 'Nami';
-
+export const QUERY_AUCTIONS_QUERY_KEY = 'query-auctions';
+// Make react query hook
 export const useActiveAuctions = (): HookResponse => {
   const [data, setData] = useState<AuctionInfo[] | undefined>(undefined);
   const [error, setError] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
+  const { name: walletName } = useWallet();
 
   useEffect(() => {
     const fetchAuctions = async () => {
       setLoading(true);
 
       try {
-        const walletApp: WalletApp = WALLET_APP;
+        const walletApp: WalletApp = walletName as WalletApp;
         const auctions = await queryAuctions(walletApp);
 
         if (auctions) {
@@ -38,9 +40,8 @@ export const useActiveAuctions = (): HookResponse => {
         setLoading(false);
       }
     };
-
-    fetchAuctions();
-  }, []);
+    if (walletName) fetchAuctions();
+  }, [walletName]);
 
   return { data, isError: error, isLoading: loading };
 };

@@ -3,7 +3,6 @@ import AuctionCard from './AuctionCard';
 
 export default function AuctionList() {
   const { data: auctions } = useActiveAuctions();
-
   return (
     <>
       <div className="flex flex-col justify-center items-center">

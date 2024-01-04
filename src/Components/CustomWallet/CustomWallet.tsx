@@ -1,5 +1,4 @@
-import { CardanoWallet, useWallet, WalletContext } from '@meshsdk/react';
-import { useWalletStore } from '@meshsdk/react/dist/contexts/WalletContext';
+import { CardanoWallet, useWallet } from '@meshsdk/react';
 import { useEffect } from 'react';
 
 type CustomWalletProps = {
@@ -9,15 +8,7 @@ type CustomWalletProps = {
 export default function CustomWallet(
   { isDark }: CustomWalletProps = { isDark: false }
 ) {
-  const { connect, disconnect, connecting, connected, wallet } = useWallet();
-  // TODO: this needs a shim or some way to import the store
-  // need to use the wallet store, not useWallet because we need the name of the wallet and useWallet doesnt provide that
-  // const {
-  //   connectWallet,
-  //   connectedWalletName,
-  //   connectingWallet,
-  //   hasConnectedWallet,
-  // } = useWalletStore();
+  const { connect, name: walletName, connected } = useWallet();
 
   useEffect(() => {
     const lastConnectedWallet = localStorage.getItem('lastConnectedWallet');
@@ -27,7 +18,6 @@ export default function CustomWallet(
       } catch (err) {
         console.log(err);
       }
-      //   connect(JSON.parse(lastConnectedWallet).name);
     }
   }, []);
 
@@ -35,8 +25,7 @@ export default function CustomWallet(
     localStorage.setItem(
       'lastConnectedWallet',
       JSON.stringify({
-        // name: connectedWalletName,
-        name: 'Nami',
+        name: walletName,
         timestamp: Date.now(),
       })
     );

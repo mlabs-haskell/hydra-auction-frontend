@@ -4,15 +4,14 @@ import { DateTimeInput } from '../Inputs/DateInput';
 import { DropDown } from '../DropDown/DropDown';
 import { auctionFormSchema } from 'src/schemas/auctionFormSchema';
 import { getDelegates } from 'src/fetch/getDelegates';
-import {
-  AnnounceAuctionContractParams,
-  announceAuction,
-} from 'hydra-auction-offchain';
+import { AnnounceAuctionContractParams } from 'hydra-auction-offchain';
 
 import { MOCK_ANNOUNCE_AUCTION_PARAMS } from 'src/mocks/announceAuction.mock';
 import { getUrlParams } from 'src/utils/getUrlParams';
 import { useExtendedAssets } from 'src/hooks/assets';
 import { utf8ToHex } from 'src/utils/hex';
+import { useAnnounceAuction } from 'src/hooks/announceAuction';
+import { useWallet } from '@meshsdk/react';
 
 type CreateAuctionFormProps = {
   className?: string;
@@ -25,6 +24,8 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
   const auctionFormData = useRef<AnnounceAuctionContractParams>(
     MOCK_ANNOUNCE_AUCTION_PARAMS
   );
+  const { name: walletName, connected } = useWallet();
+  const announceAuction = useAnnounceAuction(walletName);
   if (isError) {
     return null;
   }
@@ -36,20 +37,51 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const auctionForm = auctionFormSchema.safeParse(auctionFormData.current);
+    const auctionForm = auctionFormSchema
+      .refine(
+        (data) => data.auctionTerms.biddingEnd > data.auctionTerms.biddingStart,
+        { message: 'Bidding end must be after bidding start' }
+      )
+      .refine(
+        (data) =>
+          data.auctionTerms.purchaseDeadline > data.auctionTerms.biddingEnd,
+        { message: 'Purchase deadline must be after bidding end' }
+      )
+      .refine(
+        (data) =>
+          data.auctionTerms.cleanup > data.auctionTerms.purchaseDeadline,
+        { message: 'Cleanup must be after purchase deadline' }
+      )
+      .refine((data) => Number(data.auctionTerms.minBidIncrement) > 0, {
+        message: 'New bids must be larger than the standing bid',
+      })
+      .refine(
+        (data) => Number(data.auctionTerms.auctionFeePerDelegate) > 2000000,
+        {
+          message:
+            'The auction fee for each delegate must contain the min 2 ADA for the utxos that will be sent to the delegates during fee distribution',
+        }
+      )
+      // totalAuctionFees :: AuctionTerms -> Integer
+      // totalAuctionFees AuctionTerms {..} =
+      // at'AuctionFeePerDelegate * length at'Delegates
+      .refine(
+        (data) =>
+          Number(data.auctionTerms.startingBid) >
+          Number(data.auctionTerms.auctionFeePerDelegate) *
+            data.auctionTerms.delegates.length,
+        {
+          message: 'Starting bid must be greater than the total auction fees',
+        }
+      )
+      .refine((data) => data.auctionTerms.delegates.length > 0, {
+        message: 'Must have at least one delegate',
+      })
+      .safeParse(auctionFormData.current);
 
     if (!auctionForm.success) {
       console.log(auctionForm.error);
     } else {
-      const walletApp = 'Nami';
-
-      //      const assetNameHex = assetName.toHex();
-
-      // const auctionLot = {
-      //   cs: policyId,
-      //   tn: assetNameHex, //convert to hex
-      //   quantity: '1',
-      // };
       const auctionLot = {
         cs: assetToList.policyId,
         tn: utf8ToHex(assetToList.assetName),
@@ -65,13 +97,9 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
           MOCK_ANNOUNCE_AUCTION_PARAMS.additionalAuctionLotOrefs, // TODO: why do we pass this in instead of a form value (or a [] if no additional NFTs are included)
       };
       console.log({ announceAuctionParams: params });
-      if (announceAuction) {
-        const announceAuctionResponse = await announceAuction(
-          walletApp,
-          params
-        );
-        console.log({ announceAuctionResponse });
-      }
+
+      const announceAuctionResponse = announceAuction.mutate(params);
+      console.log({ announceAuctionResponse });
     }
   };
 

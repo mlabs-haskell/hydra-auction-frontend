@@ -128,7 +128,20 @@ AS BIDDER:
     * Since I presume entering the auction you are bidding on the `auctionLot`, how do you enter the auction for an auction with multiple lots and different `auctionCs`?
 
 # 12/14
-Is the asset unit the same as the aucitonCs?
+Is the asset unit the same as the auctionCs?
 
 # 1/2/24
 All auctions from queryAuctions have the same auctionId. Why is this?
+
+# 1/3/24
+I am using the blockfrost api key thats shown in the hydra-auction-offchain index.js file. Should confirm this is correct and that we shouldnt be generating our own from blockfrost.
+
+The hydra-auction-offchain README states this - 
+
+Note: Blockfrost API key for preprod network can be generated at 
+[Blockfrost](https://blockfrost.io/).
+
+QUESTIONS:
+If this hasn't already been covered, are we expecting multiple assets for the auction lot. Should we be structuring our code to map over the auctionLot?
+
+TODO: Add ipfs image to AuctionDetail and AnnounceAuction - use an IPFS image component with hook inside

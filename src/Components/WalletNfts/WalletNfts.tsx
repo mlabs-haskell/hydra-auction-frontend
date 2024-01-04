@@ -1,6 +1,6 @@
 import { useExtendedAssets } from 'src/hooks/assets';
+import { useIpfsImageSrc } from 'src/hooks/ipfsImageSrc';
 import { MOCK_NFT_IMAGE_URL } from 'src/mocks/images.mock';
-import { getImageUrl } from 'src/utils/image';
 
 type WalletNftCardProps = {
   assetImageSrc?: string;
@@ -8,27 +8,20 @@ type WalletNftCardProps = {
   assetUnit: string;
 };
 
-const IMAGE_WIDTH = 342;
-
 // TODO: combine WalletNftCard and AuctionCard
 const WalletNftCard = ({
   assetImageSrc = MOCK_NFT_IMAGE_URL,
   assetName = 'Name',
   assetUnit,
 }: WalletNftCardProps) => {
-  // TODO: Fix IPFS to get the asset image
-  const imageSrc = getImageUrl(assetUnit) ?? assetImageSrc;
+  const { ipfsImageSrc, isLoading } = useIpfsImageSrc(assetUnit);
+  if (isLoading) return <div>Loading ...</div>;
 
   return (
     <a href={`/create-auction?assetUnit=${assetUnit}&assetName=${assetName}`}>
       <div className="flex justify-center items-center mb-3">
-        {imageSrc && (
-          <img
-            className=""
-            width={IMAGE_WIDTH}
-            alt={assetName}
-            src={imageSrc}
-          />
+        {ipfsImageSrc && (
+          <img className="" alt={assetName} src={ipfsImageSrc} />
         )}
       </div>
       <div className="text-center">{assetName}</div>

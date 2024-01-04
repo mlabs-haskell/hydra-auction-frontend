@@ -9,7 +9,8 @@ export default function CreateAuction() {
   const assetUnit = urlParams.get('assetUnit');
   const assetName = urlParams.get('assetName');
 
-  //TODO: which details we need to pass to the tabs
+  // For now we are going to use the assetUnit to get the asset from the queryAssets cache inside the form.
+  // This way we dont need to prop drill the asset across the tabs
   const assets = useAssets();
   const assetToList = assets?.find((asset) => asset.unit === assetUnit);
   return (

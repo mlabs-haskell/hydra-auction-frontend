@@ -77,6 +77,7 @@ export default function AuctionDetail() {
             )}
           </div>
         </div>
+        {/* TODO:  hide if auction is expired */}
         {/* If the user is a bidder, show the place bid form, otherwise show the enter auction form */}
         {userDetails.data?.bidder.auctions?.some(
           (auction) => auction.auctionId === auctionData?.auctionId

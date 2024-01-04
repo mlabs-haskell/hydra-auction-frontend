@@ -7,6 +7,7 @@ type CurrentListingProps = {
 const IMAGE_WIDTH = 246;
 const CURRENCY_SYMBOL = 'ADA';
 
+// TODO: add ipfs image and auction details here
 const CurrentListing = ({ name, price, biddingEnd }: CurrentListingProps) => {
   return (
     <div className="w-[342px]">
