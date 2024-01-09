@@ -8,6 +8,11 @@ npm start
 Flow - https://github.com/mlabs-haskell/hydra-auction/blob/staging/docs/off_chain_spec.md
 Terminology - https://github.com/mlabs-haskell/hydra-auction/blob/staging/docs/domain_logic.md
 
+# Configuration
+Before you run the server, make sure you set your blockfrost api key in an env file
+
+```BLOCKFROST_API_KEY=<your key>```
+
 
 # TODO
 Zod refine on forms
@@ -152,3 +157,6 @@ Replaced mock image with ipfs image for auction detail, and create auction pages
 Added an ImageWrapper component, and IpfsImageComponent which uses the ipfsImageSrc hook so it can be reused without needing the hook in multiple components. 
 
 Turned queryAuctions into a reactQuery hook, so the announceAuction mutation can invalidate the queryAuctions query, and update the list with the new auction.
+
+# 1/8/24
+TODO: SHow success message for created auction, and redirect to auctions page

@@ -4,7 +4,7 @@ import { StringInput } from '../Inputs/StringInput';
 
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
-export default function TopBar() {
+export default function Topbar() {
   return (
     <header className="bg-white shadow-sm">
       <nav className="flex">

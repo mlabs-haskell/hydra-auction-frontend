@@ -7,10 +7,11 @@ import PlaceBid from './Components/PlaceBid/PlaceBid';
 import AuctionDetail from './Components/AuctionDetail/AuctionDetail';
 import ReactQueryProvider from './providers/ReactQueryProvider';
 import Layout from './Components/layout';
-import TopBar from './Components/Navbar/TopBar';
+
 import { MeshProvider } from '@meshsdk/react';
 import CreateAuctionList from './Components/CreateAuction/CreateAuctionList';
 import Footer from './Components/Footer/Footer';
+import Topbar from './Components/Navbar/Topbar';
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
         <ReactQueryProvider>
           <>
             {/* Navbar */}
-            <TopBar />
+            <Topbar />
 
             {/* Route configuration */}
             <Layout>

@@ -11,11 +11,15 @@ export const TimeRemaining = ({ endDate }: { endDate: number }) => {
 
     if (timeDiff < 0) return { days: null };
 
+    const secsInMin = 60;
+    const secsInHour = secsInMin * 60;
+    const secsInDay = secsInHour * 24;
+
     const totalSeconds = Math.floor(timeDiff / 1000);
-    const days = Math.floor(totalSeconds / (60 * 60 * 24));
-    const hours = Math.floor((totalSeconds % (60 * 60 * 24)) / (60 * 60));
-    const minutes = Math.floor((totalSeconds % (60 * 60)) / 60);
-    const seconds = totalSeconds % 60;
+    const days = Math.floor(totalSeconds / secsInDay);
+    const hours = Math.floor((totalSeconds % secsInDay) / secsInHour);
+    const minutes = Math.floor((totalSeconds % secsInHour) / secsInMin);
+    const seconds = totalSeconds % secsInMin;
 
     return { days, hours, minutes, seconds };
   }

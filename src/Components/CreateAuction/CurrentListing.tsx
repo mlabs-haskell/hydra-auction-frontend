@@ -1,3 +1,4 @@
+import { ADA_CURRENCY_SYMBOL } from 'src/utils/currency';
 import IpfsImage from '../IpfsImage/IpfsImage';
 
 type CurrentListingProps = {
@@ -6,8 +7,6 @@ type CurrentListingProps = {
   assetUnit: string;
   biddingEnd?: string;
 };
-
-const CURRENCY_SYMBOL = '₳'; // ADA
 
 const CurrentListing = ({
   name,
@@ -22,7 +21,7 @@ const CurrentListing = ({
       </div>
       <IpfsImage assetUnit={assetUnit} />
       <div className="font-bold">{name}</div>
-      <div className="text-end font-bold">0 {CURRENCY_SYMBOL}</div>
+      <div className="text-end font-bold">0 {ADA_CURRENCY_SYMBOL}</div>
       {/* <div className="text-end text-dim">${priceUsd}</div>
         <div className="flex justify-center items-center">
           <TimeRemaining endDate={Number(biddingEnd) || 0} />

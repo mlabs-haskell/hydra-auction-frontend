@@ -11,13 +11,8 @@ export const useAnnounceAuction = (walletName: string) => {
   const walletApp: WalletApp = walletName as WalletApp;
 
   const announceAuctionMutation = useMutation({
-    mutationFn: async (auctionParams: AnnounceAuctionContractParams) => {
-      const announceAuctionResponse = await announceAuction(
-        walletApp,
-        auctionParams
-      );
-      return announceAuctionResponse;
-    },
+    mutationFn: async (auctionParams: AnnounceAuctionContractParams) =>
+      await announceAuction(walletApp, auctionParams),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_AUCTIONS_QUERY_KEY] });
     },
