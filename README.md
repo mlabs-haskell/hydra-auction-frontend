@@ -1,5 +1,16 @@
 # Setup for Development
 
+## Pre-Installation
+Set required environment variables for offchain library installation:
+```
+export NPM_ENV=1
+export CARDANO_NETWORK=preprod
+export BLOCKFROST_API_KEY=<your key>
+export PLUTIP_ENV_HOST_PORT=localhost:8083 
+export DEMO_HOST_PORT=localhost:8080
+```
+These will often get overwritten. If the install isn't working, make sure these are still set with `echo`.
+
 ## Installation
 `npm install`
 
