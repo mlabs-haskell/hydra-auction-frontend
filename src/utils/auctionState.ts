@@ -1,0 +1,8 @@
+export enum AuctionState {
+  PRE_AUCTION,
+  PRE_BIDDING,
+  BIDDING,
+  VOUCHER_ACTIVE,
+  VOUCHER_EXPIRED,
+  CLEANUP,
+}
