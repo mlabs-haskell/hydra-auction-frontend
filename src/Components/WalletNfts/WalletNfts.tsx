@@ -1,5 +1,7 @@
 import { useExtendedAssets } from 'src/hooks/assets';
 import IpfsImage from '../IpfsImage/IpfsImage';
+import { useWallet } from '@meshsdk/react';
+import { WalletApp } from 'hydra-auction-offchain';
 
 type WalletNftCardProps = {
   assetImageSrc?: string;
@@ -23,10 +25,11 @@ const WalletNftCard = ({
 };
 
 export default function WalletNfts() {
-  const { assets, isError } = useExtendedAssets();
+  const { name: walletApp } = useWallet();
 
-  if (isError) return null;
+  const { data: assets, isError } = useExtendedAssets(walletApp as WalletApp);
 
+  if (isError) return <div>Error getting assets...</div>;
   return (
     <ul className="grid sm:grid-cols-2 md:grid-cols-4 gap-5">
       {assets?.map((asset, index) => (

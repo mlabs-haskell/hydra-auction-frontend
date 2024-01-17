@@ -1,13 +1,14 @@
 import { useActiveAuctions } from '../../hooks/auctions';
-import AuctionCard from './AuctionCard';
+import AuctionCard from '../AuctionCard/AuctionCard';
 import { useWallet } from '@meshsdk/react';
 import { WalletApp } from 'hydra-auction-offchain';
 
+// TODO: hide card if no ipfs image
 export default function AuctionList() {
   const { name: walletName } = useWallet();
   const walletApp: WalletApp = walletName as WalletApp;
-  const { data: auctions } = useActiveAuctions(walletApp || null);
-
+  const { data: auctions } = useActiveAuctions(walletApp);
+  console.log({ auctions });
   return (
     <>
       <div className="flex flex-col justify-center items-center">

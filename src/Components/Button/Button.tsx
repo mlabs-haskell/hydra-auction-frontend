@@ -1,18 +1,35 @@
 import { cn } from 'src/utils/className';
 
-type ButtonProps = {
-  onClick?: () => void;
-  label: string;
-  className?: string;
+const buttonTypeStyles = {
+  primary: 'bg-black text-white',
+  outline: 'border border-black',
 };
 
-export default function Button({ label, onClick, className }: ButtonProps) {
+type ButtonProps = {
+  onClick?: () => void;
+  children: React.ReactNode;
+  className?: string;
+  type?: keyof typeof buttonTypeStyles;
+};
+
+// TODO: use shadcn implementation
+export default function Button({
+  children,
+  onClick,
+  className,
+  type,
+}: ButtonProps) {
   return (
     <button
-      className={cn('bg-black text-white py-2 px-4 text-body', className)}
+      className={cn(
+        `py-2 px-4 text-body ${
+          type ? buttonTypeStyles[type] : buttonTypeStyles.primary
+        }`,
+        className
+      )}
       onClick={onClick && onClick}
     >
-      {label}
+      {children}
     </button>
   );
 }

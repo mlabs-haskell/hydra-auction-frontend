@@ -13,14 +13,19 @@ export type HookResponse = {
 
 export const QUERY_AUCTIONS_QUERY_KEY = 'query-auctions';
 
-export const useActiveAuctions = (walletApp: WalletApp) => {
+export const useActiveAuctions = (walletApp?: WalletApp) => {
   const activeAuctions = useQuery({
-    queryKey: [QUERY_AUCTIONS_QUERY_KEY],
+    queryKey: [QUERY_AUCTIONS_QUERY_KEY, walletApp],
     queryFn: async () => {
-      const auctions = await queryAuctions(walletApp);
-      return auctions;
+      if (walletApp) {
+        console.log({ walletApp });
+        return await queryAuctions(walletApp);
+      } else {
+        return [];
+      }
     },
     refetchInterval: 10000,
+    enabled: !!walletApp,
   });
 
   return activeAuctions;

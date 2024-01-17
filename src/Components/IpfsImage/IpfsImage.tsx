@@ -12,9 +12,8 @@ export default function IpfsImage({
   small = false,
   className,
 }: IpfsImageProps) {
-  const { ipfsImageSrc, isLoading } = useIpfsImageSrc(assetUnit);
+  const { data: ipfsImageSrc, isLoading } = useIpfsImageSrc(assetUnit);
   if (isLoading) return <div>Loading ...</div>;
-
   return (
     <ImageWrapper
       className={className}

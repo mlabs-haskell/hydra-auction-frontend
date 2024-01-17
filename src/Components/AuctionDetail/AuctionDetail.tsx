@@ -1,12 +1,14 @@
 import { useActiveAuctions } from 'src/hooks/auctions';
 import { getUrlParams } from 'src/utils/getUrlParams';
-import { useUser } from 'src/hooks/user';
-import PlaceBidCompact from '../PlaceBid/PlaceBidCompact';
-import EnterAuction from '../EnterAuction/EnterAuction';
 import AuctionStateRemaining from '../Time/AuctionStateRemaining';
 import IpfsImage from '../IpfsImage/IpfsImage';
 import { useWallet } from '@meshsdk/react';
 import { WalletApp } from 'hydra-auction-offchain';
+import { getIsBidder, getIsSeller } from 'src/utils/auctionState';
+import { useSellerAddress } from 'src/hooks/user';
+import AuctionDetailSeller from './AuctionDetailSeller';
+import AuctionDetailBidder from './AuctionDetailBidder';
+import { useAuctionsBidding } from '../../hooks/enterAuction';
 
 const MOCK_NFT_DESCRIPTION = 'Mock NFT Description 🐶';
 export default function AuctionDetail() {
@@ -15,82 +17,99 @@ export default function AuctionDetail() {
   // Use url params to get the auctionId
   const urlParams = getUrlParams();
   const auctionId = urlParams.get('auctionId');
-  const userDetails = useUser();
   const { name: walletName } = useWallet();
   const walletApp: WalletApp = walletName as WalletApp;
-
+  const { data: auctions, isLoading, isError } = useActiveAuctions(walletApp);
   const {
-    data: auctions,
-    isLoading,
-    isError,
-  } = useActiveAuctions(walletApp || null);
+    data: sellerAddress,
+    isLoading: isSellerAddressLoading,
+    isError: isSellerAddressError,
+  } = useSellerAddress();
 
   console.log({ auctions });
 
   // With auctionId we find the auction details from the queryAuctions cache
-  const auctionData = auctions?.find(
+  const auctionInfo = auctions?.find(
     (auction) => auction.auctionId === auctionId
   );
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error...</div>;
 
-  const assetUnit = `${auctionData?.auctionTerms?.auctionLot[0].cs}${auctionData?.auctionTerms?.auctionLot[0].tn}`;
+  const { data: auctionsBidding } = useAuctionsBidding(auctionInfo?.auctionId);
+
+  if (isLoading || isSellerAddressLoading) return <div>Loading...</div>;
+  if (isError || isSellerAddressError)
+    return <div>Error getting auction...</div>;
+  if (!auctionInfo || !sellerAddress || !auctionInfo || !walletName)
+    return <div>Error finding auction...</div>;
+  const assetUnit = `${auctionInfo?.auctionTerms?.auctionLot[0].cs}${auctionInfo?.auctionTerms?.auctionLot[0].tn}`;
+
+  // Identifying if we are the seller or a bidder of this auction
+  const isSeller = getIsSeller(sellerAddress, auctionInfo);
+
+  const isBidder = getIsBidder(auctionsBidding, auctionInfo);
+
+  console.log({ isSeller, isBidder });
 
   return (
     <div className="flex items-center justify-center">
       <div className="container ">
-        <div className="text-center items-center mb-6">
-          <h1 className="text-title1 mr-2">Auction</h1>
-          <div className="text-xs text-gray-500">{auctionId}</div>
+        <div className="flex flex-col justify-center items-center">
+          <h1 className="text-title1 text-center mb-3">Auction Detail</h1>
+          <hr className="border-b border-gray-400 w-32 mb-4" />
         </div>
 
         <div className="flex justify-center items-center mb-6">
           <IpfsImage className="blur-sm" assetUnit={assetUnit} />
         </div>
 
-        <div className="mb-6">
+        <div className="mb-10">
           <div className="text-lg">Description</div>
           <p className="text-gray-600 text-sm mb-4">{MOCK_NFT_DESCRIPTION}</p>
           <div className="grid md:grid-cols-2 gap-3 mb-4">
             <div>
               <div className="text-lg">Minimum Deposit</div>
               <div className="text-sm text-gray-500">
-                {auctionData?.auctionTerms.minDepositAmount}
+                {auctionInfo?.auctionTerms.minDepositAmount}
               </div>
             </div>
             <div>
               <div className="text-lg">Minimum Bid Increment</div>
               <div className="text-sm text-gray-500">
-                {auctionData?.auctionTerms.minBidIncrement}
+                {auctionInfo?.auctionTerms.minBidIncrement}
               </div>
             </div>
             <div>
               <div className="text-lg">Delegate Auction Fee</div>
               <div className="text-sm text-gray-500">
-                {auctionData?.auctionTerms.auctionFeePerDelegate}
+                {auctionInfo?.auctionTerms.auctionFeePerDelegate}
               </div>
             </div>
             <div>
               <div className="text-lg">Starting Bid</div>
               <div className="text-sm text-gray-500">
-                {auctionData?.auctionTerms.startingBid}
+                {auctionInfo?.auctionTerms.startingBid}
               </div>
             </div>
           </div>
           <div>
-            {auctionData && (
-              <AuctionStateRemaining {...auctionData.auctionTerms} />
+            {auctionInfo && (
+              <AuctionStateRemaining {...auctionInfo.auctionTerms} />
             )}
           </div>
         </div>
-        {/* TODO:  hide if auction is expired */}
-        {/* If the user is a bidder, show the place bid form, otherwise show the enter auction form */}
-        {userDetails.data?.bidder.auctions?.some(
-          (auction) => auction.auctionId === auctionData?.auctionId
-        ) ? (
-          <PlaceBidCompact />
+        {/* TODO: for now, to test flow between bidder-seller, we will keep both bidder and seller components showing */}
+        {isSeller ? (
+          <div className="flex flex-col gap-10">
+            <AuctionDetailSeller
+              walletApp={walletApp}
+              auctionInfo={auctionInfo}
+            />
+            <AuctionDetailBidder
+              walletApp={walletApp}
+              auctionInfo={auctionInfo}
+            />
+          </div>
         ) : (
-          auctionData && <EnterAuction auction={auctionData} />
+          <></>
         )}
       </div>
     </div>

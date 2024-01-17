@@ -1,59 +1,56 @@
 import React, { useRef } from 'react';
-import { MOCK_PLACE_BID_PARAMS } from 'src/mocks/placeBid.mock';
-import { PlaceBidFormT } from 'src/schemas/placeBidFormSchema';
-import { StringInput } from '../Inputs/StringInput';
-import { NumberInput } from '../Inputs/NumberInput';
+import {
+  PlaceBidFormT,
+  placeBidFormSchema,
+} from 'src/schemas/placeBidFormSchema';
 
-export const PlaceBidForm = () => {
-  const placeBidFormData = useRef<PlaceBidFormT>(MOCK_PLACE_BID_PARAMS);
+import { NumberInput } from '../Inputs/NumberInput';
+import { usePlaceBid } from '../../hooks/bidding';
+
+export const PlaceBidForm = ({
+  auctionCs,
+  sellerSignature,
+  standingBid,
+}: {
+  auctionCs: string;
+  sellerSignature: string;
+  standingBid: string;
+}) => {
+  const placeBid = usePlaceBid(auctionCs, sellerSignature);
+
+  const placeBidFormData = useRef<PlaceBidFormT>({
+    bidAmount: 0,
+  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: connect to placeBid api
+    console.log({ placeBidFormData });
+    const placeBidForm = placeBidFormSchema
+      .refine((data) => data.bidAmount > Number(standingBid), {
+        message: 'Bid must be higher than the current bid',
+      })
+      .safeParse(placeBidFormData.current);
+    if (!placeBidForm.success) {
+      // TODO: Show error to client
+      console.log(placeBidForm.error);
+    } else {
+      placeBid.mutate(String(placeBidForm.data.bidAmount));
+    }
   };
   return (
-    <div className="p-3 mb-3 w-full">
-      <div className="flex items-center justify-center">
-        <div className="border-b border-gray-400 w-32"></div>
-      </div>
-      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-        <StringInput
-          label="Auction Currency Symbol"
-          inputId="auctionCs"
-          placeholder={placeBidFormData.current.auctionCs}
-          onChange={(value) =>
-            (placeBidFormData.current = {
-              ...placeBidFormData.current,
-              auctionCs: value,
-            })
-          }
-        />
-        <NumberInput
-          label="Bid Amount"
-          inputId="bidAmount"
-          placeholder={placeBidFormData.current.bidAmount || ''}
-          onChange={(value) =>
-            (placeBidFormData.current = {
-              ...placeBidFormData.current,
-              bidAmount: value,
-            })
-          }
-        />
-        <input type="submit" className="submit-btn"></input>
-      </form>
-    </div>
+    <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+      <NumberInput
+        label="Bid Amount"
+        inputId="bidAmount"
+        placeholder={String(placeBidFormData.current.bidAmount) || ''}
+        onChange={(_, value) => {
+          return (placeBidFormData.current = {
+            ...placeBidFormData.current,
+            bidAmount: Number(value),
+          });
+        }}
+      />
+      <input type="submit" className="submit-btn"></input>
+    </form>
   );
 };
-
-function PlaceBid() {
-  return (
-    <div className="p-6 flex items-center justify-center">
-      <div className="w-[600px]">
-        <h1 className="text-title1 text-center">Place Bid</h1>
-        <PlaceBidForm />
-      </div>
-    </div>
-  );
-}
-
-export default PlaceBid;

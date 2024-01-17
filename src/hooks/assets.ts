@@ -1,38 +1,17 @@
-import { AssetExtended, BrowserWallet } from '@meshsdk/core';
-import { useWallet } from '@meshsdk/react';
-import { useEffect, useState } from 'react';
+import { BrowserWallet } from '@meshsdk/core';
+import { useQuery } from '@tanstack/react-query';
+import { WalletApp } from 'hydra-auction-offchain';
 
-type UseExtendedAssetsResponse = {
-  assets: AssetExtended[] | undefined;
-  isError: boolean;
-  isLoading: boolean;
-};
+export const EXTENDED_ASSETS_QUERY_KEY = 'extended-assets';
+export const useExtendedAssets = (walletApp: WalletApp) => {
+  const assetsQuery = useQuery({
+    queryKey: [EXTENDED_ASSETS_QUERY_KEY, walletApp],
+    queryFn: async () => {
+      const wallet = await BrowserWallet.enable(walletApp);
+      const fetchedAssets = await wallet.getAssets();
+      return fetchedAssets;
+    },
+  });
 
-export const useExtendedAssets = (): UseExtendedAssetsResponse => {
-  const [isError, setIsError] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
-  const [assets, setAssets] = useState<AssetExtended[]>([]);
-  const { name: walletName } = useWallet();
-
-  useEffect(() => {
-    const fetchAssets = async () => {
-      try {
-        const wallet = await BrowserWallet.enable(walletName);
-        const fetchedAssets = await wallet.getAssets();
-        setIsError(false);
-        setIsLoading(false);
-        setAssets(fetchedAssets);
-      } catch (error) {
-        console.error('Error fetching assets:', error);
-        setIsError(true);
-      }
-    };
-    walletName && fetchAssets();
-  }, [walletName]);
-
-  return {
-    isLoading: isLoading,
-    isError: isError,
-    assets: assets,
-  };
+  return assetsQuery;
 };

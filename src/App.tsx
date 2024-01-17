@@ -1,17 +1,15 @@
-import AuctionList from './Components/AuctionList/AuctionList';
-import CreateAuction from './Components/CreateAuction/CreateAuction';
+import AuctionList from './components/AuctionList/AuctionList';
+import CreateAuction from './components/CreateAuction/CreateAuction';
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { EnterAuctionPage } from './Components/EnterAuction/EnterAuction';
-import PlaceBid from './Components/PlaceBid/PlaceBid';
-import AuctionDetail from './Components/AuctionDetail/AuctionDetail';
+import AuctionDetail from './components/AuctionDetail/AuctionDetail';
 import ReactQueryProvider from './providers/ReactQueryProvider';
-import Layout from './Components/layout';
+import Layout from './components/layout';
 
 import { MeshProvider } from '@meshsdk/react';
-import CreateAuctionList from './Components/CreateAuction/CreateAuctionList';
-import Footer from './Components/Footer/Footer';
-import Topbar from './Components/Navbar/Topbar';
+import CreateAuctionList from './components/CreateAuction/CreateAuctionList';
+import Footer from './components/Footer/Footer';
+import Topbar from './components/Navbar/Topbar';
 
 function App() {
   return (
@@ -28,8 +26,6 @@ function App() {
                 <Route path="/" element={<AuctionList />} />
                 <Route path="/auction-list" element={<AuctionList />} />
                 <Route path="/create-auction" element={<CreateAuction />} />
-                <Route path="/enter-auction" element={<EnterAuctionPage />} />
-                <Route path="/place-bid" element={<PlaceBid />} />
                 <Route path="/auction" element={<AuctionDetail />} />
                 <Route
                   path="/create-auction-list"
