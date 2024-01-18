@@ -5,7 +5,7 @@ import {
 } from 'hydra-auction-offchain';
 
 import { useState } from 'react';
-import { useAuthorizeBidders, useDiscoverBidders } from 'src/hooks/bidding';
+import { useAuthorizeBidders, useDiscoverBidders } from 'src/hooks/api/bidding';
 
 // import { Button } from '@/components/ui/button';
 import { DropdownMenuCheckboxItem } from '../shadcn/DropdownMenu';

@@ -1,4 +1,4 @@
-import { useIpfsImageSrc } from 'src/hooks/ipfsImageSrc';
+import { useIpfsImageSrc } from 'src/hooks/api/ipfsImageSrc';
 import ImageWrapper from '../ImageWrapper/ImageWrapper';
 
 type IpfsImageProps = {

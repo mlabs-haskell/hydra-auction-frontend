@@ -4,6 +4,10 @@ import {
   WalletApp,
   enterAuction,
 } from 'hydra-auction-offchain';
+import {
+  getLocalStorageItem,
+  setLocalStorageItem,
+} from 'src/utils/localStorage';
 
 const AUCTIONS_BIDDING_QUERY_KEY = 'auctions-bidding';
 
@@ -24,24 +28,21 @@ export const useEnterAuction = (walletApp: WalletApp) => {
       // For now a way to simulate buyer oracle so we can see whether we are a bidder for each auction
       // This will need to be moved to the hook which authorizes bidders by the seller. It is here
       // just for testing purposes.
-      const auctionsBidding = localStorage.getItem('bidding');
-      const prevAuctionsBidding = JSON.parse(auctionsBidding || '[]');
+      const prevAuctionsBidding = getLocalStorageItem('bidding') || [];
+
       if (
         !prevAuctionsBidding.find(
           (auction: AuctionBiddingItem) =>
             auction.auctionId === mutationResponse.params.auctionInfo.auctionId
         )
       ) {
-        localStorage.setItem(
-          'bidding',
-          JSON.stringify([
-            ...prevAuctionsBidding,
-            {
-              auctionId: mutationResponse.params.auctionInfo.auctionId,
-              depositAmount: mutationResponse.params.depositAmount,
-            },
-          ])
-        );
+        setLocalStorageItem('bidding', [
+          ...prevAuctionsBidding,
+          {
+            auctionId: mutationResponse.params.auctionInfo.auctionId,
+            depositAmount: mutationResponse.params.depositAmount,
+          },
+        ]);
       }
     },
   });
@@ -60,9 +61,7 @@ export const useAuctionsBidding = (auctionId?: string) => {
     queryKey: [AUCTIONS_BIDDING_QUERY_KEY, auctionId],
     queryFn: async () => {
       if (auctionId) {
-        const auctionsBidding = localStorage.getItem('bidding');
-
-        return JSON.parse(auctionsBidding || '[]');
+        return getLocalStorageItem('bidding') || [];
       }
     },
   });

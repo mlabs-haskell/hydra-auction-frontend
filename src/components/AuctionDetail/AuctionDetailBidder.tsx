@@ -1,7 +1,8 @@
 import { AuctionInfo, WalletApp } from 'hydra-auction-offchain';
 import EnterAuction from '../EnterAuction/EnterAuction';
 import BiddingView from './BiddingView';
-
+import { ArrowDownIcon } from '@radix-ui/react-icons';
+import { Button } from '../shadcn/Button';
 type AuctionDetailBidderProps = {
   walletApp: WalletApp;
   auctionInfo: AuctionInfo;
@@ -13,11 +14,10 @@ export default function AuctionDetailBidder({
 }: AuctionDetailBidderProps) {
   console.log({ localStorage });
   return (
-    <div className="flex flex-col gap-6 justify-center items-center h-full">
-      <div className="flex flex-col gap-6 items-center w-72">
-        <div className="text-title3 text-center mb-3">Bidder Options</div>
-        <EnterAuction auction={auctionInfo} />
-      </div>
+    <div className="w-full flex flex-col items-center gap-12">
+      <div className="text-title3 text-center mb-3">Bidder Options</div>
+      <EnterAuction auction={auctionInfo} />
+      <ArrowDownIcon className="text-3xl font-bold" />
       <BiddingView walletApp={walletApp} auctionInfo={auctionInfo} />
     </div>
   );

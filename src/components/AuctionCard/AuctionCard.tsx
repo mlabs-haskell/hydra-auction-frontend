@@ -1,30 +1,32 @@
-import { AuctionTerms } from 'hydra-auction-offchain';
+import { AuctionInfo } from 'hydra-auction-offchain';
 import AuctionStateRemaining from '../Time/AuctionStateRemaining';
 import IpfsImage from '../IpfsImage/IpfsImage';
 
+import { getAuctionAssetUnit } from 'src/utils/auction';
+
 type AuctionCardProps = {
-  auctionId: string;
-  auctionTerms: AuctionTerms;
+  auctionInfo: AuctionInfo;
 };
 
-function AuctionCard({ auctionId, auctionTerms }: AuctionCardProps) {
+function AuctionCard({ auctionInfo }: AuctionCardProps) {
   // For now, since we are just listing singular assets, we use the auctionLot[0] object
-  const tn = auctionTerms.auctionLot[0].tn;
-  const cs = auctionTerms.auctionLot[0].cs;
-  const assetUnit = `${cs}${tn}`;
+
+  const assetUnit = getAuctionAssetUnit(auctionInfo);
 
   return (
     <div className="border p-4 rounded-lg shadow-md hover:bg-slate-200">
-      <a href={`/auction?auctionId=${auctionId}`}>
+      <a href={`/auction?assetUnit=${assetUnit}`}>
         <div className="flex justify-center items-center mb-3">
           <IpfsImage assetUnit={assetUnit} />
         </div>
-        <div className="overflow-hidden">Auction ID: {auctionId}</div>
+        <div className="overflow-hidden">
+          Auction ID: {auctionInfo.auctionId}
+        </div>
 
         <div className="overflow-hidden">
-          Minimum Deposit: {auctionTerms.minDepositAmount}
+          Minimum Deposit: {auctionInfo.auctionTerms.minDepositAmount}
         </div>
-        <AuctionStateRemaining {...auctionTerms} />
+        <AuctionStateRemaining {...auctionInfo.auctionTerms} />
       </a>
     </div>
   );

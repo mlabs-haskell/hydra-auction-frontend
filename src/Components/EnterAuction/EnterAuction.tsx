@@ -6,7 +6,7 @@ import {
   EnterAuctionContractParams,
   WalletApp,
 } from 'hydra-auction-offchain';
-import { useEnterAuction } from 'src/hooks/enterAuction';
+import { useEnterAuction } from 'src/hooks/api/enterAuction';
 import { useWallet } from '@meshsdk/react';
 import Button from '../Button/Button';
 

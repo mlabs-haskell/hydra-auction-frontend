@@ -1,4 +1,4 @@
-import { useExtendedAssets } from 'src/hooks/assets';
+import { useExtendedAssets } from 'src/hooks/api/assets';
 import { getUrlParams } from 'src/utils/getUrlParams';
 import { DropDown } from '../DropDown/DropDown';
 import { AssetExtended } from '@meshsdk/core';

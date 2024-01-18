@@ -24,15 +24,15 @@ export const DropdownCheckbox = ({
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div className="flex flex-col justify-center items-center w-full">
       <DropdownMenu open={menuOpen}>
         <DropdownMenuTrigger
-          className="bg-gray-100 border-b-2 border-black px-4 py-2"
+          className="bg-gray-100 border-b-2 border-black px-4 py-2 "
           asChild
           onClick={() => setMenuOpen(!menuOpen)}
         >
-          <button className="text-dim">
-            <div className="flex items-center gap-3 justify-between">
+          <button className="text-dim w-full">
+            <div className="flex items-center gap-3 justify-between ">
               <div>{label}</div>
               {menuOpen ? (
                 <ChevronUpIcon className="fill-current text-black" />
@@ -55,9 +55,9 @@ export const DropdownCheckbox = ({
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {/* <OutsideAlerter onOutsideClick={() => setMenuOpen(false)}> */}
-          {children}
-          {/* </OutsideAlerter> */}
+          <OutsideAlerter onOutsideClick={() => setMenuOpen(false)}>
+            {children}
+          </OutsideAlerter>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

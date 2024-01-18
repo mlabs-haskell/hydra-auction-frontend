@@ -1,22 +1,24 @@
-import { useActiveAuctions } from 'src/hooks/auctions';
+import { useActiveAuctions } from 'src/hooks/api/auctions';
 import { getUrlParams } from 'src/utils/getUrlParams';
-import AuctionStateRemaining from '../Time/AuctionStateRemaining';
 import IpfsImage from '../IpfsImage/IpfsImage';
 import { useWallet } from '@meshsdk/react';
 import { WalletApp } from 'hydra-auction-offchain';
 import { getIsBidder, getIsSeller } from 'src/utils/auctionState';
-import { useSellerAddress } from 'src/hooks/user';
+import { useSellerAddress } from 'src/hooks/api/user';
 import AuctionDetailSeller from './AuctionDetailSeller';
 import AuctionDetailBidder from './AuctionDetailBidder';
-import { useAuctionsBidding } from '../../hooks/enterAuction';
+import { useAuctionsBidding } from '../../hooks/api/enterAuction';
+import { getAuctionAssetUnit } from 'src/utils/auction';
+import AuctionSubDetail from './AuctionSubDetail';
 
-const MOCK_NFT_DESCRIPTION = 'Mock NFT Description 🐶';
+const MOCK_NFT_TITLE = 'My NFT';
+
 export default function AuctionDetail() {
   // TODO: Display some badge if the user is already a bidder, and for the state of the auction
 
   // Use url params to get the auctionId
   const urlParams = getUrlParams();
-  const auctionId = urlParams.get('auctionId');
+  const assetUnit = urlParams.get('assetUnit') || '';
   const { name: walletName } = useWallet();
   const walletApp: WalletApp = walletName as WalletApp;
   const { data: auctions, isLoading, isError } = useActiveAuctions(walletApp);
@@ -30,7 +32,7 @@ export default function AuctionDetail() {
 
   // With auctionId we find the auction details from the queryAuctions cache
   const auctionInfo = auctions?.find(
-    (auction) => auction.auctionId === auctionId
+    (auction) => getAuctionAssetUnit(auction) === assetUnit
   );
 
   const { data: auctionsBidding } = useAuctionsBidding(auctionInfo?.auctionId);
@@ -40,7 +42,6 @@ export default function AuctionDetail() {
     return <div>Error getting auction...</div>;
   if (!auctionInfo || !sellerAddress || !auctionInfo || !walletName)
     return <div>Error finding auction...</div>;
-  const assetUnit = `${auctionInfo?.auctionTerms?.auctionLot[0].cs}${auctionInfo?.auctionTerms?.auctionLot[0].tn}`;
 
   // Identifying if we are the seller or a bidder of this auction
   const isSeller = getIsSeller(sellerAddress, auctionInfo);
@@ -51,66 +52,34 @@ export default function AuctionDetail() {
 
   return (
     <div className="flex items-center justify-center">
+      {/* TODO: Remove container */}
       <div className="container ">
-        <div className="flex flex-col justify-center items-center">
-          <h1 className="text-title1 text-center mb-3">Auction Detail</h1>
-          <hr className="border-b border-gray-400 w-32 mb-4" />
-        </div>
-
-        <div className="flex justify-center items-center mb-6">
-          <IpfsImage className="blur-sm" assetUnit={assetUnit} />
-        </div>
-
-        <div className="mb-10">
-          <div className="text-lg">Description</div>
-          <p className="text-gray-600 text-sm mb-4">{MOCK_NFT_DESCRIPTION}</p>
-          <div className="grid md:grid-cols-2 gap-3 mb-4">
-            <div>
-              <div className="text-lg">Minimum Deposit</div>
-              <div className="text-sm text-gray-500">
-                {auctionInfo?.auctionTerms.minDepositAmount}
-              </div>
-            </div>
-            <div>
-              <div className="text-lg">Minimum Bid Increment</div>
-              <div className="text-sm text-gray-500">
-                {auctionInfo?.auctionTerms.minBidIncrement}
-              </div>
-            </div>
-            <div>
-              <div className="text-lg">Delegate Auction Fee</div>
-              <div className="text-sm text-gray-500">
-                {auctionInfo?.auctionTerms.auctionFeePerDelegate}
-              </div>
-            </div>
-            <div>
-              <div className="text-lg">Starting Bid</div>
-              <div className="text-sm text-gray-500">
-                {auctionInfo?.auctionTerms.startingBid}
-              </div>
-            </div>
+        <div className="grid lg:grid-cols-2 gap-3">
+          <div className="flex justify-center items-center mb-6">
+            <IpfsImage className="" assetUnit={assetUnit} />
           </div>
-          <div>
-            {auctionInfo && (
-              <AuctionStateRemaining {...auctionInfo.auctionTerms} />
+          <div className="flex flex-col items-center gap-10">
+            <div className="text-title2 font-semibold mb-6">
+              {MOCK_NFT_TITLE}
+            </div>
+            {/* TODO: for now, to test flow between bidder-seller, we will keep both bidder and seller components showing */}
+            {isSeller ? (
+              <div className="w-full">
+                <AuctionDetailSeller
+                  walletApp={walletApp}
+                  auctionInfo={auctionInfo}
+                />
+                <AuctionDetailBidder
+                  walletApp={walletApp}
+                  auctionInfo={auctionInfo}
+                />
+              </div>
+            ) : (
+              <></>
             )}
+            <AuctionSubDetail auctionInfo={auctionInfo} />
           </div>
         </div>
-        {/* TODO: for now, to test flow between bidder-seller, we will keep both bidder and seller components showing */}
-        {isSeller ? (
-          <div className="flex flex-col gap-10">
-            <AuctionDetailSeller
-              walletApp={walletApp}
-              auctionInfo={auctionInfo}
-            />
-            <AuctionDetailBidder
-              walletApp={walletApp}
-              auctionInfo={auctionInfo}
-            />
-          </div>
-        ) : (
-          <></>
-        )}
       </div>
     </div>
   );

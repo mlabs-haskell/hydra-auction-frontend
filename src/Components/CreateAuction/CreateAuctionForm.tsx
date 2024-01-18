@@ -11,12 +11,12 @@ import {
 
 import { MOCK_ANNOUNCE_AUCTION_PARAMS } from 'src/mocks/announceAuction.mock';
 import { getUrlParams } from 'src/utils/getUrlParams';
-import { useExtendedAssets } from 'src/hooks/assets';
+import { useExtendedAssets } from 'src/hooks/api/assets';
 import { utf8ToHex } from 'src/utils/hex';
-import { useAnnounceAuction } from 'src/hooks/announceAuction';
+import { useAnnounceAuction } from 'src/hooks/api/announceAuction';
 import { useWallet } from '@meshsdk/react';
 import { useNavigate } from 'react-router-dom';
-import { useDelegates } from 'src/hooks/delegates';
+import { useDelegates } from 'src/hooks/api/delegates';
 
 type CreateAuctionFormProps = {
   className?: string;

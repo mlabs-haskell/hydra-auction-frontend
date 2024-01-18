@@ -1,5 +1,5 @@
 import { AuctionInfo } from 'hydra-auction-offchain';
-import { AuctionBiddingItem } from 'src/hooks/enterAuction';
+import { AuctionBiddingItem } from 'src/hooks/api/enterAuction';
 
 export enum AuctionState {
   PRE_AUCTION,

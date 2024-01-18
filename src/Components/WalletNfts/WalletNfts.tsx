@@ -1,4 +1,4 @@
-import { useExtendedAssets } from 'src/hooks/assets';
+import { useExtendedAssets } from 'src/hooks/api/assets';
 import IpfsImage from '../IpfsImage/IpfsImage';
 import { useWallet } from '@meshsdk/react';
 import { WalletApp } from 'hydra-auction-offchain';

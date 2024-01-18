@@ -5,7 +5,7 @@ import {
 } from 'src/schemas/placeBidFormSchema';
 
 import { NumberInput } from '../Inputs/NumberInput';
-import { usePlaceBid } from '../../hooks/bidding';
+import { usePlaceBid } from '../../hooks/api/bidding';
 
 export const PlaceBidForm = ({
   auctionCs,
