@@ -9,7 +9,7 @@ import { useAuthorizeBidders, useDiscoverBidders } from 'src/hooks/api/bidding';
 
 // import { Button } from '@/components/ui/button';
 import { DropdownMenuCheckboxItem } from '../shadcn/DropdownMenu';
-import Button from '../Button/Button';
+import { Button } from '../shadcn/Button';
 import { DropdownCheckbox } from '../DropdownCheckbox/DropdownCheckbox';
 
 type DiscoverBidderProps = {

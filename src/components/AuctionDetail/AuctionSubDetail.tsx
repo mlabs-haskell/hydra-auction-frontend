@@ -1,3 +1,4 @@
+import { AssetMetadata } from '@meshsdk/core';
 import { ListBulletIcon } from '@radix-ui/react-icons';
 import { AuctionInfo } from 'hydra-auction-offchain';
 import { numberWithCommas } from 'src/utils/currency';
@@ -20,8 +21,10 @@ const AuctionTermCard = ({
 };
 export default function AuctionSubDetail({
   auctionInfo,
+  description,
 }: {
   auctionInfo: AuctionInfo;
+  description?: AssetMetadata;
 }) {
   return (
     <div className="flex flex-col  w-full">
@@ -31,7 +34,9 @@ export default function AuctionSubDetail({
       </div>
       <div className="mb-10">
         <div className="mb-4">Description from the Creator</div>
-        <p className="text-dim">{MOCK_NFT_DESCRIPTION}</p>
+        <p className="text-dim">
+          {description ? description : MOCK_NFT_DESCRIPTION}
+        </p>
       </div>
 
       <div className="mb-4">Auction Terms</div>

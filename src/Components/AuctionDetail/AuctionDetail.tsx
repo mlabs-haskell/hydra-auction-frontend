@@ -10,6 +10,7 @@ import AuctionDetailBidder from './AuctionDetailBidder';
 import { useAuctionsBidding } from '../../hooks/api/enterAuction';
 import { getAuctionAssetUnit } from 'src/utils/auction';
 import AuctionSubDetail from './AuctionSubDetail';
+import { useAssetMetadata } from 'src/hooks/api/assets';
 
 const MOCK_NFT_TITLE = 'My NFT';
 
@@ -35,6 +36,8 @@ export default function AuctionDetail() {
     (auction) => getAuctionAssetUnit(auction) === assetUnit
   );
 
+  const { data: assetMetadata } = useAssetMetadata(assetUnit);
+
   const { data: auctionsBidding } = useAuctionsBidding(auctionInfo?.auctionId);
 
   if (isLoading || isSellerAddressLoading) return <div>Loading...</div>;
@@ -56,11 +59,11 @@ export default function AuctionDetail() {
       <div className="container ">
         <div className="grid lg:grid-cols-2 gap-3">
           <div className="flex justify-center items-center mb-6">
-            <IpfsImage className="" assetUnit={assetUnit} />
+            <IpfsImage assetUnit={assetUnit} />
           </div>
           <div className="flex flex-col items-center gap-10">
             <div className="text-title2 font-semibold mb-6">
-              {MOCK_NFT_TITLE}
+              {assetMetadata?.name ? assetMetadata.name : MOCK_NFT_TITLE}
             </div>
             {/* TODO: for now, to test flow between bidder-seller, we will keep both bidder and seller components showing */}
             {isSeller ? (
@@ -77,7 +80,10 @@ export default function AuctionDetail() {
             ) : (
               <></>
             )}
-            <AuctionSubDetail auctionInfo={auctionInfo} />
+            <AuctionSubDetail
+              description={assetMetadata?.description}
+              auctionInfo={auctionInfo}
+            />
           </div>
         </div>
       </div>

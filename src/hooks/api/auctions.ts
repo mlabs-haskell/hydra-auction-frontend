@@ -18,7 +18,6 @@ export const useActiveAuctions = (walletApp?: WalletApp) => {
     queryKey: [QUERY_AUCTIONS_QUERY_KEY, walletApp],
     queryFn: async () => {
       if (walletApp) {
-        console.log({ walletApp });
         return await queryAuctions(walletApp);
       } else {
         return [];

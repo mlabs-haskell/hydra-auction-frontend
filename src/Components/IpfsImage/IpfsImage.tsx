@@ -1,24 +1,25 @@
-import { useIpfsImageSrc } from 'src/hooks/api/ipfsImageSrc';
 import ImageWrapper from '../ImageWrapper/ImageWrapper';
+import { useAssetMetadata } from 'src/hooks/api/assets';
 
 type IpfsImageProps = {
-  assetUnit: string;
   small?: boolean;
   className?: string;
+  assetUnit: string;
 };
 
 export default function IpfsImage({
-  assetUnit,
   small = false,
   className,
+  assetUnit,
 }: IpfsImageProps) {
-  const { data: ipfsImageSrc, isLoading } = useIpfsImageSrc(assetUnit);
+  const { data: assetMetadata, isLoading } = useAssetMetadata(assetUnit);
   if (isLoading) return <div>Loading ...</div>;
+
   return (
     <ImageWrapper
       className={className}
       small={small}
-      src={ipfsImageSrc || ''}
+      src={assetMetadata?.image || ''}
       alt="NFT"
     />
   );

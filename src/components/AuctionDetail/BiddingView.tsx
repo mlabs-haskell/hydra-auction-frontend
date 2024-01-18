@@ -22,12 +22,10 @@ export default function BiddingView({
     auctionCs: auctionInfo.auctionTerms.auctionLot[0].cs,
     sellerPkh: auctionInfo.auctionTerms.sellerPkh,
   });
-  console.log({ walletApp, auctionInfo });
   const { data: standingBidState } = useStandingBidState(
     walletApp,
     auctionInfo
   );
-  console.log({ standingBidState, sellerSignature });
   if (!sellerSignature || !standingBidState)
     return <div>Error verifying bidding...</div>;
   return (

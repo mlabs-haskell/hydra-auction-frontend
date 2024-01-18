@@ -3,7 +3,7 @@ import { useState } from 'react';
 import NavPiece from './NavPiece';
 import SelectTab from './SelectTab';
 import CreateAuctionForm from '../CreateAuction/CreateAuctionForm';
-import Button from '../Button/Button';
+import { Button } from '../shadcn/Button';
 
 type CreateAuctionTabsProps = {
   assetToList: Asset | undefined;

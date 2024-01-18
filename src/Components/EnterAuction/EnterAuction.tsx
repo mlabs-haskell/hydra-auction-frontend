@@ -8,7 +8,7 @@ import {
 } from 'hydra-auction-offchain';
 import { useEnterAuction } from 'src/hooks/api/enterAuction';
 import { useWallet } from '@meshsdk/react';
-import Button from '../Button/Button';
+import { Button } from '../shadcn/Button';
 
 // For now we are passing the whole auction, but we will eventually only need the fields required to enter the auction?
 type EnterAuctionFormProps = {
