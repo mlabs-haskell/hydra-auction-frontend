@@ -2,7 +2,7 @@ type NumberInputProps = {
   label: string;
   inputId: string;
   placeholder?: string;
-  onChange?: (inputId: string, value: string) => void;
+  onChange?: (inputId: string, value: number) => void;
 };
 
 // TODO: Add currency symbol
@@ -19,9 +19,9 @@ export const NumberInput = ({
       </div>
 
       <input
-        onChange={(e) => onChange && onChange(inputId, e.target.value)}
+        onChange={(e) => onChange && onChange(inputId, Number(e.target.value))}
         id={inputId}
-        className="border-none p-1 m-0 mb-1"
+        className="border-none p-1 m-0 mb-1 bg-gray-100"
         placeholder={placeholder ? placeholder : ''}
         type="number"
       />

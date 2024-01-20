@@ -32,7 +32,6 @@ export const DateTimeInput = ({
           setValue(formattedDate);
         }}
         onBlur={(e) => {
-          console.log({ val: e.target.value });
           if (e.target.value !== '') return;
 
           const formattedDate = formatDate(new Date());

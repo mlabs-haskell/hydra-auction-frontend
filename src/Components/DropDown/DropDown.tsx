@@ -53,7 +53,7 @@ export const DropDown = ({
           {activeTitle || title}
         </div>
         {show && (
-          <div className="absolute z-10 bg-white w-fit border border-gray-700">
+          <div className="absolute z-10 bg-white w-full border border-gray-700">
             {options?.length &&
               options.map((option, index) => {
                 return (

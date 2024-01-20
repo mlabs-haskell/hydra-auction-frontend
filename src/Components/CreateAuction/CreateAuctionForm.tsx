@@ -3,29 +3,36 @@ import { NumberInput } from '../Inputs/NumberInput';
 import { DateTimeInput } from '../Inputs/DateInput';
 import { DropDown } from '../DropDown/DropDown';
 import { auctionFormSchema } from 'src/schemas/auctionFormSchema';
-import { getDelegates } from 'src/fetch/getDelegates';
-import { AnnounceAuctionContractParams } from 'hydra-auction-offchain';
+
+import {
+  AnnounceAuctionContractParams,
+  WalletApp,
+} from 'hydra-auction-offchain';
 
 import { MOCK_ANNOUNCE_AUCTION_PARAMS } from 'src/mocks/announceAuction.mock';
 import { getUrlParams } from 'src/utils/getUrlParams';
-import { useExtendedAssets } from 'src/hooks/assets';
+import { useExtendedAssets } from 'src/hooks/api/assets';
 import { utf8ToHex } from 'src/utils/hex';
-import { useAnnounceAuction } from 'src/hooks/announceAuction';
+import { useAnnounceAuction } from 'src/hooks/api/announceAuction';
 import { useWallet } from '@meshsdk/react';
+import { useNavigate } from 'react-router-dom';
+import { useDelegates } from 'src/hooks/api/delegates';
 
 type CreateAuctionFormProps = {
   className?: string;
 };
 const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
-  const delegateGroup = getDelegates();
+  const navigate = useNavigate();
+  const { data: delegateGroup } = useDelegates();
   const urlParams = getUrlParams();
   const assetUnit = urlParams.get('assetUnit');
-  const { assets, isError } = useExtendedAssets();
+
   const auctionFormData = useRef<AnnounceAuctionContractParams>(
     MOCK_ANNOUNCE_AUCTION_PARAMS
   );
-  const { name: walletName } = useWallet();
-  const announceAuction = useAnnounceAuction(walletName);
+  const { name: walletApp } = useWallet();
+  const { data: assets, isError } = useExtendedAssets(walletApp as WalletApp);
+  const announceAuction = useAnnounceAuction(walletApp);
   if (isError) {
     return null;
   }
@@ -100,6 +107,7 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
 
       const announceAuctionResponse = announceAuction.mutate(params);
       console.log({ announceAuctionResponse });
+      navigate('/auction-list');
     }
   };
 
@@ -142,7 +150,7 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
           /> */}
         <div className="text-callout mb-1 text-gray-700">Delegates</div>
         <DropDown
-          options={delegateGroup.delegates.map((delegate) => {
+          options={delegateGroup?.delegates.map((delegate) => {
             return {
               label: delegate,
               accessor: delegate,

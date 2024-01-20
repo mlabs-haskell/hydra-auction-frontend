@@ -1,12 +1,34 @@
 import { AuctionTerms } from 'hydra-auction-offchain';
 import { TimeRemaining } from './TimeRemaining';
 
+const TimeRemainingCard = ({
+  endDate,
+  label,
+  size = 'small',
+}: {
+  endDate: number;
+  label: string;
+  size?: string;
+}) => {
+  return size === 'small' ? (
+    <div className="overflow-hidden">
+      {label}: <TimeRemaining endDate={endDate} />
+    </div>
+  ) : (
+    <div>
+      <div className="text-dim mb-5">{label}</div>
+      <TimeRemaining size="large" endDate={endDate} />
+    </div>
+  );
+};
+
 export default function AuctionStateRemaining({
   biddingEnd,
   biddingStart,
   purchaseDeadline,
   cleanup,
-}: AuctionTerms) {
+  size = 'small',
+}: { size?: string } & AuctionTerms) {
   const purchaseDeadlineDate = Number(purchaseDeadline);
   const biddingStartDate = Number(biddingStart);
   const biddingEndDate = Number(biddingEnd);
@@ -15,37 +37,43 @@ export default function AuctionStateRemaining({
 
   if (now > cleanupDate) {
     return (
-      <div className="overflow-hidden">
-        Auction Expired:{' '}
-        <span className="text-dim">
-          {new Date(cleanupDate).toLocaleDateString()}
-        </span>
-      </div>
+      <TimeRemainingCard
+        size={size}
+        label="Auction Expired"
+        endDate={cleanupDate}
+      />
     );
   } else if (now > purchaseDeadlineDate) {
     return (
-      <div className="overflow-hidden">
-        Auction Cleanup: <TimeRemaining endDate={cleanupDate} />
-      </div>
+      <TimeRemainingCard
+        size={size}
+        label="Auction Cleanup"
+        endDate={cleanupDate}
+      />
     );
   } else if (now > biddingEndDate) {
     return (
-      <div className="overflow-hidden">
-        Auction Purchase Deadline:{' '}
-        <TimeRemaining endDate={purchaseDeadlineDate} />
-      </div>
+      <TimeRemainingCard
+        size={size}
+        label="Auction Purchase Deadline"
+        endDate={purchaseDeadlineDate}
+      />
     );
   } else if (now > biddingStartDate) {
     return (
-      <div className="overflow-hidden">
-        Auction End: <TimeRemaining endDate={biddingEndDate} />
-      </div>
+      <TimeRemainingCard
+        size={size}
+        label="Bidding Ends"
+        endDate={biddingEndDate}
+      />
     );
   } else {
     return (
-      <div className="overflow-hidden">
-        Auction Start: <TimeRemaining endDate={biddingStartDate} />
-      </div>
+      <TimeRemainingCard
+        size={size}
+        label="Bidding Starts"
+        endDate={biddingStartDate}
+      />
     );
   }
 }

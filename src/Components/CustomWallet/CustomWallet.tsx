@@ -1,5 +1,6 @@
 import { CardanoWallet, useWallet } from '@meshsdk/react';
 import { useEffect } from 'react';
+import { setLocalStorageItem } from 'src/utils/localStorage';
 
 type CustomWalletProps = {
   isDark: boolean;
@@ -22,13 +23,10 @@ export default function CustomWallet(
   }, []);
 
   const storeConnection = () => {
-    localStorage.setItem(
-      'lastConnectedWallet',
-      JSON.stringify({
-        name: walletName,
-        timestamp: Date.now(),
-      })
-    );
+    setLocalStorageItem('lastConnectedWallet', {
+      name: walletName,
+      timestamp: Date.now(),
+    });
   };
 
   return (

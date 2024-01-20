@@ -3,7 +3,7 @@ import { useState } from 'react';
 import NavPiece from './NavPiece';
 import SelectTab from './SelectTab';
 import CreateAuctionForm from '../CreateAuction/CreateAuctionForm';
-import Button from '../Button/Button';
+import { Button } from '../shadcn/Button';
 
 type CreateAuctionTabsProps = {
   assetToList: Asset | undefined;
@@ -71,7 +71,9 @@ export default function AnnounceTabs({ assetToList }: CreateAuctionTabsProps) {
 
       <div className="flex mt-12">
         {activeTab !== ANNOUNCE_AUCTION_TABS.length - 1 && (
-          <Button onClick={handleNext} label="Next" className="!px-32" />
+          <Button onClick={handleNext} className="!px-32">
+            Next
+          </Button>
         )}
         {/* <Button label="Save" className="w-full bg-white text-black" /> */}
       </div>
