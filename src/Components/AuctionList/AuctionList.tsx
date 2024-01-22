@@ -10,6 +10,7 @@ import {
   getAndStoreAssetMetadata,
 } from 'src/hooks/api/assets';
 import { getLocalStorageItem } from 'src/utils/localStorage';
+import { getAuctionAssetUnit } from 'src/utils/auction';
 
 export default function AuctionList() {
   const { name: walletName } = useWallet();
@@ -28,9 +29,7 @@ export default function AuctionList() {
   const fetchAndFilterAuctionsByImage = async (auctions: AuctionInfo[]) => {
     const filteredAuctions = await Promise.all(
       auctions.map(async (auction) => {
-        const tn = auction.auctionTerms.auctionLot[0].tn;
-        const cs = auction.auctionTerms.auctionLot[0].cs;
-        const assetUnit = `${cs}${tn}`;
+        const assetUnit = getAuctionAssetUnit(auction);
 
         await queryClient.prefetchQuery({
           queryKey: [METADATA_QUERY_KEY, assetUnit],

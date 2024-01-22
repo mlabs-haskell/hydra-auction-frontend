@@ -2,6 +2,32 @@ import { useEffect, useState } from 'react';
 
 // Component to display the time remaining for an auction
 // TODO: add color coding to warn auction is ending soon
+
+type TimeRemainingSlotProps = {
+  value: string;
+  label: string;
+  size?: string;
+};
+
+const TimeRemainingSlot = ({
+  value,
+  label,
+  size = 'small',
+}: TimeRemainingSlotProps) => {
+  return (
+    <div>
+      <div
+        className={`${
+          size === 'large' ? 'font-bold text-title1 mb-2' : 'font-semibold mb-1'
+        }`}
+      >
+        {value}
+      </div>
+      <div className="text-dim">{label}</div>
+    </div>
+  );
+};
+
 export const TimeRemaining = ({
   endDate,
   size = 'small',
@@ -40,65 +66,74 @@ export const TimeRemaining = ({
 
   if (size === 'large') {
     if (timeRemaining.days === null)
-      return <div className="text-title1 font-bold mb-2">Expired</div>;
+      return <div className="text-title1 font-bold ">Expired</div>;
     return timeRemaining.hours > 0 ? (
       <div className="grid grid-cols-3 gap-3">
-        <div>
-          <div className="text-title1 font-bold mb-2">{timeRemaining.days}</div>
-          <div className="text-dim">d</div>
-        </div>
-        <div>
-          <div className="text-title1 font-bold mb-2">
-            {String(timeRemaining.hours).padStart(2, '0')}
-          </div>
-          <div className="text-dim">hr</div>
-        </div>
-        <div>
-          <div className="text-title1 font-bold mb-2">
-            {String(timeRemaining.minutes).padStart(2, '0')}
-          </div>
-          <div className="text-dim">min</div>
-        </div>
+        <TimeRemainingSlot
+          size="large"
+          value={String(timeRemaining.days)}
+          label="d"
+        />
+        <TimeRemainingSlot
+          size="large"
+          value={String(timeRemaining.hours).padStart(2, '0')}
+          label="hr"
+        />
+        <TimeRemainingSlot
+          size="large"
+          value={String(timeRemaining.minutes).padStart(2, '0')}
+          label="min"
+        />
       </div>
     ) : (
       <div className="grid grid-cols-3 gap-3">
-        <div>
-          <div className="text-title1 font-bold mb-2">
-            {String(timeRemaining.hours).padStart(2, '0')}
-          </div>
-          <div className="text-dim">hr</div>
-        </div>
-        <div>
-          <div className="text-title1 font-bold mb-2">
-            {String(timeRemaining.minutes).padStart(2, '0')}
-          </div>
-          <div className="text-dim">min</div>
-        </div>
-        <div>
-          <div className="text-title1 font-bold mb-2">
-            {String(timeRemaining.seconds).padStart(2, '0')}
-          </div>
-          <div className="text-dim">sec</div>
-        </div>
+        <TimeRemainingSlot
+          size="large"
+          value={String(timeRemaining.hours).padStart(2, '0')}
+          label="hr"
+        />
+        <TimeRemainingSlot
+          size="large"
+          value={String(timeRemaining.minutes).padStart(2, '0')}
+          label="min"
+        />
+        <TimeRemainingSlot
+          size="large"
+          value={String(timeRemaining.seconds).padStart(2, '0')}
+          label="sec"
+        />
+      </div>
+    );
+  } else {
+    if (timeRemaining.days === null)
+      return <div className=" font-semibold">Expired</div>;
+    return timeRemaining.hours > 0 ? (
+      <div className="grid grid-cols-3 gap-3">
+        <TimeRemainingSlot value={String(timeRemaining.days)} label="d" />
+        <TimeRemainingSlot
+          value={String(timeRemaining.hours).padStart(2, '0')}
+          label="hr"
+        />
+        <TimeRemainingSlot
+          value={String(timeRemaining.minutes).padStart(2, '0')}
+          label="min"
+        />
+      </div>
+    ) : (
+      <div className="grid grid-cols-3 gap-3">
+        <TimeRemainingSlot
+          value={String(timeRemaining.hours).padStart(2, '0')}
+          label="hr"
+        />
+        <TimeRemainingSlot
+          value={String(timeRemaining.minutes).padStart(2, '0')}
+          label="min"
+        />
+        <TimeRemainingSlot
+          value={String(timeRemaining.seconds).padStart(2, '0')}
+          label="sec"
+        />
       </div>
     );
   }
-  if (timeRemaining.days === null) return <>Expired</>;
-
-  if (timeRemaining.days > 0) {
-    return (
-      <>
-        {timeRemaining.days} {timeRemaining.days === 1 ? 'day' : 'days'}{' '}
-        remaining
-      </>
-    );
-  }
-
-  return (
-    <>
-      {String(timeRemaining.hours).padStart(2, '0')}:
-      {String(timeRemaining.minutes).padStart(2, '0')}:
-      {String(timeRemaining.seconds).padStart(2, '0')} remaining
-    </>
-  );
 };

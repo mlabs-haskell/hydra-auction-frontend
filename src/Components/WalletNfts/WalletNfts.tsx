@@ -16,8 +16,11 @@ const WalletNftCard = ({
 }: WalletNftCardProps) => {
   return (
     <a href={`/create-auction?assetUnit=${assetUnit}&assetName=${assetName}`}>
-      <div className="flex justify-center items-center mb-3">
-        <IpfsImage assetUnit={assetUnit} />
+      <div className="aspect-w-1 aspect-h-1 w-full h-full max-h-64 overflow-hidden justify-center items-center pb-4">
+        <IpfsImage
+          className="w-full h-full object-cover object-center transition-transform duration-[500ms] hover:scale-110 hover:transform"
+          assetUnit={assetUnit}
+        />
       </div>
       <div className="text-center">{assetName}</div>
     </a>
