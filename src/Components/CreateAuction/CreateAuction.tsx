@@ -23,7 +23,7 @@ export default function CreateAuction() {
 
       <div className="flex flex-col lg:flex-row gap-28 justify-center lg:justify-start items-start">
         <div className="self-center lg:self-start">
-          <CurrentListing name={assetName} price={100} assetUnit={assetUnit} />
+          <CurrentListing name={assetName} assetUnit={assetUnit} />
         </div>
         <div className="self-center lg:self-start">
           <CreateAuctionTabs assetToList={assetToList} />

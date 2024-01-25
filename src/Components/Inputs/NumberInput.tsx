@@ -3,6 +3,7 @@ type NumberInputProps = {
   inputId: string;
   placeholder?: string;
   onChange?: (inputId: string, value: number) => void;
+  value?: number | string;
 };
 
 // TODO: Add currency symbol
@@ -11,6 +12,7 @@ export const NumberInput = ({
   inputId,
   onChange,
   placeholder,
+  value,
 }: NumberInputProps) => {
   return (
     <div className="border-b-2 border-black">
@@ -24,6 +26,7 @@ export const NumberInput = ({
         className="border-none p-1 m-0 mb-1 bg-gray-100"
         placeholder={placeholder ? placeholder : ''}
         type="number"
+        value={value}
       />
     </div>
   );

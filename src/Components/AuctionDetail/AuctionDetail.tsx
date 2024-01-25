@@ -11,6 +11,9 @@ import { useAuctionsBidding } from '../../hooks/api/enterAuction';
 import { getAuctionAssetUnit } from 'src/utils/auction';
 import AuctionSubDetail from './AuctionSubDetail';
 import { useAssetMetadata } from 'src/hooks/api/assets';
+import { useCleanupAuction } from 'src/hooks/api/cleanup';
+import { ArrowDownIcon } from '@radix-ui/react-icons';
+import { Button } from '../shadcn/Button';
 
 const MOCK_NFT_TITLE = 'My NFT';
 
@@ -36,6 +39,8 @@ export default function AuctionDetail() {
     (auction) => getAuctionAssetUnit(auction) === assetUnit
   );
 
+  const cleanupAuction = useCleanupAuction();
+
   const { data: assetMetadata } = useAssetMetadata(assetUnit);
 
   const { data: auctionsBidding } = useAuctionsBidding(auctionInfo?.auctionId);
@@ -52,6 +57,9 @@ export default function AuctionDetail() {
   const isBidder = getIsBidder(auctionsBidding, auctionInfo);
 
   console.log({ isSeller, isBidder });
+  const handleCleanupAuction = () => {
+    cleanupAuction.mutate(auctionInfo);
+  };
 
   return (
     <div className="flex items-center justify-center">
@@ -80,6 +88,11 @@ export default function AuctionDetail() {
             ) : (
               <></>
             )}
+            <ArrowDownIcon className="text-3xl font-bold" />
+            <Button onClick={handleCleanupAuction} className="w-full">
+              Cleanup
+            </Button>
+
             <AuctionSubDetail
               description={assetMetadata?.description}
               auctionInfo={auctionInfo}

@@ -55,7 +55,6 @@ export type AuctionBiddingItem = {
   depositAmount: string;
 };
 
-// TODO: move localStorage to a hook or a utility fn to avoid parsing and error handling
 export const useAuctionsBidding = (auctionId?: string) => {
   return useQuery({
     queryKey: [AUCTIONS_BIDDING_QUERY_KEY, auctionId],

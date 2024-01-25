@@ -12,7 +12,8 @@ const TimeRemainingCard = ({
 }) => {
   return size === 'small' ? (
     <div className="overflow-hidden">
-      {label}: <TimeRemaining endDate={endDate} />
+      <div>{label}</div>
+      <TimeRemaining endDate={endDate} />
     </div>
   ) : (
     <div>
@@ -36,13 +37,7 @@ export default function AuctionStateRemaining({
   const now = Date.now();
 
   if (now > cleanupDate) {
-    return (
-      <TimeRemainingCard
-        size={size}
-        label="Auction Expired"
-        endDate={cleanupDate}
-      />
-    );
+    return <TimeRemainingCard size={size} label="" endDate={cleanupDate} />;
   } else if (now > purchaseDeadlineDate) {
     return (
       <TimeRemainingCard

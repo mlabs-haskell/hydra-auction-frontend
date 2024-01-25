@@ -2,6 +2,8 @@ import { AuctionInfo, WalletApp } from 'hydra-auction-offchain';
 import EnterAuction from '../EnterAuction/EnterAuction';
 import BiddingView from './BiddingView';
 import { ArrowDownIcon } from '@radix-ui/react-icons';
+import { BidderClaims } from './BidderClaims';
+
 type AuctionDetailBidderProps = {
   walletApp: WalletApp;
   auctionInfo: AuctionInfo;
@@ -17,6 +19,8 @@ export default function AuctionDetailBidder({
       <EnterAuction auction={auctionInfo} />
       <ArrowDownIcon className="text-3xl font-bold" />
       <BiddingView walletApp={walletApp} auctionInfo={auctionInfo} />
+      <ArrowDownIcon className="text-3xl font-bold" />
+      <BidderClaims auctionInfo={auctionInfo} />
     </div>
   );
 }
