@@ -16,7 +16,7 @@ export const auctionFormSchema = z.object({
     delegates: z.array(z.string()),
     minBidIncrement: z.string(),
     minDepositAmount: z.string(),
-    sellerPkh: z.string(),
+    sellerAddress: z.string(),
     sellerVk: z.string(),
     startingBid: z.string(),
   }),

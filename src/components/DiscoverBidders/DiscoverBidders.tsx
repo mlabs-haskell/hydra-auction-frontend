@@ -1,5 +1,6 @@
 import {
   AuctionInfo,
+  BidderInfoCandidate,
   VerificationKey,
   WalletApp,
 } from 'hydra-auction-offchain';
@@ -47,14 +48,16 @@ export const DiscoverBidders = ({
   return (
     <div className="flex flex-col gap-6 justify-center items-center w-full">
       <DropdownCheckbox label="Select bidders to authorize" subLabel="Bidders">
-        {bidders?.map((bidder) => {
+        {bidders?.map((bidder: BidderInfoCandidate) => {
           return (
             <DropdownMenuCheckboxItem
-              key={`${bidder.bidderVk}_auth_bidder_select`}
-              checked={selectedBidders.includes(bidder.bidderVk)}
-              onCheckedChange={() => handleSelectBidder(bidder.bidderVk)}
+              key={`${bidder.bidderInfo.bidderVk}_auth_bidder_select`}
+              checked={selectedBidders.includes(bidder.bidderInfo.bidderVk)}
+              onCheckedChange={() =>
+                handleSelectBidder(bidder.bidderInfo.bidderVk)
+              }
             >
-              {bidder.bidderVk}
+              {bidder.bidderInfo.bidderVk}
             </DropdownMenuCheckboxItem>
           );
         })}

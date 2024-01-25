@@ -65,7 +65,7 @@ export const EnterAuctionForm = ({ auction }: EnterAuctionFormProps) => {
           inputId="depositAmount"
           placeholder={`Minimum Deposit: ${auction.auctionTerms.minDepositAmount} ADA`}
           onChange={handleInputChange}
-          value={enterAuctionFormData.depositAmount}
+          value={enterAuctionFormData.depositAmount ?? undefined}
         />
         <input type="submit" className="submit-btn"></input>
       </form>

@@ -16,6 +16,6 @@ export const auctionTermsSchema = z.object({
   startingBid: z.string(),
   minBidIncrement: z.string(),
   minDepositAmount: z.string(),
-  sellerPkh: z.string(),
+  sellerAddress: z.string(),
   sellerVk: z.string(),
 });

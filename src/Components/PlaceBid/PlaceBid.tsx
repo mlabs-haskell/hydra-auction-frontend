@@ -6,17 +6,18 @@ import {
 
 import { NumberInput } from '../Inputs/NumberInput';
 import { usePlaceBid } from '../../hooks/api/bidding';
+import { AuctionInfo } from 'hydra-auction-offchain';
 
 export const PlaceBidForm = ({
-  auctionCs,
+  auctionInfo,
   sellerSignature,
   standingBid,
 }: {
-  auctionCs: string;
+  auctionInfo: AuctionInfo;
   sellerSignature: string;
   standingBid: string;
 }) => {
-  const placeBid = usePlaceBid(auctionCs, sellerSignature);
+  const placeBid = usePlaceBid(auctionInfo, sellerSignature);
 
   const placeBidFormData = useRef<PlaceBidFormT>({
     bidAmount: 0,

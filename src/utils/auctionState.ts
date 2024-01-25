@@ -11,7 +11,7 @@ export enum AuctionState {
 }
 
 export const getIsSeller = (sellerAddress: string, auction: AuctionInfo) => {
-  return sellerAddress === auction.auctionTerms.sellerPkh;
+  return sellerAddress === auction.auctionTerms.sellerAddress;
 };
 
 export const getIsBidder = (

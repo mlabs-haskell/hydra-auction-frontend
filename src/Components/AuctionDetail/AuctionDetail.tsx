@@ -39,7 +39,7 @@ export default function AuctionDetail() {
     (auction) => getAuctionAssetUnit(auction) === assetUnit
   );
 
-  const cleanupAuction = useCleanupAuction();
+  const cleanupAuction = useCleanupAuction(walletApp);
 
   const { data: assetMetadata } = useAssetMetadata(assetUnit);
 

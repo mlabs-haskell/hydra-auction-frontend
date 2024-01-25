@@ -6,6 +6,7 @@ import {
   DiscoverSellerSigContractParams,
   discoverSellerSignature,
   placeBid,
+  PlaceBidContractParams,
   queryStandingBidState,
   startBidding,
   StartBiddingContractParams,
@@ -13,6 +14,7 @@ import {
 } from 'hydra-auction-offchain';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { QUERY_AUCTIONS_QUERY_KEY } from './auctions';
+import { useWallet } from '@meshsdk/react';
 
 export type HookResponse = {
   data: AuctionInfo[] | undefined;
@@ -84,15 +86,24 @@ export const useDiscoverSellerSignature = (
 };
 
 export const usePlaceBid = (
-  auctionCs: string,
+  auctionInfo: AuctionInfo,
   sellerSignature?: string | null
 ) => {
   const queryClient = useQueryClient();
+  const { name: walletName } = useWallet();
 
   const placeBidMutation = useMutation({
-    mutationFn: async (bidAmount: string) =>
-      sellerSignature &&
-      (await placeBid(auctionCs, bidAmount, sellerSignature)),
+    mutationFn: async (bidAmount: string) => {
+      const params: PlaceBidContractParams = {
+        auctionInfo,
+        sellerSignature: sellerSignature ?? '',
+        bidAmount,
+      };
+
+      return (
+        sellerSignature && (await placeBid(walletName as WalletApp, params))
+      );
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_AUCTIONS_QUERY_KEY] });
     },

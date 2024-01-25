@@ -1,10 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
-import { AuctionInfo, cleanupAuction } from 'hydra-auction-offchain';
+import { AuctionInfo, WalletApp, cleanupAuction } from 'hydra-auction-offchain';
 
-export const useCleanupAuction = () => {
+export const useCleanupAuction = (walletApp: WalletApp) => {
   const cleanupMutation = useMutation({
     mutationFn: async (auctionInfo: AuctionInfo) =>
-      await cleanupAuction(auctionInfo),
+      await cleanupAuction(walletApp, auctionInfo),
   });
 
   return cleanupMutation;

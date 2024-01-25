@@ -1,13 +1,16 @@
-import { AuctionInfo } from 'hydra-auction-offchain';
+import { AuctionInfo, WalletApp } from 'hydra-auction-offchain';
 import { Button } from '../shadcn/Button';
 import {
   useClaimAuctionLotBidder,
   useClaimDepositLoser,
 } from 'src/hooks/api/claim';
+import { useWallet } from '@meshsdk/react';
 
 export const BidderClaims = ({ auctionInfo }: { auctionInfo: AuctionInfo }) => {
-  const claimAuctionLot = useClaimAuctionLotBidder();
-  const claimDeposit = useClaimDepositLoser();
+  const { name: walletName } = useWallet();
+
+  const claimAuctionLot = useClaimAuctionLotBidder(walletName as WalletApp);
+  const claimDeposit = useClaimDepositLoser(walletName as WalletApp);
 
   const handleClaimAuctionLot = () => {
     claimAuctionLot.mutate(auctionInfo);

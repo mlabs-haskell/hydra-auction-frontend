@@ -138,9 +138,9 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
         {/* <AuctionLotList onChangeAuctionLotList={handleAuctionLotsChange} /> */}
         {/* <StringInput
             label="Seller Public Key Hash"
-            inputId="sellerPkh"
+            inputId="sellerAddress"
             onChange={handleAuctionInputChange}
-            placeholder={auctionFormData.current.auctionTerms.sellerPkh}
+            placeholder={auctionFormData.current.auctionTerms.sellerAddress}
           />
           <StringInput
             label="Seller Verification Key"
