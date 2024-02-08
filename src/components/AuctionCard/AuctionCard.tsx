@@ -29,7 +29,7 @@ function AuctionCard({ auctionInfo }: AuctionCardProps) {
     <div className="border rounded-lg overflow-hidden shadow-md hover:bg-slate-200 h-full">
       <a
         className="flex flex-col items-center h-full"
-        href={`/auction?assetUnit=${assetUnit}`}
+        href={`/auction?auctionId=${auctionInfo.auctionId}`}
       >
         <div className="aspect-w-1 aspect-h-1 w-full h-full max-h-72 overflow-hidden justify-center items-center">
           <IpfsImage

@@ -26,10 +26,17 @@ export const DiscoverBidders = ({
   const { data: bidders } = useDiscoverBidders(walletApp, auctionInfo);
   const authorizeBidders = useAuthorizeBidders(walletApp);
   const [selectedBidders, setSelectedBidders] = useState<VerificationKey[]>([]);
+  console.log({ bidders });
+
+  // Only list bidders that have a valid deposit amount
+  const bidderKeys = bidders
+    ?.filter((bidder) => bidder.isValid)
+    .map((bidder) => bidder.bidderInfo.bidderVk);
+  const uniqueBidders = [...new Set(bidderKeys)];
 
   const handleAuthorize = () => {
     const authorizeBiddersMutateResponse = authorizeBidders.mutate({
-      auctionCs: auctionInfo.auctionTerms.auctionLot[0].cs,
+      auctionCs: auctionInfo.auctionId,
       biddersToAuthorize: selectedBidders,
     });
     console.log({ authorizeBiddersMutateResponse });
@@ -48,16 +55,14 @@ export const DiscoverBidders = ({
   return (
     <div className="flex flex-col gap-6 justify-center items-center w-full">
       <DropdownCheckbox label="Select bidders to authorize" subLabel="Bidders">
-        {bidders?.map((bidder: BidderInfoCandidate) => {
+        {uniqueBidders?.map((bidderVk: VerificationKey, index: number) => {
           return (
             <DropdownMenuCheckboxItem
-              key={`${bidder.bidderInfo.bidderVk}_auth_bidder_select`}
-              checked={selectedBidders.includes(bidder.bidderInfo.bidderVk)}
-              onCheckedChange={() =>
-                handleSelectBidder(bidder.bidderInfo.bidderVk)
-              }
+              key={`${bidderVk}_auth_bidder_select_${index}`}
+              checked={selectedBidders.includes(bidderVk)}
+              onCheckedChange={() => handleSelectBidder(bidderVk)}
             >
-              {bidder.bidderInfo.bidderVk}
+              {bidderVk}
             </DropdownMenuCheckboxItem>
           );
         })}

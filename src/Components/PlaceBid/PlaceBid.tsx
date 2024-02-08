@@ -7,17 +7,23 @@ import {
 import { NumberInput } from '../Inputs/NumberInput';
 import { usePlaceBid } from '../../hooks/api/bidding';
 import { AuctionInfo } from 'hydra-auction-offchain';
+import { WalletApp } from 'hydra-auction-offchain';
+
+type PlaceBidFormProps = {
+  auctionInfo: AuctionInfo;
+  sellerSignature: string;
+  standingBid: string;
+  walletApp: WalletApp;
+};
 
 export const PlaceBidForm = ({
   auctionInfo,
   sellerSignature,
   standingBid,
-}: {
-  auctionInfo: AuctionInfo;
-  sellerSignature: string;
-  standingBid: string;
-}) => {
-  const placeBid = usePlaceBid(auctionInfo, sellerSignature);
+  walletApp,
+}: PlaceBidFormProps) => {
+  console.log({ sellerSignature });
+  const placeBidMutation = usePlaceBid(auctionInfo, sellerSignature, walletApp);
 
   const placeBidFormData = useRef<PlaceBidFormT>({
     bidAmount: 0,
@@ -25,18 +31,26 @@ export const PlaceBidForm = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log({ placeBidFormData });
-    const placeBidForm = placeBidFormSchema
-      .refine((data) => data.bidAmount > Number(standingBid), {
-        message: 'Bid must be higher than the current bid',
-      })
-      .safeParse(placeBidFormData.current);
-    if (!placeBidForm.success) {
-      // TODO: Show error to client
-      console.log(placeBidForm.error);
-    } else {
-      placeBid.mutate(String(placeBidForm.data.bidAmount));
-    }
+    // To uncomment once we can use standing bid to safe check the input
+    // console.log({ placeBidFormData });
+    // const placeBidForm = placeBidFormSchema
+    //   .refine((data) => data.bidAmount > Number(standingBid), {
+    //     message: 'Bid must be higher than the current bid',
+    //   })
+    //   .safeParse(placeBidFormData.current);
+
+    // if (!placeBidForm.success) {
+    //   // TODO: Show error to client
+    //   console.log(placeBidForm.error);
+    // } else {
+    //   console.log('MUTATING PLACE BID');
+    //   placeBid.mutate(String(placeBidForm.data.bidAmount));
+    // }
+
+    const placeBidResponse = placeBidMutation.mutate(
+      String(placeBidFormData.current.bidAmount)
+    );
+    console.log({ placeBidResponse });
   };
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>

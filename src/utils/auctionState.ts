@@ -10,15 +10,17 @@ export enum AuctionState {
   CLEANUP,
 }
 
-export const getIsSeller = (sellerAddress: string, auction: AuctionInfo) => {
+export const getIsSeller = (sellerAddress?: string, auction?: any) => {
+  if (!sellerAddress || !auction) return false;
   return sellerAddress === auction.auctionTerms.sellerAddress;
 };
 
 export const getIsBidder = (
-  auctionsBidding: AuctionBiddingItem[],
-  auctionInfo: AuctionInfo
+  auctionsBidding?: AuctionBiddingItem[],
+  auctionInfo?: AuctionInfo
 ) => {
-  return auctionsBidding?.find(
+  if (!auctionsBidding || !auctionInfo) return false;
+  return auctionsBidding.some(
     (biddingItem: AuctionBiddingItem) =>
       biddingItem.auctionId === auctionInfo.auctionId
   );

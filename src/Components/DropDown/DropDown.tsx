@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { OutsideAlerter } from '../OutsideAlerter/OutsideAlerter';
 import clsx from 'clsx';
 
@@ -18,17 +18,21 @@ type DropDownProps = {
 export const DropDown = ({
   options,
   title,
-  defaultIndex = 0,
+  defaultIndex,
   onChange,
   className,
 }: DropDownProps) => {
-  const [activeIndex, setActiveIndex] = useState(defaultIndex);
-  const [activeTitle, setTitle] = useState<string | null>(null);
+  const [activeIndex, setActiveIndex] = useState(defaultIndex ?? 0);
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    options?.length && setTitle(options[activeIndex].label);
-  }, [activeIndex, options]);
+    setActiveIndex(defaultIndex ?? 0);
+  }, [defaultIndex]);
+
+  const activeTitle = useMemo(
+    () => options?.at(activeIndex)?.label ?? title,
+    [activeIndex, options, title]
+  );
 
   const handleClick = () => {
     setShow(!show);
@@ -50,7 +54,7 @@ export const DropDown = ({
             className
           )}
         >
-          {activeTitle || title}
+          {activeTitle}
         </div>
         {show && (
           <div className="absolute z-10 bg-white w-full border border-gray-700">

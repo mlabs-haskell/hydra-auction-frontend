@@ -9,6 +9,7 @@ import {
 import { useEnterAuction } from 'src/hooks/api/enterAuction';
 import { useWallet } from '@meshsdk/react';
 import { Button } from '../shadcn/Button';
+import { useWalletAddress } from 'src/hooks/api/user';
 
 type EnterAuctionFormProps = {
   auction: AuctionInfo;
@@ -16,7 +17,8 @@ type EnterAuctionFormProps = {
 
 // TODO: we are setting the default deposit to minimum deposit, they can enter an alternative if they wish
 export const EnterAuctionForm = ({ auction }: EnterAuctionFormProps) => {
-  const { name: walletApp } = useWallet();
+  const { name: walletApp, wallet, connected } = useWallet();
+  const { data: walletAddress } = useWalletAddress(wallet, connected);
   const enterAuction = useEnterAuction(walletApp as WalletApp);
 
   const [enterAuctionFormData, setEnterAuctionFormData] =
@@ -45,8 +47,12 @@ export const EnterAuctionForm = ({ auction }: EnterAuctionFormProps) => {
     if (!auctionForm.success) {
       console.log(auctionForm.error);
     } else {
-      console.log(auctionForm.data);
-      enterAuction.mutate(auctionForm.data as EnterAuctionContractParams);
+      if (walletAddress) {
+        enterAuction.mutate({
+          enterAuctionParams: auctionForm.data as EnterAuctionContractParams,
+          walletAddress: walletAddress,
+        });
+      }
       // TODO: should show pop up message that tells bidder that the seller will now authorize them and they will be notified
     }
   };

@@ -2,18 +2,16 @@ import { useExtendedAssets } from 'src/hooks/api/assets';
 import IpfsImage from '../IpfsImage/IpfsImage';
 import { useWallet } from '@meshsdk/react';
 import { WalletApp } from 'hydra-auction-offchain';
+import { removeSpecialCharsAssetName } from 'src/utils/formatting';
 
 type WalletNftCardProps = {
   assetImageSrc?: string;
-  assetName?: string;
+  assetName: string;
   assetUnit: string;
 };
 
 // TODO: combine WalletNftCard and AuctionCard
-const WalletNftCard = ({
-  assetName = 'Name',
-  assetUnit,
-}: WalletNftCardProps) => {
+const WalletNftCard = ({ assetName, assetUnit }: WalletNftCardProps) => {
   return (
     <a href={`/create-auction?assetUnit=${assetUnit}&assetName=${assetName}`}>
       <div className="aspect-w-1 aspect-h-1 w-full h-full max-h-64 overflow-hidden justify-center items-center pb-4">
@@ -31,6 +29,7 @@ export default function WalletNfts() {
   const { name: walletApp } = useWallet();
 
   const { data: assets, isError } = useExtendedAssets(walletApp as WalletApp);
+  console.log({ walletApp, assets, isError });
 
   if (isError) return <div>Error getting assets...</div>;
   return (
@@ -40,7 +39,10 @@ export default function WalletNfts() {
           key={index}
           className=" border p-4 rounded-lg shadow-md hover:bg-slate-200"
         >
-          <WalletNftCard assetUnit={asset.unit} assetName={asset.assetName} />
+          <WalletNftCard
+            assetUnit={asset.unit}
+            assetName={removeSpecialCharsAssetName(asset.assetName)}
+          />
         </li>
       ))}
     </ul>
