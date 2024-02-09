@@ -1,6 +1,5 @@
 import {
   AuctionInfo,
-  BidderInfoCandidate,
   VerificationKey,
   WalletApp,
 } from 'hydra-auction-offchain';
@@ -24,7 +23,8 @@ export const DiscoverBidders = ({
   auctionInfo,
 }: DiscoverBidderProps) => {
   const { data: bidders } = useDiscoverBidders(walletApp, auctionInfo);
-  const authorizeBidders = useAuthorizeBidders(walletApp);
+  const { mutate: authorizeBidders, isPending: isAuthorizeBiddersPending } =
+    useAuthorizeBidders(walletApp);
   const [selectedBidders, setSelectedBidders] = useState<VerificationKey[]>([]);
   console.log({ bidders });
 
@@ -35,7 +35,7 @@ export const DiscoverBidders = ({
   const uniqueBidders = [...new Set(bidderKeys)];
 
   const handleAuthorize = () => {
-    const authorizeBiddersMutateResponse = authorizeBidders.mutate({
+    const authorizeBiddersMutateResponse = authorizeBidders({
       auctionCs: auctionInfo.auctionId,
       biddersToAuthorize: selectedBidders,
     });
@@ -67,7 +67,12 @@ export const DiscoverBidders = ({
           );
         })}
       </DropdownCheckbox>
-      <Button className="w-full" onClick={handleAuthorize}>
+
+      <Button
+        disabled={isAuthorizeBiddersPending}
+        className={`w-full ${isAuthorizeBiddersPending && 'opacity-40'}`}
+        onClick={handleAuthorize}
+      >
         Authorize
       </Button>
     </div>

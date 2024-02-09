@@ -34,8 +34,6 @@ export default function AuctionDetail() {
   );
   const assetUnit = getAuctionAssetUnit(auctionInfo);
 
-  // NOTE: Uncomment this to reset localstorage for auctions you are bidding on
-
   const cleanupAuction = useCleanupAuction(walletApp);
 
   const { data: assetMetadata } = useAssetMetadata(assetUnit);
@@ -74,6 +72,7 @@ export default function AuctionDetail() {
         ) : (
           <AuctionDetailBidder
             walletApp={walletApp}
+            walletAddress={walletAddress}
             auctionInfo={auctionInfo}
           />
         )}

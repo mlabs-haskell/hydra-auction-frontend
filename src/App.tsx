@@ -10,6 +10,8 @@ import { MeshProvider } from '@meshsdk/react';
 import CreateAuctionList from './components/CreateAuction/CreateAuctionList';
 import Footer from './components/Footer/Footer';
 import Topbar from './components/Navbar/Topbar';
+import { Bounce, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
@@ -34,6 +36,20 @@ function App() {
                 {/* TODO: collection/wallet routes */}
               </Routes>
             </Layout>
+            <ToastContainer
+              position="bottom-center"
+              autoClose={5000}
+              hideProgressBar={true}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+              transition={Bounce}
+            />
+
             <Footer />
           </>
         </ReactQueryProvider>

@@ -4,10 +4,12 @@ import {
   WalletApp,
   enterAuction,
 } from 'hydra-auction-offchain';
+import { toast } from 'react-toastify';
 import {
   getLocalStorageItem,
   setLocalStorageItem,
 } from 'src/utils/localStorage';
+import { logContractToast } from 'src/utils/contract';
 
 export type AuctionBiddingItem = {
   auctionId: string;
@@ -32,6 +34,7 @@ export const useEnterAuction = (walletApp: WalletApp) => {
     mutationFn: async (
       enterAuctionMutationParams: EnterAuctionMutationParams
     ) => {
+      toast.info(`Entering auction...`);
       const enterAuctionParams = enterAuctionMutationParams.enterAuctionParams;
       console.log({ enterAuctionParams });
       const enterAuctionResponse = await enterAuction(
@@ -39,6 +42,14 @@ export const useEnterAuction = (walletApp: WalletApp) => {
         enterAuctionParams
       );
       console.log({ enterAuctionResponse });
+
+      logContractToast({
+        contractResponse: enterAuctionResponse,
+        toastSuccessMsg:
+          'Auction entered succesfully. Once the the seller approves your deposit, you will be able to bid.',
+        toastErrorMsg: 'Entering auction failed:',
+      });
+
       return {
         data: enterAuctionResponse,
         params: enterAuctionParams,
@@ -52,6 +63,7 @@ export const useEnterAuction = (walletApp: WalletApp) => {
       const mutationParams = mutationResponse.params;
       const auctionInfo = mutationParams.auctionInfo;
       const walletAddress = mutationResponse.walletAddress;
+      const auctionCs = auctionInfo.auctionId;
       const walletData: WalletDataLocalStorage = getLocalStorageItem(
         walletAddress
       ) || {

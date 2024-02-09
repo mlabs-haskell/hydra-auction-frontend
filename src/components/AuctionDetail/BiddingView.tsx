@@ -1,8 +1,5 @@
 import { AuctionInfo, WalletApp } from 'hydra-auction-offchain';
-import {
-  useDiscoverSellerSignature,
-  useStandingBidState,
-} from '../../hooks/api/bidding';
+import { useStandingBidState } from '../../hooks/api/bidding';
 import { PlaceBidForm } from '../PlaceBid/PlaceBid';
 import { ADA_CURRENCY_SYMBOL } from '../../utils/currency';
 import { Button } from '../shadcn/Button';
@@ -11,25 +8,19 @@ import AuctionStateRemaining from '../Time/AuctionStateRemaining';
 type BiddingViewProps = {
   walletApp: WalletApp;
   auctionInfo: AuctionInfo;
+  sellerSignature: string;
 };
 
 // TODO: figure out buy it now flow, disable/grey out button if no buy it now
 export default function BiddingView({
   walletApp,
   auctionInfo,
+  sellerSignature,
 }: BiddingViewProps) {
-  const { data: sellerSignature } = useDiscoverSellerSignature(walletApp, {
-    auctionCs: auctionInfo.auctionId,
-    sellerAddress: auctionInfo.auctionTerms.sellerAddress,
-  });
   const { data: standingBidState } = useStandingBidState(
     walletApp,
     auctionInfo
   );
-  if (sellerSignature?.tag !== 'result') {
-    return <div>Seller Signature Error</div>;
-  }
-  if (!sellerSignature) return <div>Error verifying bidding...</div>;
   return (
     <div className="w-full flex flex-col gap-10">
       <div className="flex justify-center mb-12 items-stretch">
@@ -56,7 +47,7 @@ export default function BiddingView({
       </div>
       <PlaceBidForm
         auctionInfo={auctionInfo}
-        sellerSignature={sellerSignature.value ?? ''}
+        sellerSignature={sellerSignature}
         walletApp={walletApp}
         standingBid={standingBidState?.price ?? ''}
       />

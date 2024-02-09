@@ -2,6 +2,7 @@ import {
   AuctionInfo,
   authorizeBidders,
   AuthorizeBiddersContractParams,
+  awaitTxConfirmed,
   discoverBidders,
   DiscoverSellerSigContractParams,
   discoverSellerSignature,
@@ -14,6 +15,9 @@ import {
 } from 'hydra-auction-offchain';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { QUERY_AUCTIONS_QUERY_KEY } from './auctions';
+import { toast } from 'react-toastify';
+import { logContractToast } from 'src/utils/contract';
+import { ADA_CURRENCY_SYMBOL } from 'src/utils/currency';
 
 export type HookResponse = {
   data: AuctionInfo[] | undefined;
@@ -25,7 +29,7 @@ export const STANDING_BID_STATE_QUERY_KEY = 'standing-bid-state';
 export const DISCOVER_BIDDERS_QUERY_KEY = 'discover-bidders';
 export const AUTHORIZE_BIDDERS_QUERY_KEY = 'authorize-bidders';
 export const START_BIDDING_QUERY_KEY = 'start-bidding';
-const DISCOVER_SELLER_SIGNATURE_QUERY_KEY = 'discover-seller-signature';
+export const DISCOVER_SELLER_SIGNATURE_QUERY_KEY = 'discover-seller-signature';
 
 // FLOW: bidder enterAuction -> seller discoverBidders -> seller authorizeBidders -> bidder discoverSellerSignature -> seller startBidding -> bidder placeBid
 // TODO: flesh out into separate files once we have flow down
@@ -67,37 +71,54 @@ export const useAuthorizeBidders = (walletApp: WalletApp) => {
       authorizeBiddersParams: AuthorizeBiddersContractParams
     ) => {
       console.log({ authorizeBiddersParams });
+      toast.info('Authorizing bidders (this may take a few minutes)...');
       const authorizeBiddersResponse = await authorizeBidders(
         walletApp,
         authorizeBiddersParams
       );
 
       console.log({ authorizeBiddersResponse });
-      return authorizeBiddersResponse;
+      if (typeof authorizeBiddersResponse.value === 'string') {
+        toast.info('Confirming authorized bidders contract...');
+        await awaitTxConfirmed(walletApp, authorizeBiddersResponse.value);
+        logContractToast({
+          contractResponse: authorizeBiddersResponse,
+          toastSuccessMsg: `Successfully authorized ${authorizeBiddersParams.biddersToAuthorize.length}  bidders`,
+          toastErrorMsg: 'Authorizing bidders failed',
+        });
+
+        return authorizeBiddersResponse;
+      }
+      return null;
     },
     onError: (error) => {
       console.error('Error authorizing bidders', error);
+      toast.error(`Authorizing bidders failed: ${error}`);
     },
   });
   return authorizeBiddersMutation;
 };
 
-export const useStartBidding = (
-  walletApp: WalletApp,
-  startBiddingParams: StartBiddingContractParams
-) => {
+export const useStartBidding = (walletApp: WalletApp) => {
   const startBiddingMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (startBiddingParams: StartBiddingContractParams) => {
+      toast.info(`Starting bidding for your auction...`);
       console.log({ startBiddingParams });
+
       const startBiddingResponse = await startBidding(
         walletApp,
         startBiddingParams
       );
       console.log({ startBiddingResponse });
-      return startBiddingResponse;
+      logContractToast({
+        contractResponse: startBiddingResponse,
+        toastSuccessMsg: 'Bidding for your auction started succesfully.',
+        toastErrorMsg: 'Start bidding failed',
+      });
     },
     onError: (error) => {
-      console.error('Error starting bidding', error);
+      console.log({ l: 'startBidding error', error });
+      toast.error(`Start bidding failed: ${error}`);
     },
   });
 
@@ -106,10 +127,16 @@ export const useStartBidding = (
 
 export const useDiscoverSellerSignature = (
   walletApp: WalletApp,
+  walletAddress: string,
   params: DiscoverSellerSigContractParams
 ) => {
   const sellerSigQuery = useQuery({
-    queryKey: [DISCOVER_SELLER_SIGNATURE_QUERY_KEY, walletApp, params],
+    queryKey: [
+      DISCOVER_SELLER_SIGNATURE_QUERY_KEY,
+      walletApp,
+      walletAddress,
+      params.auctionCs,
+    ],
     queryFn: async () => {
       console.log({ discoverSellerSignatureParams: params });
       const sellerSignatureResponse = await discoverSellerSignature(
@@ -119,37 +146,44 @@ export const useDiscoverSellerSignature = (
       console.log({ sellerSignatureResponse });
       return sellerSignatureResponse;
     },
+    enabled: !!walletApp && !!walletAddress && !!params.auctionCs,
   });
   return sellerSigQuery;
 };
 
 export const usePlaceBid = (
   auctionInfo: AuctionInfo,
-  sellerSignature?: string | null,
-  walletApp?: WalletApp
+  sellerSignature: string,
+  walletApp: WalletApp
 ) => {
   const queryClient = useQueryClient();
 
   const placeBidMutation = useMutation({
     mutationFn: async (bidAmount: string) => {
-      if (sellerSignature && walletApp) {
-        const params: PlaceBidContractParams = {
-          auctionInfo,
-          sellerSignature: sellerSignature,
-          bidAmount,
-        };
-        console.log({ placeBidParams: params });
-        const placeBidResponse = await placeBid(walletApp, params);
-        console.log({ placeBidResponse });
-        return placeBidResponse;
-      }
-      return null;
+      toast.info(`Placing bid for ${ADA_CURRENCY_SYMBOL}${bidAmount}...`);
+
+      const params: PlaceBidContractParams = {
+        auctionInfo,
+        sellerSignature: sellerSignature,
+        bidAmount,
+      };
+      console.log({ placeBidParams: params });
+      const placeBidResponse = await placeBid(walletApp, params);
+      console.log({ placeBidResponse });
+      logContractToast({
+        contractResponse: placeBidResponse,
+        toastSuccessMsg: `You succesfully placed a bid for ${ADA_CURRENCY_SYMBOL}${bidAmount}.`,
+        toastErrorMsg: `Placing bid failed`,
+      });
+
+      return placeBidResponse;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_AUCTIONS_QUERY_KEY] });
     },
     onError: (error) => {
       console.log('PLACE BID MUTATION ERROR', error);
+      toast.error(`Placing bid failed: ${error}`);
     },
   });
 

@@ -1,34 +1,53 @@
-import { AuctionInfo, WalletApp } from 'hydra-auction-offchain';
+import { AuctionInfo, ContractOutput, WalletApp } from 'hydra-auction-offchain';
 import EnterAuction from '../EnterAuction/EnterAuction';
 import BiddingView from './BiddingView';
 import { BidderClaims } from './BidderClaims';
-import { useAuctionsBidding } from 'src/hooks/api/enterAuction';
-import { getIsBidder } from 'src/utils/auctionState';
-import { useWallet } from '@meshsdk/react';
-import { useWalletAddress } from 'src/hooks/api/user';
+import { useDiscoverSellerSignature } from 'src/hooks/api/bidding';
+import { contractOutputResultSchema } from 'src/schemas/contractOutputSchema';
 
+function getValidatedSellerSignature(
+  sellerSignature: ContractOutput<string | null> | undefined
+): string | null {
+  const sellerSignatureValidated =
+    contractOutputResultSchema.safeParse(sellerSignature);
+  if (sellerSignatureValidated.success) {
+    return sellerSignatureValidated.data.value ?? '';
+  }
+  return null;
+}
 type AuctionDetailBidderProps = {
   walletApp: WalletApp;
   auctionInfo: AuctionInfo;
+  walletAddress: string;
 };
 
 export default function AuctionDetailBidder({
   walletApp,
   auctionInfo,
+  walletAddress,
 }: AuctionDetailBidderProps) {
-  const { wallet, connected } = useWallet();
-  const { data: walletAddress } = useWalletAddress(wallet, connected);
-  const { data: auctionsBidding } = useAuctionsBidding(
+  const { data: sellerSignature } = useDiscoverSellerSignature(
+    walletApp,
     walletAddress,
-    auctionInfo?.auctionId
+    {
+      auctionCs: auctionInfo.auctionId,
+      sellerAddress: auctionInfo.auctionTerms.sellerAddress,
+    }
   );
-  const isBidder = getIsBidder(auctionsBidding, auctionInfo);
-  console.log({ isBidder });
+  // sellerSignature returns a valid value only if we are an authorized bidder on the auction
+  const validatedSellerSignature = getValidatedSellerSignature(sellerSignature);
+
+  // TODO: use local storage to determine if we entered auction already, and we arent authorized via sellerSignature
+  // Grey out buttons and provide a message to the user
   return (
     <div className="w-full flex flex-col items-center gap-12">
       <div className="text-title3 text-center mb-3">Bidder Options</div>
-      {isBidder ? (
-        <BiddingView walletApp={walletApp} auctionInfo={auctionInfo} />
+      {validatedSellerSignature ? (
+        <BiddingView
+          walletApp={walletApp}
+          auctionInfo={auctionInfo}
+          sellerSignature={validatedSellerSignature}
+        />
       ) : (
         <EnterAuction auction={auctionInfo} />
       )}

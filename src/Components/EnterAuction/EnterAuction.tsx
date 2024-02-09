@@ -10,6 +10,7 @@ import { useEnterAuction } from 'src/hooks/api/enterAuction';
 import { useWallet } from '@meshsdk/react';
 import { Button } from '../shadcn/Button';
 import { useWalletAddress } from 'src/hooks/api/user';
+import { toast } from 'react-toastify';
 
 type EnterAuctionFormProps = {
   auction: AuctionInfo;
@@ -50,7 +51,7 @@ export const EnterAuctionForm = ({ auction }: EnterAuctionFormProps) => {
       if (walletAddress) {
         enterAuction.mutate({
           enterAuctionParams: auctionForm.data as EnterAuctionContractParams,
-          walletAddress: walletAddress,
+          walletAddress,
         });
       }
       // TODO: should show pop up message that tells bidder that the seller will now authorize them and they will be notified

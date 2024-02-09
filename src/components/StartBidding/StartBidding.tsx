@@ -7,12 +7,12 @@ export default function StartBidding({
   walletApp,
   auctionInfo,
 }: AuctionDetailSellerProps) {
-  const startBidding = useStartBidding(walletApp as WalletApp, {
-    auctionInfo: auctionInfo,
-  });
+  const startBidding = useStartBidding(walletApp as WalletApp);
 
   const handleStartBidding = () => {
-    startBidding.mutate();
+    startBidding.mutate({
+      auctionInfo: auctionInfo,
+    });
   };
   return (
     <div className="w-full">

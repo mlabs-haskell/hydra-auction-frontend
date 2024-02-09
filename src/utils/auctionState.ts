@@ -1,4 +1,4 @@
-import { AuctionInfo } from 'hydra-auction-offchain';
+import { AuctionInfo, ContractOutput } from 'hydra-auction-offchain';
 import { AuctionBiddingItem } from 'src/hooks/api/enterAuction';
 
 export enum AuctionState {
@@ -13,17 +13,6 @@ export enum AuctionState {
 export const getIsSeller = (sellerAddress?: string, auction?: any) => {
   if (!sellerAddress || !auction) return false;
   return sellerAddress === auction.auctionTerms.sellerAddress;
-};
-
-export const getIsBidder = (
-  auctionsBidding?: AuctionBiddingItem[],
-  auctionInfo?: AuctionInfo
-) => {
-  if (!auctionsBidding || !auctionInfo) return false;
-  return auctionsBidding.some(
-    (biddingItem: AuctionBiddingItem) =>
-      biddingItem.auctionId === auctionInfo.auctionId
-  );
 };
 
 // TODO: implement functions that take the POSIX time for pre bidding, and bidding to return whether we should show
