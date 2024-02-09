@@ -11,16 +11,23 @@ import {
 } from 'src/hooks/api/assets';
 import { getLocalStorageItem } from 'src/utils/localStorage';
 import { getAuctionAssetUnit } from 'src/utils/auction';
+import { useWalletAddress } from 'src/hooks/api/user';
 
 export default function AuctionList() {
-  const { name: walletName } = useWallet();
+  const { name: walletName, wallet, connected } = useWallet();
+  const { data: walletAddress } = useWalletAddress(wallet, connected);
   const walletApp: WalletApp = walletName as WalletApp;
   const { data: auctions } = useActiveAuctions(walletApp);
-  console.log({ auctions });
+
   const queryClient = useQueryClient();
 
   const localMetadata = getLocalStorageItem('metadata');
+  const localAuctionsBiddingOn = getLocalStorageItem(walletAddress || '');
+
+  console.log({ walletApp });
+  console.log({ auctions });
   console.log({ localMetadata });
+  console.log({ localAuctionsBiddingOn });
 
   const [auctionsWithImage, setAuctionsWithImage] = useState<
     AuctionInfo[] | null
@@ -42,10 +49,17 @@ export default function AuctionList() {
         ]);
 
         return nftHasImage?.image !== undefined ? auction : null;
+        // return auction;
       })
     );
 
-    return filteredAuctions.filter(Boolean);
+    return filteredAuctions
+      .filter(Boolean)
+      ?.sort(
+        (a: AuctionInfo | null, b: AuctionInfo | null) =>
+          Number(b?.auctionTerms.biddingEnd) -
+          Number(a?.auctionTerms.biddingEnd)
+      );
   };
 
   useEffect(() => {

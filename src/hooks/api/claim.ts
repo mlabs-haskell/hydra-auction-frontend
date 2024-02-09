@@ -1,4 +1,3 @@
-import { useWallet } from '@meshsdk/react';
 import { useMutation } from '@tanstack/react-query';
 import {
   AuctionInfo,

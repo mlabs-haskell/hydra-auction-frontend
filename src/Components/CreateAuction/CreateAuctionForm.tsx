@@ -4,19 +4,18 @@ import { DateTimeInput } from '../Inputs/DateInput';
 import { DropDown } from '../DropDown/DropDown';
 import { auctionFormSchema } from 'src/schemas/auctionFormSchema';
 
-import {
-  AnnounceAuctionContractParams,
-  WalletApp,
-} from 'hydra-auction-offchain';
+import { AuctionTermsInput, WalletApp } from 'hydra-auction-offchain';
 
-import { MOCK_ANNOUNCE_AUCTION_PARAMS } from 'src/mocks/announceAuction.mock';
+import { generateMockAnnounceAuctionParams } from 'src/mocks/announceAuction.mock';
 import { getUrlParams } from 'src/utils/getUrlParams';
 import { useExtendedAssets } from 'src/hooks/api/assets';
-import { utf8ToHex } from 'src/utils/hex';
 import { useAnnounceAuction } from 'src/hooks/api/announceAuction';
 import { useWallet } from '@meshsdk/react';
 import { useNavigate } from 'react-router-dom';
 import { useDelegates } from 'src/hooks/api/delegates';
+import { auctionTermsInputSchema } from 'src/schemas/auctionTermsSchema';
+
+import { removePolicyIdFromAssetUnit } from 'src/utils/formatting';
 
 type CreateAuctionFormProps = {
   className?: string;
@@ -27,9 +26,11 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
   const urlParams = getUrlParams();
   const assetUnit = urlParams.get('assetUnit');
 
-  const auctionFormData = useRef<AnnounceAuctionContractParams>(
-    MOCK_ANNOUNCE_AUCTION_PARAMS
+  const mockAnnounceAuctionParams = generateMockAnnounceAuctionParams();
+  const auctionFormData = useRef<AuctionTermsInput>(
+    mockAnnounceAuctionParams.auctionTerms
   );
+
   const { name: walletApp } = useWallet();
   const { data: assets, isError } = useExtendedAssets(walletApp as WalletApp);
   const announceAuction = useAnnounceAuction(walletApp);
@@ -44,44 +45,34 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const auctionForm = auctionFormSchema
-      .refine(
-        (data) => data.auctionTerms.biddingEnd > data.auctionTerms.biddingStart,
-        { message: 'Bidding end must be after bidding start' }
-      )
-      .refine(
-        (data) =>
-          data.auctionTerms.purchaseDeadline > data.auctionTerms.biddingEnd,
-        { message: 'Purchase deadline must be after bidding end' }
-      )
-      .refine(
-        (data) =>
-          data.auctionTerms.cleanup > data.auctionTerms.purchaseDeadline,
-        { message: 'Cleanup must be after purchase deadline' }
-      )
-      .refine((data) => Number(data.auctionTerms.minBidIncrement) > 0, {
+    console.log({ assetName: assetToList.assetName });
+
+    const auctionForm = auctionTermsInputSchema
+      .refine((data) => data.biddingEnd > data.biddingStart, {
+        message: 'Bidding end must be after bidding start',
+      })
+      .refine((data) => data.purchaseDeadline > data.biddingEnd, {
+        message: 'Purchase deadline must be after bidding end',
+      })
+      .refine((data) => data.cleanup > data.purchaseDeadline, {
+        message: 'Cleanup must be after purchase deadline',
+      })
+      .refine((data) => Number(data.minBidIncrement) > 0, {
         message: 'New bids must be larger than the standing bid',
       })
-      .refine(
-        (data) => Number(data.auctionTerms.auctionFeePerDelegate) > 2000000,
-        {
-          message:
-            'The auction fee for each delegate must contain the min 2 ADA for the utxos that will be sent to the delegates during fee distribution',
-        }
-      )
-      // totalAuctionFees :: AuctionTerms -> Integer
-      // totalAuctionFees AuctionTerms {..} =
-      // at'AuctionFeePerDelegate * length at'Delegates
+      .refine((data) => Number(data.auctionFeePerDelegate) > 2000000, {
+        message:
+          'The auction fee for each delegate must contain the min 2 ADA for the utxos that will be sent to the delegates during fee distribution',
+      })
       .refine(
         (data) =>
-          Number(data.auctionTerms.startingBid) >
-          Number(data.auctionTerms.auctionFeePerDelegate) *
-            data.auctionTerms.delegates.length,
+          Number(data.startingBid) >
+          Number(data.auctionFeePerDelegate) * data.delegates.length,
         {
           message: 'Starting bid must be greater than the total auction fees',
         }
       )
-      .refine((data) => data.auctionTerms.delegates.length > 0, {
+      .refine((data) => data.delegates.length > 0, {
         message: 'Must have at least one delegate',
       })
       .safeParse(auctionFormData.current);
@@ -89,19 +80,19 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
     if (!auctionForm.success) {
       console.log(auctionForm.error);
     } else {
+      // Using nft from the url to announce the auction
       const auctionLot = {
         cs: assetToList.policyId,
-        tn: utf8ToHex(assetToList.assetName),
+        tn: removePolicyIdFromAssetUnit(assetToList.unit),
         quantity: assetToList.quantity,
       };
-
       const params = {
         auctionTerms: {
-          ...auctionForm.data.auctionTerms,
+          ...auctionForm.data,
           auctionLot: [auctionLot],
         },
         additionalAuctionLotOrefs:
-          MOCK_ANNOUNCE_AUCTION_PARAMS.additionalAuctionLotOrefs, // TODO: why do we pass this in instead of a form value (or a [] if no additional NFTs are included)
+          mockAnnounceAuctionParams.additionalAuctionLotOrefs, // Empty array for now but can be implemented
       };
       console.log({ announceAuctionParams: params });
 
@@ -114,13 +105,11 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
   const handleAuctionInputChange = (inputId: string, value: any) => {
     auctionFormData.current = {
       ...auctionFormData.current,
-      auctionTerms: {
-        ...auctionFormData.current.auctionTerms,
-        [inputId]: value,
-      },
+      [inputId]: value,
     };
   };
 
+  // To allow for multiple auction lots once it is supported
   // const handleAuctionLotsChange = (auctionLots: ValueEntry[]) => {
   //   auctionFormData.current = {
   //     ...auctionFormData.current,
@@ -131,23 +120,10 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
   //   };
   // };
 
-  // TODO: Figure out which fields are actually going to be input vs coming from api
   return (
     <div className="p-0 lg:p-3 mb-3 w-full">
       <form className="block" onSubmit={handleSubmit}>
         {/* <AuctionLotList onChangeAuctionLotList={handleAuctionLotsChange} /> */}
-        {/* <StringInput
-            label="Seller Public Key Hash"
-            inputId="sellerAddress"
-            onChange={handleAuctionInputChange}
-            placeholder={auctionFormData.current.auctionTerms.sellerAddress}
-          />
-          <StringInput
-            label="Seller Verification Key"
-            inputId="sellerVk"
-            onChange={handleAuctionInputChange}
-            placeholder={auctionFormData.current.auctionTerms.sellerVk}
-          /> */}
         <div className="text-callout mb-1 text-gray-700">Delegates</div>
         <DropDown
           options={delegateGroup?.delegates.map((delegate) => {
@@ -162,36 +138,32 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
           label="Auction Fee Per Delegate"
           inputId="auctionFeePerDelegate"
           onChange={handleAuctionInputChange}
-          placeholder={
-            auctionFormData.current.auctionTerms.auctionFeePerDelegate
-          }
+          placeholder={auctionFormData.current.auctionFeePerDelegate}
         />
         <div className="flex gap-4 my-8 flex-wrap">
           <DateTimeInput
             label="Bidding Start"
             inputId="biddingStart"
             onChange={handleAuctionInputChange}
-            placeholder={auctionFormData.current.auctionTerms.biddingStart}
+            placeholder={auctionFormData.current.biddingStart}
           />
-          {/* TODO: Add validation on submit to make sure bidding end is after bidding start */}
           <DateTimeInput
             label="Bidding End"
             inputId="biddingEnd"
             onChange={handleAuctionInputChange}
-            placeholder={auctionFormData.current.auctionTerms.biddingEnd}
+            placeholder={auctionFormData.current.biddingEnd}
           />
-          {/* TODO: Add validation on submit to make sure purchase deadline is after bidding end */}
           <DateTimeInput
             label="Purchase Deadline"
             inputId="purchaseDeadline"
             onChange={handleAuctionInputChange}
-            placeholder={auctionFormData.current.auctionTerms.purchaseDeadline}
+            placeholder={auctionFormData.current.purchaseDeadline}
           />
           <DateTimeInput
             label="Cleanup"
             inputId="cleanup"
             onChange={handleAuctionInputChange}
-            placeholder={auctionFormData.current.auctionTerms.cleanup}
+            placeholder={auctionFormData.current.cleanup}
           />
         </div>
 
@@ -200,19 +172,19 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
             label="Starting Bid"
             inputId="startingBid"
             onChange={handleAuctionInputChange}
-            placeholder={auctionFormData.current.auctionTerms.startingBid}
+            placeholder={auctionFormData.current.startingBid}
           />
           <NumberInput
             label="Min Bid Increment"
             inputId="minBidIncrement"
             onChange={handleAuctionInputChange}
-            placeholder={auctionFormData.current.auctionTerms.minBidIncrement}
+            placeholder={auctionFormData.current.minBidIncrement}
           />
           <NumberInput
             label="Min Deposit Amount"
             inputId="minDepositAmount"
             onChange={handleAuctionInputChange}
-            placeholder={auctionFormData.current.auctionTerms.minDepositAmount}
+            placeholder={auctionFormData.current.minDepositAmount}
           />
         </div>
 

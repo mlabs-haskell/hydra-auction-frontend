@@ -27,7 +27,7 @@ const TimeRemainingSlot = ({
     </div>
   );
 };
-
+// TODO: FIX when a state changes, it just shows expired and the last state it needs to update the text and show new countdown
 export const TimeRemaining = ({
   endDate,
   size = 'small',

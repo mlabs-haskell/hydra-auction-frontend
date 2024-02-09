@@ -4,19 +4,23 @@ import { DropDown } from '../DropDown/DropDown';
 import { AssetExtended } from '@meshsdk/core';
 import { useWallet } from '@meshsdk/react';
 import { WalletApp } from 'hydra-auction-offchain';
+import { useMemo } from 'react';
+import { removeSpecialCharsAssetName } from 'src/utils/formatting';
 
 const SelectTab = () => {
   const { name: walletApp } = useWallet();
   const { data: assets, isError } = useExtendedAssets(walletApp as WalletApp);
 
+  const urlParams = getUrlParams();
+  const assetUnitToList = urlParams.get('assetUnit');
+  const assetIndex = useMemo(
+    () => assets?.findIndex((asset) => asset.unit === assetUnitToList),
+    [assetUnitToList, assets]
+  );
+
   if (isError) {
     return null;
   }
-  const urlParams = getUrlParams();
-  const assetUnitToList = urlParams.get('assetUnit');
-  const assetIndex = assets?.findIndex(
-    (asset) => asset.unit === assetUnitToList
-  );
 
   const onChange = (index: number) => {
     // redirect to the current page, but pass the new assetUnit
@@ -33,7 +37,7 @@ const SelectTab = () => {
       <DropDown
         options={assets?.map((asset) => {
           return {
-            label: asset.assetName || '',
+            label: removeSpecialCharsAssetName(asset.assetName),
             accessor: asset.unit || '',
           };
         })}

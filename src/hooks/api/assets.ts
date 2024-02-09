@@ -18,6 +18,7 @@ export const useExtendedAssets = (walletApp: WalletApp) => {
       const fetchedAssets = await wallet.getAssets();
       return fetchedAssets;
     },
+    enabled: !!walletApp,
   });
 
   return assetsQuery;

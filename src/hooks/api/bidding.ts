@@ -14,7 +14,6 @@ import {
 } from 'hydra-auction-offchain';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { QUERY_AUCTIONS_QUERY_KEY } from './auctions';
-import { useWallet } from '@meshsdk/react';
 
 export type HookResponse = {
   data: AuctionInfo[] | undefined;
@@ -35,7 +34,7 @@ export const useStandingBidState = (
   auctionInfo: AuctionInfo
 ) => {
   const standingBidStateQuery = useQuery({
-    queryKey: [STANDING_BID_STATE_QUERY_KEY, walletApp, auctionInfo],
+    queryKey: [STANDING_BID_STATE_QUERY_KEY, walletApp, auctionInfo.auctionId],
     queryFn: async () => await queryStandingBidState(walletApp, auctionInfo),
   });
 
@@ -47,8 +46,16 @@ export const useDiscoverBidders = (
   auctionInfo: AuctionInfo
 ) => {
   const discoverBiddersQuery = useQuery({
-    queryKey: [DISCOVER_BIDDERS_QUERY_KEY, walletApp, auctionInfo],
-    queryFn: async () => await discoverBidders(walletApp, auctionInfo),
+    queryKey: [DISCOVER_BIDDERS_QUERY_KEY, walletApp, auctionInfo.auctionId],
+    queryFn: async () => {
+      console.log({ discoverBiddersParams: auctionInfo });
+      const discoverBiddersResponse = await discoverBidders(
+        walletApp,
+        auctionInfo
+      );
+      console.log({ discoverBiddersResponse });
+      return discoverBiddersResponse;
+    },
   });
 
   return discoverBiddersQuery;
@@ -58,7 +65,19 @@ export const useAuthorizeBidders = (walletApp: WalletApp) => {
   const authorizeBiddersMutation = useMutation({
     mutationFn: async (
       authorizeBiddersParams: AuthorizeBiddersContractParams
-    ) => await authorizeBidders(walletApp, authorizeBiddersParams),
+    ) => {
+      console.log({ authorizeBiddersParams });
+      const authorizeBiddersResponse = await authorizeBidders(
+        walletApp,
+        authorizeBiddersParams
+      );
+
+      console.log({ authorizeBiddersResponse });
+      return authorizeBiddersResponse;
+    },
+    onError: (error) => {
+      console.error('Error authorizing bidders', error);
+    },
   });
   return authorizeBiddersMutation;
 };
@@ -68,7 +87,18 @@ export const useStartBidding = (
   startBiddingParams: StartBiddingContractParams
 ) => {
   const startBiddingMutation = useMutation({
-    mutationFn: async () => await startBidding(walletApp, startBiddingParams),
+    mutationFn: async () => {
+      console.log({ startBiddingParams });
+      const startBiddingResponse = await startBidding(
+        walletApp,
+        startBiddingParams
+      );
+      console.log({ startBiddingResponse });
+      return startBiddingResponse;
+    },
+    onError: (error) => {
+      console.error('Error starting bidding', error);
+    },
   });
 
   return startBiddingMutation;
@@ -80,32 +110,46 @@ export const useDiscoverSellerSignature = (
 ) => {
   const sellerSigQuery = useQuery({
     queryKey: [DISCOVER_SELLER_SIGNATURE_QUERY_KEY, walletApp, params],
-    queryFn: async () => await discoverSellerSignature(walletApp, params),
+    queryFn: async () => {
+      console.log({ discoverSellerSignatureParams: params });
+      const sellerSignatureResponse = await discoverSellerSignature(
+        walletApp,
+        params
+      );
+      console.log({ sellerSignatureResponse });
+      return sellerSignatureResponse;
+    },
   });
   return sellerSigQuery;
 };
 
 export const usePlaceBid = (
   auctionInfo: AuctionInfo,
-  sellerSignature?: string | null
+  sellerSignature?: string | null,
+  walletApp?: WalletApp
 ) => {
   const queryClient = useQueryClient();
-  const { name: walletName } = useWallet();
 
   const placeBidMutation = useMutation({
     mutationFn: async (bidAmount: string) => {
-      const params: PlaceBidContractParams = {
-        auctionInfo,
-        sellerSignature: sellerSignature ?? '',
-        bidAmount,
-      };
-
-      return (
-        sellerSignature && (await placeBid(walletName as WalletApp, params))
-      );
+      if (sellerSignature && walletApp) {
+        const params: PlaceBidContractParams = {
+          auctionInfo,
+          sellerSignature: sellerSignature,
+          bidAmount,
+        };
+        console.log({ placeBidParams: params });
+        const placeBidResponse = await placeBid(walletApp, params);
+        console.log({ placeBidResponse });
+        return placeBidResponse;
+      }
+      return null;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_AUCTIONS_QUERY_KEY] });
+    },
+    onError: (error) => {
+      console.log('PLACE BID MUTATION ERROR', error);
     },
   });
 

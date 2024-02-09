@@ -3,7 +3,6 @@ import CreateAuctionTabs from '../CreateAuctionTabs/CreateAuctionTabs';
 import { useAssets } from '@meshsdk/react';
 import CurrentListing from './CurrentListing';
 
-// TODO: fix current listing component, handle the price
 export default function CreateAuction() {
   // Use url params to get the assetUnit
   const urlParams = getUrlParams();

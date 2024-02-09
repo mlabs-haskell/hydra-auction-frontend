@@ -19,3 +19,26 @@ export const auctionTermsSchema = z.object({
   sellerAddress: z.string(),
   sellerVk: z.string(),
 });
+
+export const auctionTermsInputSchema = z.object({
+  auctionLot: z.array(valueEntrySchema),
+  delegates: z.array(z.string()),
+  biddingStart: z.string(),
+  biddingEnd: z.string(),
+  purchaseDeadline: z.string(),
+  cleanup: z.string(),
+  auctionFeePerDelegate: z.string(),
+  startingBid: z.string(),
+  minBidIncrement: z.string(),
+  minDepositAmount: z.string(),
+});
+
+export const announceAuctionContractParamsSchema = z.object({
+  auctionTerms: auctionTermsInputSchema,
+  additionalAuctionLotOrefs: z.array(
+    z.object({
+      transactionId: z.string(),
+      index: z.string(),
+    })
+  ),
+});

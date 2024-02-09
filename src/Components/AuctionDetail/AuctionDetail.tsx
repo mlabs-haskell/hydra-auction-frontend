@@ -3,102 +3,89 @@ import { getUrlParams } from 'src/utils/getUrlParams';
 import IpfsImage from '../IpfsImage/IpfsImage';
 import { useWallet } from '@meshsdk/react';
 import { WalletApp } from 'hydra-auction-offchain';
-import { getIsBidder, getIsSeller } from 'src/utils/auctionState';
-import { useSellerAddress } from 'src/hooks/api/user';
+import { getIsSeller } from 'src/utils/auctionState';
+import { useWalletAddress } from 'src/hooks/api/user';
 import AuctionDetailSeller from './AuctionDetailSeller';
 import AuctionDetailBidder from './AuctionDetailBidder';
-import { useAuctionsBidding } from '../../hooks/api/enterAuction';
 import { getAuctionAssetUnit } from 'src/utils/auction';
 import AuctionSubDetail from './AuctionSubDetail';
 import { useAssetMetadata } from 'src/hooks/api/assets';
 import { useCleanupAuction } from 'src/hooks/api/cleanup';
-import { ArrowDownIcon } from '@radix-ui/react-icons';
 import { Button } from '../shadcn/Button';
+import { removeLocalStorageItem } from 'src/utils/localStorage';
 
 const MOCK_NFT_TITLE = 'My NFT';
 
+// TODO: Claims and cleanup components are always showing, we will implement the conditions when the APIs are ready
 export default function AuctionDetail() {
   // TODO: Display some badge if the user is already a bidder, and for the state of the auction
 
   // Use url params to get the auctionId
   const urlParams = getUrlParams();
-  const assetUnit = urlParams.get('assetUnit') || '';
-  const { name: walletName } = useWallet();
+  const auctionId = urlParams.get('auctionId') || '';
+  const { name: walletName, wallet, connected } = useWallet();
   const walletApp: WalletApp = walletName as WalletApp;
   const { data: auctions, isLoading, isError } = useActiveAuctions(walletApp);
-  const {
-    data: sellerAddress,
-    isLoading: isSellerAddressLoading,
-    isError: isSellerAddressError,
-  } = useSellerAddress();
-
-  console.log({ auctions });
+  const { data: walletAddress } = useWalletAddress(wallet, connected);
 
   // With auctionId we find the auction details from the queryAuctions cache
   const auctionInfo = auctions?.find(
-    (auction) => getAuctionAssetUnit(auction) === assetUnit
+    (auction) => auction.auctionId === auctionId
   );
+  const assetUnit = getAuctionAssetUnit(auctionInfo);
+
+  // NOTE: Uncomment this to reset localstorage for auctions you are bidding on
 
   const cleanupAuction = useCleanupAuction(walletApp);
 
   const { data: assetMetadata } = useAssetMetadata(assetUnit);
 
-  const { data: auctionsBidding } = useAuctionsBidding(auctionInfo?.auctionId);
-
-  if (isLoading || isSellerAddressLoading) return <div>Loading...</div>;
-  if (isError || isSellerAddressError)
-    return <div>Error getting auction...</div>;
-  if (!auctionInfo || !sellerAddress || !auctionInfo || !walletName)
-    return <div>Error finding auction...</div>;
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error getting auction...</div>;
+  if (!auctionInfo) return <div>Error finding auction...</div>;
+  if (!walletAddress || !walletName) return <div>Wallet not valid</div>;
 
   // Identifying if we are the seller or a bidder of this auction
-  const isSeller = getIsSeller(sellerAddress, auctionInfo);
+  const isSeller = getIsSeller(walletAddress, auctionInfo);
+  console.log({ auctionInfo });
 
-  const isBidder = getIsBidder(auctionsBidding, auctionInfo);
-
-  console.log({ isSeller, isBidder });
+  console.log({ isSeller });
   const handleCleanupAuction = () => {
     cleanupAuction.mutate(auctionInfo);
   };
 
   return (
-    <div className="flex items-center justify-center">
-      {/* TODO: Remove container */}
-      <div className="container ">
-        <div className="grid lg:grid-cols-2 gap-3">
-          <div className="flex justify-center items-center mb-6">
-            <IpfsImage assetUnit={assetUnit} />
-          </div>
-          <div className="flex flex-col items-center gap-10">
-            <div className="text-title2 font-semibold mb-6">
-              {assetMetadata?.name ? assetMetadata.name : MOCK_NFT_TITLE}
-            </div>
-            {/* TODO: for now, to test flow between bidder-seller, we will keep both bidder and seller components showing */}
-            {isSeller ? (
-              <div className="w-full">
-                <AuctionDetailSeller
-                  walletApp={walletApp}
-                  auctionInfo={auctionInfo}
-                />
-                <AuctionDetailBidder
-                  walletApp={walletApp}
-                  auctionInfo={auctionInfo}
-                />
-              </div>
-            ) : (
-              <></>
-            )}
-            <ArrowDownIcon className="text-3xl font-bold" />
-            <Button onClick={handleCleanupAuction} className="w-full">
-              Cleanup
-            </Button>
-
-            <AuctionSubDetail
-              description={assetMetadata?.description}
+    <div className="grid lg:grid-cols-2 gap-3">
+      <div className="flex justify-center items-center mb-6">
+        <IpfsImage assetUnit={assetUnit} />
+      </div>
+      <div className="flex flex-col items-center gap-10">
+        <div className="text-title2 font-semibold mb-6">
+          {assetMetadata?.name ? assetMetadata.name : MOCK_NFT_TITLE}
+        </div>
+        {/* NOTE: If you want to make testing easier, just show both bidder and seller auction details without any conditions */}
+        {isSeller ? (
+          <div className="w-full">
+            <AuctionDetailSeller
+              walletApp={walletApp}
               auctionInfo={auctionInfo}
             />
           </div>
-        </div>
+        ) : (
+          <AuctionDetailBidder
+            walletApp={walletApp}
+            auctionInfo={auctionInfo}
+          />
+        )}
+
+        <Button onClick={handleCleanupAuction} className="w-full">
+          Cleanup
+        </Button>
+
+        <AuctionSubDetail
+          description={assetMetadata?.description}
+          auctionInfo={auctionInfo}
+        />
       </div>
     </div>
   );

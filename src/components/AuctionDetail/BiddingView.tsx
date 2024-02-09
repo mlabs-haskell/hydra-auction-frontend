@@ -19,7 +19,7 @@ export default function BiddingView({
   auctionInfo,
 }: BiddingViewProps) {
   const { data: sellerSignature } = useDiscoverSellerSignature(walletApp, {
-    auctionCs: auctionInfo.auctionTerms.auctionLot[0].cs,
+    auctionCs: auctionInfo.auctionId,
     sellerAddress: auctionInfo.auctionTerms.sellerAddress,
   });
   const { data: standingBidState } = useStandingBidState(
@@ -29,8 +29,7 @@ export default function BiddingView({
   if (sellerSignature?.tag !== 'result') {
     return <div>Seller Signature Error</div>;
   }
-  if (!sellerSignature || !standingBidState)
-    return <div>Error verifying bidding...</div>;
+  if (!sellerSignature) return <div>Error verifying bidding...</div>;
   return (
     <div className="w-full flex flex-col gap-10">
       <div className="flex justify-center mb-12 items-stretch">
@@ -58,7 +57,8 @@ export default function BiddingView({
       <PlaceBidForm
         auctionInfo={auctionInfo}
         sellerSignature={sellerSignature.value ?? ''}
-        standingBid={standingBidState.price}
+        walletApp={walletApp}
+        standingBid={standingBidState?.price ?? ''}
       />
     </div>
   );
