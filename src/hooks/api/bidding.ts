@@ -18,6 +18,7 @@ import { QUERY_AUCTIONS_QUERY_KEY } from './auctions';
 import { toast } from 'react-toastify';
 import { logContractToast } from 'src/utils/contract';
 import { ADA_CURRENCY_SYMBOL } from 'src/utils/currency';
+import { contractOutputResultSchema } from 'src/schemas/contractOutputSchema';
 
 export type HookResponse = {
   data: AuctionInfo[] | undefined;
@@ -72,20 +73,28 @@ export const useAuthorizeBidders = (walletApp: WalletApp) => {
     ) => {
       console.log({ authorizeBiddersParams });
       toast.info('Authorizing bidders (this may take a few minutes)...');
+      if (!authorizeBiddersParams.biddersToAuthorize.length) {
+        toast.error('No bidders to authorize');
+        return null;
+      }
       const authorizeBiddersResponse = await authorizeBidders(
         walletApp,
         authorizeBiddersParams
       );
-
+      logContractToast({
+        contractResponse: authorizeBiddersResponse,
+        toastSuccessMsg: `Successfully authorized ${authorizeBiddersParams.biddersToAuthorize.length}  bidders`,
+        toastErrorMsg: 'Authorizing bidders failed',
+      });
       console.log({ authorizeBiddersResponse });
-      if (typeof authorizeBiddersResponse.value === 'string') {
+      const validatedAuthorizeBiddersResponse =
+        contractOutputResultSchema.safeParse(authorizeBiddersResponse);
+      if (validatedAuthorizeBiddersResponse.success) {
         toast.info('Confirming authorized bidders contract...');
-        await awaitTxConfirmed(walletApp, authorizeBiddersResponse.value);
-        logContractToast({
-          contractResponse: authorizeBiddersResponse,
-          toastSuccessMsg: `Successfully authorized ${authorizeBiddersParams.biddersToAuthorize.length}  bidders`,
-          toastErrorMsg: 'Authorizing bidders failed',
-        });
+        await awaitTxConfirmed(
+          walletApp,
+          validatedAuthorizeBiddersResponse.data.value
+        );
 
         return authorizeBiddersResponse;
       }
@@ -94,6 +103,9 @@ export const useAuthorizeBidders = (walletApp: WalletApp) => {
     onError: (error) => {
       console.error('Error authorizing bidders', error);
       toast.error(`Authorizing bidders failed: ${error}`);
+    },
+    onSuccess: () => {
+      toast.success('Confirmed authorized bidders contract');
     },
   });
   return authorizeBiddersMutation;

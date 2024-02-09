@@ -12,6 +12,11 @@ import {
 import { getLocalStorageItem } from 'src/utils/localStorage';
 import { getAuctionAssetUnit } from 'src/utils/auction';
 import { useWalletAddress } from 'src/hooks/api/user';
+import {
+  AuctionListSortState,
+  auctionListFilterOptions,
+} from 'src/utils/auctionState';
+import { DropDown } from '../DropDown/DropDown';
 
 export default function AuctionList() {
   const { name: walletName, wallet, connected } = useWallet();
@@ -22,16 +27,22 @@ export default function AuctionList() {
   const queryClient = useQueryClient();
 
   const localMetadata = getLocalStorageItem('metadata');
-  const localAuctionsBiddingOn = getLocalStorageItem(walletAddress || '');
 
   console.log({ walletApp });
   console.log({ auctions });
   console.log({ localMetadata });
-  console.log({ localAuctionsBiddingOn });
 
   const [auctionsWithImage, setAuctionsWithImage] = useState<
     AuctionInfo[] | null
   >([]);
+
+  const [filteredAuctions, setFilteredAuctions] = useState<
+    AuctionInfo[] | undefined
+  >([]);
+
+  const [activeFilter, setActiveFilter] = useState<AuctionListSortState>(
+    AuctionListSortState.ALL
+  );
 
   const fetchAndFilterAuctionsByImage = async (auctions: AuctionInfo[]) => {
     const filteredAuctions = await Promise.all(
@@ -49,28 +60,56 @@ export default function AuctionList() {
         ]);
 
         return nftHasImage?.image !== undefined ? auction : null;
-        // return auction;
       })
     );
 
+    // Auto sorted to most recently started auctions
     return filteredAuctions
       .filter(Boolean)
       ?.sort(
         (a: AuctionInfo | null, b: AuctionInfo | null) =>
-          Number(b?.auctionTerms.biddingEnd) -
-          Number(a?.auctionTerms.biddingEnd)
+          Number(b?.auctionTerms.biddingStart) -
+          Number(a?.auctionTerms.biddingStart)
       );
   };
 
   useEffect(() => {
     async function getAuctionsWithImage(auctions: AuctionInfo[]) {
-      const filteredAuctions = await fetchAndFilterAuctionsByImage(auctions);
-      setAuctionsWithImage(filteredAuctions as AuctionInfo[]);
+      const filteredAuctionsByImage = await fetchAndFilterAuctionsByImage(
+        auctions
+      );
+      setAuctionsWithImage(filteredAuctionsByImage as AuctionInfo[]);
     }
     if (auctions) {
       getAuctionsWithImage(auctions);
     }
   }, [auctions]);
+
+  useEffect(() => {
+    if (auctionsWithImage) {
+      switch (activeFilter) {
+        case AuctionListSortState.ALL:
+          setFilteredAuctions(auctionsWithImage);
+          break;
+        case AuctionListSortState.SELLER:
+          setFilteredAuctions(
+            auctionsWithImage?.filter(
+              (auction) => auction.auctionTerms.sellerAddress === walletAddress
+            )
+          );
+          break;
+        case AuctionListSortState.NOT_SELLER:
+          setFilteredAuctions(
+            auctionsWithImage?.filter(
+              (auction) => auction.auctionTerms.sellerAddress !== walletAddress
+            )
+          );
+          break;
+        default:
+          setFilteredAuctions(auctionsWithImage);
+      }
+    }
+  }, [activeFilter, auctions, auctionsWithImage]);
 
   return (
     <>
@@ -79,12 +118,19 @@ export default function AuctionList() {
         <hr className="border-b border-gray-400 w-32 mb-4" />
       </div>
       <div>
-        <div className="flex gap-2 p-2 font-semibold">
-          {auctionsWithImage?.length || 0} Auctions
+        <div className="flex items-center gap-2 justify-between p-2 font-semibold">
+          <div>{filteredAuctions?.length || 0} Auctions</div>
+          <DropDown
+            onChange={(index) => {
+              setActiveFilter(auctionListFilterOptions[index].accessor);
+            }}
+            options={auctionListFilterOptions}
+            title="Filter Auctions"
+          />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
-          {auctionsWithImage?.map((auctionInfo, index) => (
+          {filteredAuctions?.map((auctionInfo, index) => (
             <AuctionCard
               key={`${auctionInfo.auctionId}_${index}`}
               auctionInfo={auctionInfo}

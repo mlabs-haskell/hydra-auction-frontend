@@ -10,14 +10,13 @@ import {
   setLocalStorageItem,
 } from 'src/utils/localStorage';
 import { logContractToast } from 'src/utils/contract';
+import { AUCTIONS_ENTERED_QUERY_KEY } from './auctions';
 
 export type AuctionBiddingItem = {
   auctionId: string;
   depositAmount: string;
   assetUnit: string;
 };
-
-const AUCTIONS_BIDDING_QUERY_KEY = 'auctions-bidding';
 
 export type EnterAuctionMutationParams = {
   enterAuctionParams: EnterAuctionContractParams;
@@ -91,7 +90,7 @@ export const useEnterAuction = (walletApp: WalletApp) => {
       queryClient.invalidateQueries({
         queryKey: [
           [
-            AUCTIONS_BIDDING_QUERY_KEY,
+            AUCTIONS_ENTERED_QUERY_KEY,
             mutationResponse.params.auctionInfo.auctionId,
           ],
         ],
@@ -103,26 +102,4 @@ export const useEnterAuction = (walletApp: WalletApp) => {
   });
 
   return enterAuctionMutation;
-};
-// TODO: Add logic on auction-list page to sweep all auctions and check if we are seller / bidder
-// Also add logic to remove auction from local storage if it is no longer active
-export const useAuctionsBidding = (
-  walletAddress?: string,
-  auctionId?: string
-) => {
-  return useQuery({
-    queryKey: [AUCTIONS_BIDDING_QUERY_KEY, auctionId],
-    queryFn: async () => {
-      if (auctionId && walletAddress) {
-        const walletData = getLocalStorageItem(walletAddress) || {};
-        if (walletData) {
-          if (walletAddress) {
-            return walletData.bidding || [];
-          }
-        }
-        return [];
-      }
-    },
-    enabled: !!walletAddress && !!auctionId,
-  });
 };

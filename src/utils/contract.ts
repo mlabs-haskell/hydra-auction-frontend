@@ -49,6 +49,10 @@ export const logContractToast = ({
       toast.error(`${toastErrorMsg} no value returned from contract.`);
     }
   } else {
-    toast.error(`${toastErrorMsg} ${contractResponse.value.message}`);
+    toast.error(
+      `${toastErrorMsg} ${
+        contractResponse.value.message ?? contractResponse.value.info
+      }`
+    );
   }
 };

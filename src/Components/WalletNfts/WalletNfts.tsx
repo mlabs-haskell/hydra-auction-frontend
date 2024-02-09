@@ -32,7 +32,7 @@ export default function WalletNfts() {
   console.log({ walletApp, assets, isError });
 
   if (isError) return <div>Error getting assets...</div>;
-  return (
+  return assets && assets?.length > 0 ? (
     <ul className="grid sm:grid-cols-2 md:grid-cols-4 gap-5">
       {assets?.map((asset, index) => (
         <li
@@ -46,5 +46,9 @@ export default function WalletNfts() {
         </li>
       ))}
     </ul>
+  ) : (
+    <div className="text-title3 text-center">
+      No NFT's try minting one to list an auction
+    </div>
   );
 }

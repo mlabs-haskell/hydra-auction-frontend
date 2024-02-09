@@ -28,7 +28,8 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
 
   const { name: walletApp } = useWallet();
   const { data: assets, isError } = useExtendedAssets(walletApp as WalletApp);
-  const announceAuction = useAnnounceAuction(walletApp);
+  const { mutate: announceAuction, isPending: isAnnounceAuctionPending } =
+    useAnnounceAuction(walletApp);
   if (isError) {
     return null;
   }
@@ -95,7 +96,7 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
           mockAnnounceAuctionParams.additionalAuctionLotOrefs, // Empty array for now but can be implemented
       };
       console.log({ announceAuctionParams: params });
-      announceAuction.mutate(params);
+      announceAuction(params);
     }
   };
 
@@ -185,7 +186,11 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
           />
         </div>
 
-        <input type="submit" className="mt-8 submit-btn"></input>
+        <input
+          disabled={isAnnounceAuctionPending}
+          type="submit"
+          className={`mt-8 submit-btn disabled:border-none disabled:pointer-events-none disabled:bg-gray-300 disabled:text-gray-500 disabled:shadow-none`}
+        ></input>
       </form>
     </div>
   );
