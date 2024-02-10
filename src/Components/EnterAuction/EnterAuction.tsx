@@ -66,7 +66,7 @@ export const EnterAuctionForm = ({ auction }: EnterAuctionFormProps) => {
   };
   return (
     <div className="p-3 mb-3 w-full">
-      <form className={`flex flex-col gap-4`} onSubmit={handleSubmit}>
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <NumberInput
           disabled={isEnterAuctionPending}
           label="Deposit amount"

@@ -48,7 +48,7 @@ export default function WalletNfts() {
     </ul>
   ) : (
     <div className="text-title3 text-center">
-      No NFT's try minting one to list an auction
+      No NFTs - try minting one to list an auction
     </div>
   );
 }

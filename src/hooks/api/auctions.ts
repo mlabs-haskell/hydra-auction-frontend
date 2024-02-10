@@ -48,11 +48,9 @@ export const useAuctionsEntered = (
       if (walletAddress) {
         const walletData = getLocalStorageItem(walletAddress) || {};
         if (walletData) {
-          if (walletAddress) {
-            return (
-              walletData.bidding?.map((auction: any) => auction.auctionId) || []
-            );
-          }
+          return (
+            walletData.bidding?.map((auction: any) => auction.auctionId) || []
+          );
         }
         return [];
       }
