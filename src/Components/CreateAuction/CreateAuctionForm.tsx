@@ -2,26 +2,21 @@ import React, { useRef } from 'react';
 import { NumberInput } from '../Inputs/NumberInput';
 import { DateTimeInput } from '../Inputs/DateInput';
 import { DropDown } from '../DropDown/DropDown';
-import { auctionFormSchema } from 'src/schemas/auctionFormSchema';
-
 import { AuctionTermsInput, WalletApp } from 'hydra-auction-offchain';
-
 import { generateMockAnnounceAuctionParams } from 'src/mocks/announceAuction.mock';
 import { getUrlParams } from 'src/utils/getUrlParams';
 import { useExtendedAssets } from 'src/hooks/api/assets';
 import { useAnnounceAuction } from 'src/hooks/api/announceAuction';
 import { useWallet } from '@meshsdk/react';
-import { useNavigate } from 'react-router-dom';
 import { useDelegates } from 'src/hooks/api/delegates';
 import { auctionTermsInputSchema } from 'src/schemas/auctionTermsSchema';
-
 import { removePolicyIdFromAssetUnit } from 'src/utils/formatting';
+import { toast } from 'react-toastify';
 
 type CreateAuctionFormProps = {
   className?: string;
 };
 const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
-  const navigate = useNavigate();
   const { data: delegateGroup } = useDelegates();
   const urlParams = getUrlParams();
   const assetUnit = urlParams.get('assetUnit');
@@ -33,13 +28,16 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
 
   const { name: walletApp } = useWallet();
   const { data: assets, isError } = useExtendedAssets(walletApp as WalletApp);
-  const announceAuction = useAnnounceAuction(walletApp);
+  const { mutate: announceAuction, isPending: isAnnounceAuctionPending } =
+    useAnnounceAuction(walletApp);
   if (isError) {
     return null;
   }
   const assetToList = assets?.find((asset) => asset.unit === assetUnit);
   if (!assetToList) {
     console.log('No asset found for this asset unit');
+    toast.error('No asset found for this asset unit');
+
     return null;
   }
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -47,7 +45,7 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
 
     console.log({ assetName: assetToList.assetName });
 
-    const auctionForm = auctionTermsInputSchema
+    const auctionFormValidated = auctionTermsInputSchema
       .refine((data) => data.biddingEnd > data.biddingStart, {
         message: 'Bidding end must be after bidding start',
       })
@@ -77,8 +75,11 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
       })
       .safeParse(auctionFormData.current);
 
-    if (!auctionForm.success) {
-      console.log(auctionForm.error);
+    if (!auctionFormValidated.success) {
+      toast.error(
+        `Error creating auction: ${auctionFormValidated.error.issues[0].message}`
+      );
+      console.log(auctionFormValidated.error);
     } else {
       // Using nft from the url to announce the auction
       const auctionLot = {
@@ -88,17 +89,14 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
       };
       const params = {
         auctionTerms: {
-          ...auctionForm.data,
+          ...auctionFormValidated.data,
           auctionLot: [auctionLot],
         },
         additionalAuctionLotOrefs:
           mockAnnounceAuctionParams.additionalAuctionLotOrefs, // Empty array for now but can be implemented
       };
       console.log({ announceAuctionParams: params });
-
-      const announceAuctionResponse = announceAuction.mutate(params);
-      console.log({ announceAuctionResponse });
-      navigate('/auction-list');
+      announceAuction(params);
     }
   };
 
@@ -188,7 +186,11 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
           />
         </div>
 
-        <input type="submit" className="mt-8 submit-btn"></input>
+        <input
+          disabled={isAnnounceAuctionPending}
+          type="submit"
+          className={`mt-8 submit-btn disabled:border-none disabled:pointer-events-none disabled:bg-gray-300 disabled:text-gray-500 disabled:shadow-none`}
+        ></input>
       </form>
     </div>
   );

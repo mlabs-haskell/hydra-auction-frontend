@@ -5,10 +5,9 @@ import {
   WalletApp,
 } from 'hydra-auction-offchain';
 import { QUERY_AUCTIONS_QUERY_KEY } from './auctions';
-import {
-  getLocalStorageItem,
-  setLocalStorageItem,
-} from 'src/utils/localStorage';
+import { toast } from 'react-toastify';
+import { logContractToast } from 'src/utils/contract';
+import { contractOutputResultSchema } from 'src/schemas/contractOutputSchema';
 
 export const useAnnounceAuction = (walletName: string) => {
   const queryClient = useQueryClient();
@@ -16,26 +15,33 @@ export const useAnnounceAuction = (walletName: string) => {
 
   const announceAuctionMutation = useMutation({
     mutationFn: async (auctionParams: AnnounceAuctionContractParams) => {
+      toast.info('Creating auction...');
       console.log({ auctionParams, walletApp });
       const announceAuctionResponse: any = await announceAuction(
         walletApp,
         auctionParams
       );
-      console.log({ announceAuctionResponse });
+      logContractToast({
+        contractResponse: announceAuctionResponse,
+        toastSuccessMsg:
+          'Auction announced successfully! It may take a couple of minutes for the auction to appear.',
+        toastErrorMsg: 'Auction announcement failed:',
+      });
 
-      // Save seller address to local storage to determine if we are the seller/bidder on auction detail page
-      const newSellerAddress =
-        announceAuctionResponse.value.auctionInfo.auctionTerms.sellerAddress;
-      const previousSellerAddress = getLocalStorageItem('sellerAddress');
-
-      if (previousSellerAddress !== newSellerAddress) {
-        setLocalStorageItem('sellerAddress', newSellerAddress);
+      const announceAuctionValidated = contractOutputResultSchema.safeParse(
+        announceAuctionResponse
+      );
+      if (announceAuctionValidated.success) {
+        setTimeout(() => {
+          window.location.replace('/auction-list');
+        }, 5000);
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_AUCTIONS_QUERY_KEY] });
     },
     onError: (error) => {
+      toast.error(`Auction announcement failed: ${JSON.stringify(error)}`);
       console.error('Error announcing auction', error);
     },
   });

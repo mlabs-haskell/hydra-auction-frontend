@@ -1,6 +1,5 @@
 import {
   AuctionInfo,
-  BidderInfoCandidate,
   VerificationKey,
   WalletApp,
 } from 'hydra-auction-offchain';
@@ -8,23 +7,25 @@ import {
 import { useState } from 'react';
 import { useAuthorizeBidders, useDiscoverBidders } from 'src/hooks/api/bidding';
 
-// import { Button } from '@/components/ui/button';
 import { DropdownMenuCheckboxItem } from '../shadcn/DropdownMenu';
 import { Button } from '../shadcn/Button';
 import { DropdownCheckbox } from '../DropdownCheckbox/DropdownCheckbox';
 
-type DiscoverBidderProps = {
+type DiscoverAuthorizeBiddersProps = {
   walletApp: WalletApp;
   auctionInfo: AuctionInfo;
+  disabled?: boolean;
 };
 
 // TODO: should be a checkbox dropdown, to select all bidders, then a submit button to authorize
-export const DiscoverBidders = ({
+export const DiscoverAuthorizeBidders = ({
   walletApp,
   auctionInfo,
-}: DiscoverBidderProps) => {
+  disabled,
+}: DiscoverAuthorizeBiddersProps) => {
   const { data: bidders } = useDiscoverBidders(walletApp, auctionInfo);
-  const authorizeBidders = useAuthorizeBidders(walletApp);
+  const { mutate: authorizeBidders, isPending: isAuthorizeBiddersPending } =
+    useAuthorizeBidders(walletApp);
   const [selectedBidders, setSelectedBidders] = useState<VerificationKey[]>([]);
   console.log({ bidders });
 
@@ -35,7 +36,7 @@ export const DiscoverBidders = ({
   const uniqueBidders = [...new Set(bidderKeys)];
 
   const handleAuthorize = () => {
-    const authorizeBiddersMutateResponse = authorizeBidders.mutate({
+    const authorizeBiddersMutateResponse = authorizeBidders({
       auctionCs: auctionInfo.auctionId,
       biddersToAuthorize: selectedBidders,
     });
@@ -53,23 +54,34 @@ export const DiscoverBidders = ({
   };
 
   return (
-    <div className="flex flex-col gap-6 justify-center items-center w-full">
-      <DropdownCheckbox label="Select bidders to authorize" subLabel="Bidders">
-        {uniqueBidders?.map((bidderVk: VerificationKey, index: number) => {
-          return (
-            <DropdownMenuCheckboxItem
-              key={`${bidderVk}_auth_bidder_select_${index}`}
-              checked={selectedBidders.includes(bidderVk)}
-              onCheckedChange={() => handleSelectBidder(bidderVk)}
-            >
-              {bidderVk}
-            </DropdownMenuCheckboxItem>
-          );
-        })}
-      </DropdownCheckbox>
-      <Button className="w-full" onClick={handleAuthorize}>
-        Authorize
-      </Button>
-    </div>
+    <>
+      <div className={'flex flex-col gap-6 justify-center items-center w-full'}>
+        <DropdownCheckbox
+          disabled={disabled || isAuthorizeBiddersPending}
+          label="Select bidders to authorize"
+          subLabel="Bidders"
+        >
+          {uniqueBidders?.map((bidderVk: VerificationKey, index: number) => {
+            return (
+              <DropdownMenuCheckboxItem
+                key={`${bidderVk}_auth_bidder_select_${index}`}
+                checked={selectedBidders.includes(bidderVk)}
+                onCheckedChange={() => handleSelectBidder(bidderVk)}
+              >
+                {bidderVk}
+              </DropdownMenuCheckboxItem>
+            );
+          })}
+        </DropdownCheckbox>
+
+        <Button
+          disabled={isAuthorizeBiddersPending || disabled}
+          className={`w-full`}
+          onClick={handleAuthorize}
+        >
+          Authorize
+        </Button>
+      </div>
+    </>
   );
 };

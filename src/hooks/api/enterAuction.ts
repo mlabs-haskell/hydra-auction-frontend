@@ -4,18 +4,19 @@ import {
   WalletApp,
   enterAuction,
 } from 'hydra-auction-offchain';
+import { toast } from 'react-toastify';
 import {
   getLocalStorageItem,
   setLocalStorageItem,
 } from 'src/utils/localStorage';
+import { logContractToast } from 'src/utils/contract';
+import { AUCTIONS_ENTERED_QUERY_KEY } from './auctions';
 
 export type AuctionBiddingItem = {
   auctionId: string;
   depositAmount: string;
   assetUnit: string;
 };
-
-const AUCTIONS_BIDDING_QUERY_KEY = 'auctions-bidding';
 
 export type EnterAuctionMutationParams = {
   enterAuctionParams: EnterAuctionContractParams;
@@ -32,6 +33,7 @@ export const useEnterAuction = (walletApp: WalletApp) => {
     mutationFn: async (
       enterAuctionMutationParams: EnterAuctionMutationParams
     ) => {
+      toast.info(`Entering auction...`);
       const enterAuctionParams = enterAuctionMutationParams.enterAuctionParams;
       console.log({ enterAuctionParams });
       const enterAuctionResponse = await enterAuction(
@@ -39,6 +41,14 @@ export const useEnterAuction = (walletApp: WalletApp) => {
         enterAuctionParams
       );
       console.log({ enterAuctionResponse });
+
+      logContractToast({
+        contractResponse: enterAuctionResponse,
+        toastSuccessMsg:
+          'Auction entered succesfully. Once the the seller approves your deposit, you will be able to bid.',
+        toastErrorMsg: 'Entering auction failed:',
+      });
+
       return {
         data: enterAuctionResponse,
         params: enterAuctionParams,
@@ -52,6 +62,7 @@ export const useEnterAuction = (walletApp: WalletApp) => {
       const mutationParams = mutationResponse.params;
       const auctionInfo = mutationParams.auctionInfo;
       const walletAddress = mutationResponse.walletAddress;
+      const auctionCs = auctionInfo.auctionId;
       const walletData: WalletDataLocalStorage = getLocalStorageItem(
         walletAddress
       ) || {
@@ -79,7 +90,7 @@ export const useEnterAuction = (walletApp: WalletApp) => {
       queryClient.invalidateQueries({
         queryKey: [
           [
-            AUCTIONS_BIDDING_QUERY_KEY,
+            AUCTIONS_ENTERED_QUERY_KEY,
             mutationResponse.params.auctionInfo.auctionId,
           ],
         ],
@@ -91,26 +102,4 @@ export const useEnterAuction = (walletApp: WalletApp) => {
   });
 
   return enterAuctionMutation;
-};
-// TODO: Add logic on auction-list page to sweep all auctions and check if we are seller / bidder
-// Also add logic to remove auction from local storage if it is no longer active
-export const useAuctionsBidding = (
-  walletAddress?: string,
-  auctionId?: string
-) => {
-  return useQuery({
-    queryKey: [AUCTIONS_BIDDING_QUERY_KEY, auctionId],
-    queryFn: async () => {
-      if (auctionId && walletAddress) {
-        const walletData = getLocalStorageItem(walletAddress) || {};
-        if (walletData) {
-          if (walletAddress) {
-            return walletData.bidding || [];
-          }
-        }
-        return [];
-      }
-    },
-    enabled: !!walletAddress && !!auctionId,
-  });
 };

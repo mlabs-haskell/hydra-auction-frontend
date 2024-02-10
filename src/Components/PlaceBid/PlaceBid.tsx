@@ -23,7 +23,8 @@ export const PlaceBidForm = ({
   walletApp,
 }: PlaceBidFormProps) => {
   console.log({ sellerSignature });
-  const placeBidMutation = usePlaceBid(auctionInfo, sellerSignature, walletApp);
+  const { mutate: placeBidMutation, isPending: isPlaceBidPending } =
+    usePlaceBid(auctionInfo, sellerSignature, walletApp);
 
   const placeBidFormData = useRef<PlaceBidFormT>({
     bidAmount: 0,
@@ -47,7 +48,7 @@ export const PlaceBidForm = ({
     //   placeBid.mutate(String(placeBidForm.data.bidAmount));
     // }
 
-    const placeBidResponse = placeBidMutation.mutate(
+    const placeBidResponse = placeBidMutation(
       String(placeBidFormData.current.bidAmount)
     );
     console.log({ placeBidResponse });
@@ -65,7 +66,11 @@ export const PlaceBidForm = ({
           });
         }}
       />
-      <input type="submit" className="submit-btn"></input>
+      <input
+        disabled={isPlaceBidPending}
+        type="submit"
+        className="submit-btn"
+      ></input>
     </form>
   );
 };

@@ -16,18 +16,27 @@ export const DropdownCheckbox = ({
   children,
   label,
   subLabel,
+  disabled,
 }: {
   children: React.ReactNode;
   label: string;
   subLabel: string;
+  disabled?: boolean;
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="flex flex-col justify-center items-center w-full">
+    <div
+      className={`flex flex-col justify-center items-center w-full ${
+        disabled && 'opacity-50'
+      }`}
+    >
       <DropdownMenu open={menuOpen}>
         <DropdownMenuTrigger
-          className="bg-gray-100 border-b-2 border-black px-4 py-2 "
+          disabled={disabled}
+          className={`bg-gray-100 border-b-2 border-black px-4 py-2  ${
+            disabled && 'opactiy-50'
+          }`}
           asChild
           onClick={() => setMenuOpen(!menuOpen)}
         >

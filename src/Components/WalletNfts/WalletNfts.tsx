@@ -14,9 +14,9 @@ type WalletNftCardProps = {
 const WalletNftCard = ({ assetName, assetUnit }: WalletNftCardProps) => {
   return (
     <a href={`/create-auction?assetUnit=${assetUnit}&assetName=${assetName}`}>
-      <div className="aspect-w-1 aspect-h-1 w-full h-full max-h-64 overflow-hidden justify-center items-center pb-4">
+      <div className="aspect-w-1 aspect-h-1 w-full h-full max-h-64 overflow-hidden justify-center items-center mb-2">
         <IpfsImage
-          className="w-full h-full object-cover object-center transition-transform duration-[500ms] hover:scale-110 hover:transform"
+          className="w-full h-64 object-cover object-center transition-transform duration-[500ms] hover:scale-110 hover:transform"
           assetUnit={assetUnit}
         />
       </div>
@@ -32,7 +32,7 @@ export default function WalletNfts() {
   console.log({ walletApp, assets, isError });
 
   if (isError) return <div>Error getting assets...</div>;
-  return (
+  return assets && assets?.length > 0 ? (
     <ul className="grid sm:grid-cols-2 md:grid-cols-4 gap-5">
       {assets?.map((asset, index) => (
         <li
@@ -46,5 +46,9 @@ export default function WalletNfts() {
         </li>
       ))}
     </ul>
+  ) : (
+    <div className="text-title3 text-center">
+      No NFTs - try minting one to list an auction
+    </div>
   );
 }

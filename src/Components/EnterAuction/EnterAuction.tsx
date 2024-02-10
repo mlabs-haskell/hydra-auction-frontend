@@ -19,7 +19,8 @@ type EnterAuctionFormProps = {
 export const EnterAuctionForm = ({ auction }: EnterAuctionFormProps) => {
   const { name: walletApp, wallet, connected } = useWallet();
   const { data: walletAddress } = useWalletAddress(wallet, connected);
-  const enterAuction = useEnterAuction(walletApp as WalletApp);
+  const { mutate: enterAuction, isPending: isEnterAuctionPending } =
+    useEnterAuction(walletApp as WalletApp);
 
   const [enterAuctionFormData, setEnterAuctionFormData] =
     useState<EnterAuctionContractParams>({
@@ -48,9 +49,9 @@ export const EnterAuctionForm = ({ auction }: EnterAuctionFormProps) => {
       console.log(auctionForm.error);
     } else {
       if (walletAddress) {
-        enterAuction.mutate({
+        enterAuction({
           enterAuctionParams: auctionForm.data as EnterAuctionContractParams,
-          walletAddress: walletAddress,
+          walletAddress,
         });
       }
       // TODO: should show pop up message that tells bidder that the seller will now authorize them and they will be notified
@@ -67,13 +68,18 @@ export const EnterAuctionForm = ({ auction }: EnterAuctionFormProps) => {
     <div className="p-3 mb-3 w-full">
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <NumberInput
+          disabled={isEnterAuctionPending}
           label="Deposit amount"
           inputId="depositAmount"
           placeholder={`Minimum Deposit: ${auction.auctionTerms.minDepositAmount} ADA`}
           onChange={handleInputChange}
           value={enterAuctionFormData.depositAmount ?? undefined}
         />
-        <input type="submit" className="submit-btn"></input>
+        <input
+          disabled={isEnterAuctionPending}
+          type="submit"
+          className="submit-btn disabled:border-none disabled:pointer-events-none disabled:bg-gray-300 disabled:text-gray-500 disabled:shadow-none"
+        ></input>
       </form>
     </div>
   );

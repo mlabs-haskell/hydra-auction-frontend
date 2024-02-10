@@ -3,22 +3,29 @@ import { AuctionDetailSellerProps } from '../AuctionDetail/AuctionDetailSeller';
 import { useStartBidding } from '../../hooks/api/bidding';
 import { Button } from '../shadcn/Button';
 
+type StartBiddingProps = AuctionDetailSellerProps & {
+  disabled?: boolean;
+};
 export default function StartBidding({
   walletApp,
   auctionInfo,
-}: AuctionDetailSellerProps) {
-  const startBidding = useStartBidding(walletApp as WalletApp, {
-    auctionInfo: auctionInfo,
-  });
+  disabled,
+}: StartBiddingProps) {
+  const { mutate: startBidding, isPending: isStartBiddingPending } =
+    useStartBidding(walletApp as WalletApp);
 
   const handleStartBidding = () => {
-    startBidding.mutate();
+    startBidding({
+      auctionInfo: auctionInfo,
+    });
   };
   return (
-    <div className="w-full">
-      <Button className="w-full" onClick={handleStartBidding}>
-        Start Bidding
-      </Button>
-    </div>
+    <Button
+      disabled={isStartBiddingPending || disabled}
+      className="w-full"
+      onClick={handleStartBidding}
+    >
+      Start Bidding
+    </Button>
   );
 }
