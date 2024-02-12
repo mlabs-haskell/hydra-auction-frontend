@@ -139,7 +139,7 @@ Note: the assumption for v1 of this specification is that transactions which req
 - Reclaim Deposit (Losers Only)
 
 # Pages
-![Alt text](image.png)
+![Flowchart](flowchart.png)
 
 Figma available to view [here](https://www.figma.com/file/E3pEaCHWDZG4mN21nHhXje/Hydra-UX-Design?type=design&node-id=0%3A1&mode=design&t=JQLt5enItpF7pOFF-1).
 
