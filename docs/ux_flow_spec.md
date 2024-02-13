@@ -42,7 +42,6 @@ Note: the assumption for v1 of this specification is that transactions which req
             <th rowspan=2>All Users</th>
             <th rowspan=2>Seller</th>
             <th colspan=2>Bidder</th>
-			      <th rowspan=2>Delegate (N/A for v1 UX Spec)</th>
         </tr>
 		<tr>
             <th>Winner</th>
@@ -52,48 +51,50 @@ Note: the assumption for v1 of this specification is that transactions which req
     <tbody>
         <tr>
             <th colspan=2>∅</td>
-			<td>Browse Auctions</td>
+			      <td>Browse Auctions</td>
             <td>Announce Auction</td>
             <td colspan=2></td>
-            <td>Register as Delegate, Update Delegate Info</td>
         </tr>
-		<tr>
+		    <tr>
             <th colspan=2>Announced</td>
 			      <td rowspan=5> View Auction Details</td>
-            <td>Authorize Bidders, Start Bidding</td>
+            <td>
+              Authorize Bidders,<br/>
+              Start Bidding
+            </td>
             <td>Place Deposit</td>
             <td></td>
-            <td></td>
         </tr>
-		<tr>
+        <tr>
             <th rowspan=2>Ongoing</td>
             <th>Bidding on L1</td>
             <td rowspan=2>Authorize Bidders</td>
-            <td rowspan=2 colspan=2>Place Deposit, Bid</td>
-            <td></td>
+            <td rowspan=2 colspan=2>
+              Place Deposit,<br/>
+              Bid
+            </td>
         </tr>
-		<tr>
-            <th>Bidding on L2</td>
-            <td></td>
+		    <tr>
+            <th>Bidding on L2</td>       
         </tr>
-		<tr>
+		    <tr>
             <th rowspan=2>Resolution</td>
             <th>Pre Claim Deadline</td>
             <td></td>
             <td>Claim Lot</td>
             <td rowspan=3> Refund Deposit </td>
-            <td></td>
         </tr>
-		<tr>
+		    <tr>
             <th>Post Claim Deadline</td>
             <td>Reclaim Lot</td>
             <td></td>
-            <td></td>
         </tr>
-		<tr>
+		    <tr>
             <th colspan=2>Concluded</td>
-            <td>Cleanup Auction, View Auction Results?</td>
-            <td></td>
+            <td>
+              Cleanup Auction,<br/>
+              View Auction Results?
+            </td>
             <td></td>
             <td></td>
         </tr>
