@@ -93,7 +93,7 @@ Note: the assumption for v1 of this specification is that transactions which req
             <th colspan=2>Concluded</td>
             <td>
               Cleanup Auction,<br/>
-              View Auction Results?
+              View Auction Results
             </td>
             <td></td>
             <td></td>
@@ -103,39 +103,49 @@ Note: the assumption for v1 of this specification is that transactions which req
 
 ## General User Needs
 #### ∅ (All States)
- - Browse Auctions
+- Browse Auctions
+  - Allow users to find existing auctions to bid on.
+  - Allow users to verify their auctions are visible.
 #### Announced, Ongoing, Resolution
 - View Auction Details
+  - Learn more about the auction lot
 #### Concluded
-- View Auction Results?
-## Seller Needs
+- View Auction Results
+  - Allow bidders & seller to see the results
 
+## Seller Needs
 #### ∅ (All States)
 - Announce Auction
+  - Allow users to create auctions
 #### Announced 
 - Authorize Bidders
+  - Allow the seller to bring bidders into the auction
 - Start Bidding
-- Cancel Auction?
+  - Allow the seller to trigger the start of the auction
 #### Ongoing
 - Authorize Bidders
 #### Resolution
 ###### Post Claim Deadline:
 - Reclaim Lot
+  - Allow the seller to retrieve the lot & the winner's deposit if the winner doesn't claim the lot
 #### Concluded
 - Cleanup Auction
+  - Allow the seller to destroy the auction utxo
 
 ## Bidder Needs
-
-#### ∅ (All States)
 #### Announced 
 - Place Deposit
+  - Allow users to declare interest in the auction by placing a deposit at the validator address
 #### Ongoing
 - Place Deposit
 - Bid
+  - Allow approved bidders to increase the standing bid
 #### Resolution
 - Reclaim Deposit (Losers Only)
+  - Allow losers to retrieve their deposit after the auction has concluded
 ###### Before Claim Deadline:
 - Claim Lot (Winner Only)
+  - Allow the winner to pay the amount they bid to claim the lot
 #### Concluded
 - Reclaim Deposit (Losers Only)
 
