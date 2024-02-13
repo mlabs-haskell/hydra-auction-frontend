@@ -1,5 +1,14 @@
 import { AuctionTerms } from 'hydra-auction-offchain';
 import { TimeRemaining } from './TimeRemaining';
+import { useEffect, useState } from 'react';
+
+type AuctionStateRemainingProps = {
+  biddingEnd: string;
+  biddingStart: string;
+  purchaseDeadline: string;
+  cleanup: string;
+  size?: string;
+};
 
 const TimeRemainingCard = ({
   endDate,
@@ -29,15 +38,31 @@ export default function AuctionStateRemaining({
   purchaseDeadline,
   cleanup,
   size = 'small',
-}: { size?: string } & AuctionTerms) {
+}: AuctionStateRemainingProps) {
   const purchaseDeadlineDate = Number(purchaseDeadline);
   const biddingStartDate = Number(biddingStart);
   const biddingEndDate = Number(biddingEnd);
   const cleanupDate = Number(cleanup);
-  const now = Date.now();
+  const [now, setNowTime] = useState(Date.now());
+
+  useEffect(() => {
+    const timerInterval = setInterval(() => {
+      setNowTime(Date.now());
+    }, 1000);
+
+    return () => clearInterval(timerInterval);
+  }, []);
 
   if (now > cleanupDate) {
-    return <TimeRemainingCard size={size} label="" endDate={cleanupDate} />;
+    return (
+      <div
+        className={`font-semibold ${
+          size === 'large' ? 'text-title1 font-bold' : ''
+        }`}
+      >
+        Expired
+      </div>
+    );
   } else if (now > purchaseDeadlineDate) {
     return (
       <TimeRemainingCard

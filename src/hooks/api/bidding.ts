@@ -17,7 +17,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { QUERY_AUCTIONS_QUERY_KEY } from './auctions';
 import { toast } from 'react-toastify';
 import { logContractToast } from 'src/utils/contract';
-import { ADA_CURRENCY_SYMBOL } from 'src/utils/currency';
+import { ADA_CURRENCY_SYMBOL, formatLovelaceToAda } from 'src/utils/currency';
 import { contractOutputResultSchema } from 'src/schemas/contractOutputSchema';
 
 export type HookResponse = {
@@ -172,7 +172,8 @@ export const usePlaceBid = (
 
   const placeBidMutation = useMutation({
     mutationFn: async (bidAmount: string) => {
-      toast.info(`Placing bid for ${ADA_CURRENCY_SYMBOL}${bidAmount}...`);
+      const formattedPrice = formatLovelaceToAda(bidAmount);
+      toast.info(`Placing bid for ${ADA_CURRENCY_SYMBOL}${formattedPrice}...`);
 
       const params: PlaceBidContractParams = {
         auctionInfo,
@@ -184,7 +185,7 @@ export const usePlaceBid = (
       console.log({ placeBidResponse });
       logContractToast({
         contractResponse: placeBidResponse,
-        toastSuccessMsg: `You succesfully placed a bid for ${ADA_CURRENCY_SYMBOL}${bidAmount}.`,
+        toastSuccessMsg: `You succesfully placed a bid for ${ADA_CURRENCY_SYMBOL}${formattedPrice}.`,
         toastErrorMsg: `Placing bid failed`,
       });
 

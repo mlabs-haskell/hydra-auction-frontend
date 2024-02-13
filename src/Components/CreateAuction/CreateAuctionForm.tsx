@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { NumberInput } from '../Inputs/NumberInput';
 import { DateTimeInput } from '../Inputs/DateInput';
 import { DropDown } from '../DropDown/DropDown';
@@ -12,6 +12,7 @@ import { useDelegates } from 'src/hooks/api/delegates';
 import { auctionTermsInputSchema } from 'src/schemas/auctionTermsSchema';
 import { removePolicyIdFromAssetUnit } from 'src/utils/formatting';
 import { toast } from 'react-toastify';
+import { ONE_DAY_MS, formatDate } from 'src/utils/date';
 
 type CreateAuctionFormProps = {
   className?: string;
@@ -22,7 +23,7 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
   const assetUnit = urlParams.get('assetUnit');
 
   const mockAnnounceAuctionParams = generateMockAnnounceAuctionParams();
-  const auctionFormData = useRef<AuctionTermsInput>(
+  const [auctionFormData, setAuctionFormData] = useState<AuctionTermsInput>(
     mockAnnounceAuctionParams.auctionTerms
   );
 
@@ -42,8 +43,6 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
   }
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    console.log({ assetName: assetToList.assetName });
 
     const auctionFormValidated = auctionTermsInputSchema
       .refine((data) => data.biddingEnd > data.biddingStart, {
@@ -73,7 +72,7 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
       .refine((data) => data.delegates.length > 0, {
         message: 'Must have at least one delegate',
       })
-      .safeParse(auctionFormData.current);
+      .safeParse(auctionFormData);
 
     if (!auctionFormValidated.success) {
       toast.error(
@@ -87,10 +86,15 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
         tn: removePolicyIdFromAssetUnit(assetToList.unit),
         quantity: assetToList.quantity,
       };
+
       const params = {
         auctionTerms: {
           ...auctionFormValidated.data,
           auctionLot: [auctionLot],
+          biddingStart:
+            Number(auctionFormValidated.data.biddingStart) < Date.now()
+              ? Date.now().toString()
+              : auctionFormValidated.data.biddingStart,
         },
         additionalAuctionLotOrefs:
           mockAnnounceAuctionParams.additionalAuctionLotOrefs, // Empty array for now but can be implemented
@@ -101,10 +105,10 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
   };
 
   const handleAuctionInputChange = (inputId: string, value: any) => {
-    auctionFormData.current = {
-      ...auctionFormData.current,
+    setAuctionFormData({
+      ...auctionFormData,
       [inputId]: value,
-    };
+    });
   };
 
   // To allow for multiple auction lots once it is supported
@@ -136,32 +140,44 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
           label="Auction Fee Per Delegate"
           inputId="auctionFeePerDelegate"
           onChange={handleAuctionInputChange}
-          placeholder={auctionFormData.current.auctionFeePerDelegate}
+          placeholder={auctionFormData.auctionFeePerDelegate}
         />
         <div className="flex gap-4 my-8 flex-wrap">
           <DateTimeInput
             label="Bidding Start"
             inputId="biddingStart"
             onChange={handleAuctionInputChange}
-            placeholder={auctionFormData.current.biddingStart}
+            inputValue={
+              auctionFormData.biddingStart
+                ? formatDate(new Date(Number(auctionFormData.biddingStart)))
+                : formatDate(new Date())
+            }
           />
           <DateTimeInput
             label="Bidding End"
             inputId="biddingEnd"
             onChange={handleAuctionInputChange}
-            placeholder={auctionFormData.current.biddingEnd}
           />
           <DateTimeInput
             label="Purchase Deadline"
             inputId="purchaseDeadline"
             onChange={handleAuctionInputChange}
-            placeholder={auctionFormData.current.purchaseDeadline}
           />
           <DateTimeInput
             label="Cleanup"
             inputId="cleanup"
             onChange={handleAuctionInputChange}
-            placeholder={auctionFormData.current.cleanup}
+            inputValue={
+              auctionFormData.purchaseDeadline && !auctionFormData.cleanup
+                ? formatDate(
+                    new Date(
+                      Number(auctionFormData.purchaseDeadline) + ONE_DAY_MS * 2
+                    )
+                  )
+                : auctionFormData.cleanup
+                ? formatDate(new Date(Number(auctionFormData.cleanup)))
+                : ''
+            }
           />
         </div>
 
@@ -170,19 +186,19 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
             label="Starting Bid"
             inputId="startingBid"
             onChange={handleAuctionInputChange}
-            placeholder={auctionFormData.current.startingBid}
+            placeholder={auctionFormData.startingBid}
           />
           <NumberInput
             label="Min Bid Increment"
             inputId="minBidIncrement"
             onChange={handleAuctionInputChange}
-            placeholder={auctionFormData.current.minBidIncrement}
+            placeholder={auctionFormData.minBidIncrement}
           />
           <NumberInput
             label="Min Deposit Amount"
             inputId="minDepositAmount"
             onChange={handleAuctionInputChange}
-            placeholder={auctionFormData.current.minDepositAmount}
+            placeholder={auctionFormData.minDepositAmount}
           />
         </div>
 

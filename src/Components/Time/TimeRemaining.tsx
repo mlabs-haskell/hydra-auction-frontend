@@ -40,8 +40,7 @@ export const TimeRemaining = ({
   function calculateTimeRemaining() {
     const currentTime = Date.now();
     const timeDiff = endDate - currentTime;
-
-    if (timeDiff < 0) return { days: null };
+    const expired = timeDiff < 0;
 
     const secsInMin = 60;
     const secsInHour = secsInMin * 60;
@@ -53,7 +52,7 @@ export const TimeRemaining = ({
     const minutes = Math.floor((totalSeconds % secsInHour) / secsInMin);
     const seconds = totalSeconds % secsInMin;
 
-    return { days, hours, minutes, seconds };
+    return { days, hours, minutes, seconds, expired };
   }
 
   useEffect(() => {
@@ -62,11 +61,11 @@ export const TimeRemaining = ({
     }, 1000);
 
     return () => clearInterval(timerInterval);
-  }, []);
+  }, [endDate]);
 
   if (size === 'large') {
-    if (timeRemaining.days === null)
-      return <div className="text-title1 font-bold ">Expired</div>;
+    if (timeRemaining.expired)
+      return <div className="text-title1 font-bold ">-</div>;
     return timeRemaining.hours > 0 ? (
       <div className="grid grid-cols-3 gap-3">
         <TimeRemainingSlot
@@ -105,8 +104,7 @@ export const TimeRemaining = ({
       </div>
     );
   } else {
-    if (timeRemaining.days === null)
-      return <div className=" font-semibold">Expired</div>;
+    if (timeRemaining.expired) return <div className=" font-semibold">-</div>;
     return timeRemaining.hours > 0 ? (
       <div className="grid grid-cols-3 gap-3">
         <TimeRemainingSlot value={String(timeRemaining.days)} label="d" />
