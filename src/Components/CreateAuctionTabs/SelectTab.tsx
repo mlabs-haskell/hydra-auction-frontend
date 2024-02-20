@@ -25,7 +25,7 @@ const SelectTab = () => {
   const onChange = (index: number) => {
     // redirect to the current page, but pass the new assetUnit
     const asset: AssetExtended | undefined = assets?.[index];
-    window.location.href = `/create-auction?assetUnit=${asset?.unit}`;
+    window.location.href = `/create-auction?assetUnit=${asset?.unit}&assetName=${asset?.assetName}`;
   };
 
   return (

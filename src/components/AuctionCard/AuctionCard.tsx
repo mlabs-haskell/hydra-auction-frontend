@@ -6,7 +6,11 @@ import { getAuctionAssetUnit } from 'src/utils/auction';
 import { useAssetMetadata } from 'src/hooks/api/assets';
 import { useStandingBidState } from 'src/hooks/api/bidding';
 import { useWallet } from '@meshsdk/react';
-import { ADA_CURRENCY_SYMBOL, numberWithCommas } from 'src/utils/currency';
+import {
+  ADA_CURRENCY_SYMBOL,
+  formatLovelaceToAda,
+  numberWithCommas,
+} from 'src/utils/currency';
 import { TimerIcon } from '@radix-ui/react-icons';
 
 type AuctionCardProps = {
@@ -22,6 +26,8 @@ function AuctionCard({ auctionInfo }: AuctionCardProps) {
   const { name: walletName } = useWallet();
   const { data: standingBidState, isLoading: isLoadingStandingBidState } =
     useStandingBidState(walletName as WalletApp, auctionInfo);
+
+  const formattedPrice = formatLovelaceToAda(standingBidState?.price);
 
   if (isLoadingMetadata || isLoadingStandingBidState)
     return <div>Loading...</div>;
@@ -44,7 +50,7 @@ function AuctionCard({ auctionInfo }: AuctionCardProps) {
           <div className="w-full pb-2 border-b border-slate-300 mb-3">
             <div className="flex justify-end gap-2 font-bold mb-1">
               <div>{ADA_CURRENCY_SYMBOL}</div>
-              <div>{standingBidState?.price}</div>
+              <div>{formattedPrice}</div>
             </div>
             <div className="overflow-hidden text-end text-dim">
               {numberWithCommas(auctionInfo.auctionTerms.minDepositAmount)} Min

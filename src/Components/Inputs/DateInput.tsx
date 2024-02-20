@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { formatDate } from 'src/utils/date';
 
 type DateTimeInputProps = {
   label: string;
   inputId: string;
   placeholder?: string;
+  inputValue?: string;
   onChange?: (inputId: string, value: string) => void;
 };
 
@@ -13,11 +14,15 @@ export const DateTimeInput = ({
   inputId,
   onChange,
   placeholder,
+  inputValue,
 }: DateTimeInputProps) => {
-  const [value, setValue] = useState<string>('');
-  // If we want to set the date value on the input from epoch time we need this
-  // const splitDate = new Date(Number(placeholder) ).toLocaleDateString().replaceAll('/', '-').split('-');
-  // const formattedDate = `${splitDate[2]}-${Number(splitDate[0]) < 10 ? '0' + splitDate[0] : splitDate[0]}-${Number(splitDate[1]) < 10 ? '0' + splitDate[1] : splitDate[1]}`;
+  const [value, setValue] = useState<string>(inputValue || '');
+  useEffect(() => {
+    if (inputValue && onChange) {
+      const formattedDate = formatDate(new Date(inputValue));
+      onChange(inputId, new Date(formattedDate).getTime().toString());
+    }
+  }, [inputValue]);
   return (
     <div className="border-b-2 border-black">
       <div className="text-callout mb-1 text-gray-700">
@@ -27,22 +32,25 @@ export const DateTimeInput = ({
       <input
         onChange={(e) => {
           const formattedDate = formatDate(new Date(e.target.value));
-          onChange &&
+          !inputValue &&
+            onChange &&
             onChange(inputId, new Date(formattedDate).getTime().toString());
-          setValue(formattedDate);
+          !inputValue && setValue(formattedDate);
         }}
         onBlur={(e) => {
           if (e.target.value !== '') return;
 
           const formattedDate = formatDate(new Date());
-          onChange &&
+          !inputValue &&
+            onChange &&
             onChange(inputId, new Date(formattedDate).getTime().toString());
-          setValue(formattedDate);
+          !inputValue && setValue(formattedDate);
         }}
         id={inputId}
-        className="border-none p-1 m-0 mb-1"
+        className="border-none p-1 m-0 mb-1 bg-gray-100"
         type="datetime-local"
-        value={value}
+        placeholder={placeholder}
+        value={inputValue ? inputValue : value}
       />
     </div>
   );
