@@ -1,10 +1,14 @@
-import { AuctionInfo, WalletApp } from 'hydra-auction-offchain';
+import {
+  AuctionInfo,
+  StandingBidState,
+  WalletApp,
+} from 'hydra-auction-offchain';
 import AuctionStateRemaining from '../Time/AuctionStateRemaining';
 import IpfsImage from '../IpfsImage/IpfsImage';
 
 import { getAuctionAssetUnit } from 'src/utils/auction';
 import { useAssetMetadata } from 'src/hooks/api/assets';
-import { useStandingBidState } from 'src/hooks/api/bidding';
+
 import { useWallet } from '@meshsdk/react';
 import {
   ADA_CURRENCY_SYMBOL,
@@ -12,6 +16,8 @@ import {
   numberWithCommas,
 } from 'src/utils/currency';
 import { TimerIcon } from '@radix-ui/react-icons';
+import { contractOutputResultSchema } from 'src/schemas/contractOutputSchema';
+import { useStandingBidState } from 'src/hooks/api/standingBidState';
 
 type AuctionCardProps = {
   auctionInfo: AuctionInfo;
@@ -26,8 +32,13 @@ function AuctionCard({ auctionInfo }: AuctionCardProps) {
   const { name: walletName } = useWallet();
   const { data: standingBidState, isLoading: isLoadingStandingBidState } =
     useStandingBidState(walletName as WalletApp, auctionInfo);
-
-  const formattedPrice = formatLovelaceToAda(standingBidState?.price);
+  const standingBidStatePrice = standingBidState?.value || '';
+  let formattedPrice = '';
+  // Unexpected response from queryStandingBidState right now, this will be changed
+  if (contractOutputResultSchema.safeParse(standingBidStatePrice).success) {
+    const standingBidValue = standingBidState?.value as StandingBidState;
+    formattedPrice = formatLovelaceToAda(standingBidValue?.price);
+  }
 
   if (isLoadingMetadata || isLoadingStandingBidState)
     return <div>Loading...</div>;

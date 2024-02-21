@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NumberInput } from '../Inputs/NumberInput';
 import { DateTimeInput } from '../Inputs/DateInput';
 import { DropDown } from '../DropDown/DropDown';
@@ -31,6 +31,17 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
   const { data: assets, isError } = useExtendedAssets(walletApp as WalletApp);
   const { mutate: announceAuction, isPending: isAnnounceAuctionPending } =
     useAnnounceAuction(walletApp);
+
+  // Auto set the cleanup to two days after purchase deadline every time purchase deadline is set
+  useEffect(() => {
+    if (auctionFormData.purchaseDeadline) {
+      handleAuctionInputChange(
+        'cleanup',
+        String(Number(auctionFormData.purchaseDeadline) + ONE_DAY_MS * 2)
+      );
+    }
+  }, [auctionFormData.purchaseDeadline]);
+
   if (isError) {
     return null;
   }
@@ -105,6 +116,7 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
   };
 
   const handleAuctionInputChange = (inputId: string, value: any) => {
+    console.log({ inputId });
     setAuctionFormData({
       ...auctionFormData,
       [inputId]: value,
@@ -168,13 +180,7 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
             inputId="cleanup"
             onChange={handleAuctionInputChange}
             inputValue={
-              auctionFormData.purchaseDeadline && !auctionFormData.cleanup
-                ? formatDate(
-                    new Date(
-                      Number(auctionFormData.purchaseDeadline) + ONE_DAY_MS * 2
-                    )
-                  )
-                : auctionFormData.cleanup
+              auctionFormData.cleanup
                 ? formatDate(new Date(Number(auctionFormData.cleanup)))
                 : ''
             }

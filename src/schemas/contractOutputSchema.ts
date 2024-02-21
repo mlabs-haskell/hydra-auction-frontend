@@ -1,15 +1,16 @@
-import { z } from 'zod';
+import { ZodObject, z } from 'zod';
 
 export const contractOutputResultSchema = z.object({
   tag: z.literal('result'),
   value: z.any(), // any for now but will change to the specific responses for each api call
 });
 
-const contractErrorSchema = z.object({
+export const contractErrorSchema = z.object({
   errorCode: z.string(),
   message: z.string(),
 });
-export const contractOutputErrorSchema = {
+
+export const contractOutputErrorSchema = z.object({
   tag: z.literal('error'),
   value: contractErrorSchema,
-};
+});

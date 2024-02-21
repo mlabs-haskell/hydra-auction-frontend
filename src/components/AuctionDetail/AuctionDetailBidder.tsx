@@ -2,8 +2,8 @@ import { AuctionInfo, ContractOutput, WalletApp } from 'hydra-auction-offchain';
 import EnterAuction from '../EnterAuction/EnterAuction';
 import BiddingView from './BiddingView';
 import { BidderClaims } from './BidderClaims';
-import { useDiscoverSellerSignature } from 'src/hooks/api/bidding';
 import { contractOutputResultSchema } from 'src/schemas/contractOutputSchema';
+import { useDiscoverSellerSignature } from 'src/hooks/api/discoverSellerSignature';
 
 function getValidatedSellerSignature(
   sellerSignature: ContractOutput<string | null> | undefined

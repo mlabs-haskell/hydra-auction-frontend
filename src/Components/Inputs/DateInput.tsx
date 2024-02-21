@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { formatDate } from 'src/utils/date';
 
 type DateTimeInputProps = {
@@ -17,12 +17,6 @@ export const DateTimeInput = ({
   inputValue,
 }: DateTimeInputProps) => {
   const [value, setValue] = useState<string>(inputValue || '');
-  useEffect(() => {
-    if (inputValue && onChange) {
-      const formattedDate = formatDate(new Date(inputValue));
-      onChange(inputId, new Date(formattedDate).getTime().toString());
-    }
-  }, [inputValue]);
   return (
     <div className="border-b-2 border-black">
       <div className="text-callout mb-1 text-gray-700">
@@ -32,17 +26,7 @@ export const DateTimeInput = ({
       <input
         onChange={(e) => {
           const formattedDate = formatDate(new Date(e.target.value));
-          !inputValue &&
-            onChange &&
-            onChange(inputId, new Date(formattedDate).getTime().toString());
-          !inputValue && setValue(formattedDate);
-        }}
-        onBlur={(e) => {
-          if (e.target.value !== '') return;
-
-          const formattedDate = formatDate(new Date());
-          !inputValue &&
-            onChange &&
+          onChange &&
             onChange(inputId, new Date(formattedDate).getTime().toString());
           !inputValue && setValue(formattedDate);
         }}
