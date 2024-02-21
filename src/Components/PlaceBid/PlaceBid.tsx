@@ -1,11 +1,8 @@
 import React, { useRef } from 'react';
-import {
-  PlaceBidFormT,
-  placeBidFormSchema,
-} from 'src/schemas/placeBidFormSchema';
+import { PlaceBidFormT } from 'src/schemas/placeBidFormSchema';
 
 import { NumberInput } from '../Inputs/NumberInput';
-import { usePlaceBid } from '../../hooks/api/bidding';
+import { usePlaceBid } from '../../hooks/api/placeBid';
 import { AuctionInfo } from 'hydra-auction-offchain';
 import { WalletApp } from 'hydra-auction-offchain';
 
