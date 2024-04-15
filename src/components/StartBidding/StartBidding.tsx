@@ -1,7 +1,7 @@
 import { WalletApp } from 'hydra-auction-offchain';
 import { AuctionDetailSellerProps } from '../AuctionDetail/AuctionDetailSeller';
-import { useStartBidding } from '../../hooks/api/bidding';
 import { Button } from '../shadcn/Button';
+import { useStartBidding } from 'src/hooks/api/startBidding';
 
 type StartBiddingProps = AuctionDetailSellerProps & {
   disabled?: boolean;

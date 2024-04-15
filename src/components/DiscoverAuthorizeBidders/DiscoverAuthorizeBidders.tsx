@@ -5,11 +5,12 @@ import {
 } from 'hydra-auction-offchain';
 
 import { useState } from 'react';
-import { useAuthorizeBidders, useDiscoverBidders } from 'src/hooks/api/bidding';
 
 import { DropdownMenuCheckboxItem } from '../shadcn/DropdownMenu';
 import { Button } from '../shadcn/Button';
 import { DropdownCheckbox } from '../DropdownCheckbox/DropdownCheckbox';
+import { useDiscoverBidders } from 'src/hooks/api/discoverBidders';
+import { useAuthorizeBidders } from 'src/hooks/api/authorizeBidders';
 
 type DiscoverAuthorizeBiddersProps = {
   walletApp: WalletApp;
