@@ -1,4 +1,5 @@
 import {
+  AuctionFilters,
   AuctionInfo,
   DiscoverSellerSigContractParams,
   discoverSellerSignature,
@@ -19,14 +20,15 @@ export const QUERY_AUCTIONS_QUERY_KEY = 'query-auctions';
 export const AUCTIONS_ENTERED_QUERY_KEY = 'auctions-entered';
 export const AUCTIONS_AUTHORIZED_QUERY_KEY = 'auctions-authorized';
 
-export const useActiveAuctions = (walletApp?: WalletApp) => {
+export const useActiveAuctions = (
+  walletApp?: WalletApp,
+  auctionFilters?: AuctionFilters
+) => {
   const activeAuctions = useQuery({
     queryKey: [QUERY_AUCTIONS_QUERY_KEY, walletApp],
     queryFn: async () => {
       if (walletApp) {
-        return await queryAuctions(walletApp);
-      } else {
-        return [];
+        return await queryAuctions(walletApp, auctionFilters);
       }
     },
     refetchInterval: 10000,

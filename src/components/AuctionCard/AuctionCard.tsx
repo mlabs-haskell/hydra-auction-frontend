@@ -32,10 +32,9 @@ function AuctionCard({ auctionInfo }: AuctionCardProps) {
   const { name: walletName } = useWallet();
   const { data: standingBidState, isLoading: isLoadingStandingBidState } =
     useStandingBidState(walletName as WalletApp, auctionInfo);
-  const standingBidStatePrice = standingBidState?.value || '';
+
   let formattedPrice = '';
-  // Unexpected response from queryStandingBidState right now, this will be changed
-  if (contractOutputResultSchema.safeParse(standingBidStatePrice).success) {
+  if (contractOutputResultSchema.safeParse(standingBidState).success) {
     const standingBidValue = standingBidState?.value as StandingBidState;
     formattedPrice = formatLovelaceToAda(standingBidValue?.price);
   }

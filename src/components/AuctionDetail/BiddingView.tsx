@@ -27,9 +27,8 @@ export default function BiddingView({
     auctionInfo
   );
 
-  const standingBidStatePrice = standingBidState?.value || '';
   let formattedPrice = '';
-  if (contractOutputResultSchema.safeParse(standingBidStatePrice)) {
+  if (contractOutputResultSchema.safeParse(standingBidState).success) {
     const standingBidValue = standingBidState?.value as StandingBidState;
     formattedPrice = formatLovelaceToAda(standingBidValue?.price);
   }
