@@ -31,6 +31,7 @@ export default function BiddingView({
     const standingBidValue = standingBidState?.value as StandingBidState;
     formattedPrice = formatLovelaceToAda(standingBidValue?.price);
   }
+  console.log({ standingBidState });
 
   return (
     <div className="w-full flex flex-col gap-10">
@@ -38,18 +39,16 @@ export default function BiddingView({
         auctionTerms={auctionInfo.auctionTerms}
         formattedPrice={formattedPrice}
       />
-      <div className="flex w-full gap-1">
-        <Button className="w-full">Place Bid</Button>
-      </div>
+      <div className="w-full">Place Bid</div>
       <PlaceBidForm
         auctionInfo={auctionInfo}
         sellerSignature={sellerSignature}
         config={config}
         standingBid={formattedPrice ?? ''}
       />
-      <div className="flex w-full gap-1">
-        <Button className="w-full">Place Bid on L2</Button>
-      </div>
+
+      <div className="w-full">Place Bid on L2</div>
+
       <PlaceBidL2Form
         config={config}
         auctionCs={auctionInfo.auctionId}

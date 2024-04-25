@@ -17,10 +17,11 @@ export const usePlaceBidL2 = (config: ContractConfig) => {
       console.log({ placeBidL2Response });
       if (placeBidL2Response.tag === 'error')
         throw new Error(placeBidL2Response.value.message);
+
       return placeBidL2Response;
     },
     onSuccess: () => {
-      toast.success('Bid placed successfully');
+      toast.success('Bid placed successfully onn L2');
       mixPanel && mixPanel.track('Bid placed succesfully on L2');
     },
     onError: (error) => {

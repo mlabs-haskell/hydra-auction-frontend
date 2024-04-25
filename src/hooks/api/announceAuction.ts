@@ -33,6 +33,7 @@ export const useAnnounceAuction = (config: ContractConfig) => {
         announceAuctionResponse
       );
       if (announceAuctionValidated.success) {
+        mixPanel && mixPanel.track('Auction Announced');
         setTimeout(() => {
           window.location.replace('/auction-list');
         }, 5000);
@@ -40,7 +41,6 @@ export const useAnnounceAuction = (config: ContractConfig) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_AUCTIONS_QUERY_KEY] });
-      mixPanel && mixPanel.track('Auction Announced');
     },
     onError: (error) => {
       toast.error(`Auction announcement failed: ${JSON.stringify(error)}`);

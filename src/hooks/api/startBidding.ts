@@ -22,6 +22,9 @@ export const useStartBidding = (config: ContractConfig) => {
         startBiddingParams
       );
       console.log({ startBiddingResponse });
+      if (startBiddingResponse.tag === 'error') {
+        throw new Error(startBiddingResponse.value.message);
+      }
       logContractToast({
         contractResponse: startBiddingResponse,
         toastSuccessMsg: 'Bidding for your auction started succesfully.',

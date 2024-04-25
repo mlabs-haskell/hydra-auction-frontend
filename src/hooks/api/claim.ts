@@ -8,13 +8,24 @@ import {
   claimDepositLoser,
 } from 'hydra-auction-offchain';
 import { useMixpanel } from 'react-mixpanel-browser';
+import { logContractToast } from 'src/utils/contract';
 
 // Bidder wins auction
 export const useClaimAuctionLotBidder = (config: ContractConfig) => {
   const mixPanel = useMixpanel();
   const claimAuctionLotBidderMutation = useMutation({
     mutationFn: async (auctionInfo: AuctionInfo) => {
-      return await claimAuctionLotBidder(config, auctionInfo);
+      const claimAuctionLotBidderResponse = await claimAuctionLotBidder(
+        config,
+        auctionInfo
+      );
+      console.log({ claimAuctionLotBidderResponse });
+      logContractToast({
+        contractResponse: claimAuctionLotBidderResponse,
+        toastSuccessMsg: 'Auction lot claimed successfully.',
+        toastErrorMsg: 'Bidder deposit failed:',
+      });
+      return claimAuctionLotBidderResponse;
     },
     onSuccess: (_, variables) => {
       mixPanel && mixPanel.track('Claimed Auction Lot Bidder');
