@@ -1,17 +1,19 @@
 import { useMutation } from '@tanstack/react-query';
 import {
   AuthorizeBiddersContractParams,
-  WalletApp,
+  ContractConfig,
   authorizeBidders,
   awaitTxConfirmed,
 } from 'hydra-auction-offchain';
+import { useMixpanel } from 'react-mixpanel-browser';
 import { toast } from 'react-toastify';
 import { contractOutputResultSchema } from 'src/schemas/contractOutputSchema';
 import { logContractToast } from 'src/utils/contract';
 
 export const AUTHORIZE_BIDDERS_QUERY_KEY = 'authorize-bidders';
 
-export const useAuthorizeBidders = (walletApp: WalletApp) => {
+export const useAuthorizeBidders = (config: ContractConfig) => {
+  const mixPanel = useMixpanel();
   const authorizeBiddersMutation = useMutation({
     mutationFn: async (
       authorizeBiddersParams: AuthorizeBiddersContractParams
@@ -23,7 +25,7 @@ export const useAuthorizeBidders = (walletApp: WalletApp) => {
         return null;
       }
       const authorizeBiddersResponse = await authorizeBidders(
-        walletApp,
+        config,
         authorizeBiddersParams
       );
       logContractToast({
@@ -37,7 +39,7 @@ export const useAuthorizeBidders = (walletApp: WalletApp) => {
       if (validatedAuthorizeBiddersResponse.success) {
         toast.info('Confirming authorized bidders contract...');
         await awaitTxConfirmed(
-          walletApp,
+          config,
           validatedAuthorizeBiddersResponse.data.value
         );
 
@@ -49,8 +51,9 @@ export const useAuthorizeBidders = (walletApp: WalletApp) => {
       console.error('Error authorizing bidders', error);
       toast.error(`Authorizing bidders failed: ${error}`);
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       toast.success('Confirmed authorized bidders contract');
+      mixPanel && mixPanel.track('Authorized Bidders');
     },
   });
   return authorizeBiddersMutation;

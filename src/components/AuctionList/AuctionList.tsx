@@ -17,12 +17,14 @@ import {
   auctionListFilterOptions,
 } from 'src/utils/auctionState';
 import { DropDown } from '../DropDown/DropDown';
+import { getConfig } from 'src/utils/config';
 
 export default function AuctionList() {
   const { name: walletName, wallet, connected } = useWallet();
   const { data: walletAddress } = useWalletAddress(wallet, connected);
   const walletApp: WalletApp = walletName as WalletApp;
-  const { data: auctions } = useActiveAuctions(walletApp);
+  const config = getConfig('network', walletApp);
+  const { data: auctions } = useActiveAuctions(config, undefined, false);
 
   const queryClient = useQueryClient();
 

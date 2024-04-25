@@ -13,47 +13,52 @@ import Topbar from './components/Navbar/Topbar';
 import { Bounce, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { WebSocketProvider } from './providers/WebSocketProvider';
-
+import Test from './components/test';
+import MixPanelProvider from './providers/MixPanelProvider';
+require('dotenv').config();
 function App() {
   return (
     <BrowserRouter>
       <MeshProvider>
         <ReactQueryProvider>
           <WebSocketProvider>
-            <>
-              {/* Navbar */}
-              <Topbar />
+            <MixPanelProvider>
+              <>
+                {/* Navbar */}
+                <Topbar />
 
-              {/* Route configuration */}
-              <Layout>
-                <Routes>
-                  <Route path="/" element={<AuctionList />} />
-                  <Route path="/auction-list" element={<AuctionList />} />
-                  <Route path="/create-auction" element={<CreateAuction />} />
-                  <Route path="/auction" element={<AuctionDetail />} />
-                  <Route
-                    path="/create-auction-list"
-                    element={<CreateAuctionList />}
-                  />
-                  {/* TODO: collection/wallet routes */}
-                </Routes>
-              </Layout>
-              <ToastContainer
-                position="bottom-center"
-                autoClose={5000}
-                hideProgressBar={true}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-                transition={Bounce}
-              />
+                {/* Route configuration */}
+                <Layout>
+                  <Routes>
+                    <Route path="/" element={<AuctionList />} />
+                    <Route path="/auction-list" element={<AuctionList />} />
+                    <Route path="/create-auction" element={<CreateAuction />} />
+                    <Route path="/auction" element={<AuctionDetail />} />
+                    <Route path="/test" element={<Test />} />
+                    <Route
+                      path="/create-auction-list"
+                      element={<CreateAuctionList />}
+                    />
+                    {/* TODO: collection/wallet routes */}
+                  </Routes>
+                </Layout>
+                <ToastContainer
+                  position="bottom-center"
+                  autoClose={5000}
+                  hideProgressBar={true}
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="light"
+                  transition={Bounce}
+                />
 
-              <Footer />
-            </>
+                <Footer />
+              </>
+            </MixPanelProvider>
           </WebSocketProvider>
         </ReactQueryProvider>
       </MeshProvider>

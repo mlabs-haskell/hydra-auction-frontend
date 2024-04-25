@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  ContractConfig,
   EnterAuctionContractParams,
   WalletApp,
   enterAuction,
@@ -11,6 +12,7 @@ import {
 } from 'src/utils/localStorage';
 import { logContractToast } from 'src/utils/contract';
 import { AUCTIONS_ENTERED_QUERY_KEY } from './auctions';
+import { useMixpanel } from 'react-mixpanel-browser';
 
 export type AuctionBiddingItem = {
   auctionId: string;
@@ -26,18 +28,19 @@ export type EnterAuctionMutationParams = {
 export type WalletDataLocalStorage = {
   bidding: AuctionBiddingItem[];
 };
-export const useEnterAuction = (walletApp: WalletApp) => {
+export const useEnterAuction = (config: ContractConfig) => {
   const queryClient = useQueryClient();
-
+  const mixPanel = useMixpanel();
   const enterAuctionMutation = useMutation({
     mutationFn: async (
       enterAuctionMutationParams: EnterAuctionMutationParams
     ) => {
       toast.info(`Entering auction...`);
       const enterAuctionParams = enterAuctionMutationParams.enterAuctionParams;
-      console.log({ enterAuctionParams });
+
+      console.log({ enterAuctionParams, config });
       const enterAuctionResponse = await enterAuction(
-        walletApp,
+        config,
         enterAuctionParams
       );
       console.log({ enterAuctionResponse });
@@ -56,6 +59,7 @@ export const useEnterAuction = (walletApp: WalletApp) => {
       };
     },
     onSuccess: (mutationResponse) => {
+      mixPanel && mixPanel.track('Auction Entered With Deposit');
       // For now a way to simulate buyer oracle so we can see whether we are a bidder for each auction
       // This will need to be moved to the hook which authorizes bidders by the seller. It is here
       // just for testing purposes.

@@ -5,12 +5,13 @@ import {
   useClaimDepositLoser,
 } from 'src/hooks/api/claim';
 import { useWallet } from '@meshsdk/react';
+import { getConfig } from 'src/utils/config';
 
 export const BidderClaims = ({ auctionInfo }: { auctionInfo: AuctionInfo }) => {
   const { name: walletName } = useWallet();
-
-  const claimAuctionLot = useClaimAuctionLotBidder(walletName as WalletApp);
-  const claimDeposit = useClaimDepositLoser(walletName as WalletApp);
+  const config = getConfig('network', walletName as WalletApp);
+  const claimAuctionLot = useClaimAuctionLotBidder(config);
+  const claimDeposit = useClaimDepositLoser(config);
 
   const handleClaimAuctionLot = () => {
     claimAuctionLot.mutate(auctionInfo);

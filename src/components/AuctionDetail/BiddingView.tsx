@@ -1,5 +1,6 @@
 import {
   AuctionInfo,
+  ContractConfig,
   StandingBidState,
   WalletApp,
 } from 'hydra-auction-offchain';
@@ -10,22 +11,20 @@ import { Button } from '../shadcn/Button';
 import { contractOutputResultSchema } from 'src/schemas/contractOutputSchema';
 import AuctionBidState from './AuctionBidState';
 import { useStandingBidState } from 'src/hooks/api/standingBidState';
+import { PlaceBidL2Form } from '../PlaceBidL2/PlaceBidL2';
 
 type BiddingViewProps = {
-  walletApp: WalletApp;
+  config: ContractConfig;
   auctionInfo: AuctionInfo;
   sellerSignature: string;
 };
 
 export default function BiddingView({
-  walletApp,
+  config,
   auctionInfo,
   sellerSignature,
 }: BiddingViewProps) {
-  const { data: standingBidState } = useStandingBidState(
-    walletApp,
-    auctionInfo
-  );
+  const { data: standingBidState } = useStandingBidState(config, auctionInfo);
 
   let formattedPrice = '';
   if (contractOutputResultSchema.safeParse(standingBidState).success) {
@@ -45,8 +44,18 @@ export default function BiddingView({
       <PlaceBidForm
         auctionInfo={auctionInfo}
         sellerSignature={sellerSignature}
-        walletApp={walletApp}
+        config={config}
         standingBid={formattedPrice ?? ''}
+      />
+      <div className="flex w-full gap-1">
+        <Button className="w-full">Place Bid on L2</Button>
+      </div>
+      <PlaceBidL2Form
+        config={config}
+        auctionCs={auctionInfo.auctionId}
+        auctionTerms={auctionInfo.auctionTerms}
+        delegateInfo={auctionInfo.delegateInfo}
+        sellerSignature={sellerSignature}
       />
     </div>
   );

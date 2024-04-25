@@ -1,4 +1,4 @@
-import { createContext } from 'vm';
+import { createContext } from 'react';
 
 export enum WebSocketReadyState {
   CONNECTING = 0,

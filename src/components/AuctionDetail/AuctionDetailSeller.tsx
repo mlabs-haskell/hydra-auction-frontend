@@ -1,26 +1,25 @@
-import { AuctionInfo, WalletApp } from 'hydra-auction-offchain';
+import { AuctionInfo, ContractConfig, WalletApp } from 'hydra-auction-offchain';
 import { DiscoverAuthorizeBidders } from '../DiscoverAuthorizeBidders/DiscoverAuthorizeBidders';
 import { SellerClaims } from './SellerClaims';
 import StartBidding from '../StartBidding/StartBidding';
+import MoveBidL2 from '../MoveBidL2/MoveBidL2';
 
 export type AuctionDetailSellerProps = {
-  walletApp: WalletApp;
+  config: ContractConfig;
   auctionInfo: AuctionInfo;
 };
 
 export default function AuctionDetailSeller({
-  walletApp,
+  config,
   auctionInfo,
 }: AuctionDetailSellerProps) {
   return (
     <div className="flex flex-col justify-center items-center w-full">
       <div className="flex flex-col  gap-6 items-center w-full">
         <div className="text-title3 text-center mb-3">Seller Options</div>
-        <DiscoverAuthorizeBidders
-          walletApp={walletApp}
-          auctionInfo={auctionInfo}
-        />
-        <StartBidding walletApp={walletApp} auctionInfo={auctionInfo} />
+        <DiscoverAuthorizeBidders config={config} auctionInfo={auctionInfo} />
+        <StartBidding config={config} auctionInfo={auctionInfo} />
+        <MoveBidL2 config={config} auctionInfo={auctionInfo} />
         <SellerClaims auctionInfo={auctionInfo} />
       </div>
     </div>

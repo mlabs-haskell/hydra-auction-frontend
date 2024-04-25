@@ -35,6 +35,10 @@ export const auctionTermsInputSchema = z.object({
 
 export const announceAuctionContractParamsSchema = z.object({
   auctionTerms: auctionTermsInputSchema,
+  delegateInfo: z.object({
+    httpServers: z.array(z.string()),
+    wsServers: z.array(z.string()),
+  }),
   additionalAuctionLotOrefs: z.array(
     z.object({
       transactionId: z.string(),

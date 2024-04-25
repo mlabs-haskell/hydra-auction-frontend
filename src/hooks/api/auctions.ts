@@ -1,14 +1,15 @@
 import {
   AuctionFilters,
   AuctionInfo,
+  ContractConfig,
   DiscoverSellerSigContractParams,
   discoverSellerSignature,
   queryAuctions,
-  type WalletApp,
 } from 'hydra-auction-offchain';
 import { useQuery } from '@tanstack/react-query';
 import { getLocalStorageItem } from 'src/utils/localStorage';
 import { contractOutputResultSchema } from 'src/schemas/contractOutputSchema';
+import { useMixpanel } from 'react-mixpanel-browser';
 
 export type HookResponse = {
   data: AuctionInfo[] | undefined;
@@ -21,18 +22,21 @@ export const AUCTIONS_ENTERED_QUERY_KEY = 'auctions-entered';
 export const AUCTIONS_AUTHORIZED_QUERY_KEY = 'auctions-authorized';
 
 export const useActiveAuctions = (
-  walletApp?: WalletApp,
-  auctionFilters?: AuctionFilters
+  config: ContractConfig,
+  auctionFilters?: AuctionFilters,
+  refetch?: boolean
 ) => {
+  const mixPanel = useMixpanel();
   const activeAuctions = useQuery({
-    queryKey: [QUERY_AUCTIONS_QUERY_KEY, walletApp],
+    queryKey: [QUERY_AUCTIONS_QUERY_KEY, config],
     queryFn: async () => {
-      if (walletApp) {
-        return await queryAuctions(walletApp, auctionFilters);
-      }
+      console.log('useActiveAuctions');
+      console.log({ mixPanel });
+      // mixPanel && mixPanel.track('Querying Auctions');
+      return await queryAuctions(config, auctionFilters);
     },
-    refetchInterval: 10000,
-    enabled: !!walletApp,
+    refetchInterval: refetch ? 10000 : Infinity,
+    enabled: !!config,
   });
 
   return activeAuctions;
@@ -63,22 +67,23 @@ export const useAuctionsEntered = (
 
 export const useAuctionsAuthorized = (
   // Not ideal we should have a way to do this without signing for each
+  config: ContractConfig,
   walletAddress?: string,
-  walletApp?: WalletApp,
   auctions?: AuctionInfo[]
 ) => {
   return useQuery({
-    queryKey: [AUCTIONS_AUTHORIZED_QUERY_KEY, walletApp, walletAddress],
+    queryKey: [AUCTIONS_AUTHORIZED_QUERY_KEY, config, walletAddress],
     queryFn: async () => {
-      if (auctions && walletAddress && walletApp) {
+      if (auctions && walletAddress && config) {
         const authorizedAuctions = await Promise.all(
           auctions.map(async (auction) => {
             const sellerSigParams: DiscoverSellerSigContractParams = {
               auctionCs: auction.auctionId,
               sellerAddress: walletAddress,
             };
+
             const sellerSignatureResponse = await discoverSellerSignature(
-              walletApp,
+              config,
               sellerSigParams
             );
             const validatedSellerSignature =

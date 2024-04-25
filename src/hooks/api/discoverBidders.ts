@@ -1,22 +1,24 @@
 import { useQuery } from '@tanstack/react-query';
 import {
   AuctionInfo,
-  WalletApp,
+  ContractConfig,
   discoverBidders,
 } from 'hydra-auction-offchain';
 
 export const DISCOVER_BIDDERS_QUERY_KEY = 'discover-bidders';
 
 export const useDiscoverBidders = (
-  walletApp: WalletApp,
+  config: ContractConfig,
   auctionInfo: AuctionInfo
 ) => {
   const discoverBiddersQuery = useQuery({
-    queryKey: [DISCOVER_BIDDERS_QUERY_KEY, walletApp, auctionInfo.auctionId],
+    queryKey: [DISCOVER_BIDDERS_QUERY_KEY, config, auctionInfo.auctionId],
     queryFn: async () => {
+      console.log('useDiscoverBidders');
       console.log({ discoverBiddersParams: auctionInfo });
+
       const discoverBiddersResponse = await discoverBidders(
-        walletApp,
+        config,
         auctionInfo
       );
       console.log({ discoverBiddersResponse });

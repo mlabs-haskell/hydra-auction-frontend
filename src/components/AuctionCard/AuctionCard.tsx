@@ -18,6 +18,7 @@ import {
 import { TimerIcon } from '@radix-ui/react-icons';
 import { contractOutputResultSchema } from 'src/schemas/contractOutputSchema';
 import { useStandingBidState } from 'src/hooks/api/standingBidState';
+import { getConfig } from 'src/utils/config';
 
 type AuctionCardProps = {
   auctionInfo: AuctionInfo;
@@ -29,9 +30,10 @@ function AuctionCard({ auctionInfo }: AuctionCardProps) {
   const assetUnit = getAuctionAssetUnit(auctionInfo);
   const { data: metadata, isLoading: isLoadingMetadata } =
     useAssetMetadata(assetUnit);
-  const { name: walletName } = useWallet();
+  const { name: walletApp } = useWallet();
+  const config = getConfig('network', walletApp as WalletApp);
   const { data: standingBidState, isLoading: isLoadingStandingBidState } =
-    useStandingBidState(walletName as WalletApp, auctionInfo);
+    useStandingBidState(config, auctionInfo);
 
   let formattedPrice = '';
   if (contractOutputResultSchema.safeParse(standingBidState).success) {

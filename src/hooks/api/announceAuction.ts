@@ -3,22 +3,23 @@ import {
   AnnounceAuctionContractParams,
   announceAuction,
   WalletApp,
+  ContractConfig,
 } from 'hydra-auction-offchain';
 import { QUERY_AUCTIONS_QUERY_KEY } from './auctions';
 import { toast } from 'react-toastify';
 import { logContractToast } from 'src/utils/contract';
 import { contractOutputResultSchema } from 'src/schemas/contractOutputSchema';
+import { useMixpanel } from 'react-mixpanel-browser';
 
-export const useAnnounceAuction = (walletName: string) => {
+export const useAnnounceAuction = (config: ContractConfig) => {
   const queryClient = useQueryClient();
-  const walletApp: WalletApp = walletName as WalletApp;
-
+  const mixPanel = useMixpanel();
   const announceAuctionMutation = useMutation({
     mutationFn: async (auctionParams: AnnounceAuctionContractParams) => {
       toast.info('Creating auction...');
-      console.log({ auctionParams, walletApp });
+      console.log({ auctionParams, config });
       const announceAuctionResponse: any = await announceAuction(
-        walletApp,
+        config,
         auctionParams
       );
       logContractToast({
@@ -39,6 +40,7 @@ export const useAnnounceAuction = (walletName: string) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_AUCTIONS_QUERY_KEY] });
+      mixPanel && mixPanel.track('Auction Announced');
     },
     onError: (error) => {
       toast.error(`Auction announcement failed: ${JSON.stringify(error)}`);
