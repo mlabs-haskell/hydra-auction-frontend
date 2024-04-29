@@ -15,7 +15,10 @@ export const useMoveBidL2 = (config: ContractConfig) => {
         console.log('Moving bid L2');
         const moveBidL2Response = await moveBidL2(config, moveBidParams);
         console.log({ moveBidL2Response });
-        if (moveBidL2Response.tag === 'error')
+        if (
+          moveBidL2Response?.tag === 'error' ||
+          moveBidL2Response?.value?.tag?.toLowerCase() === 'error'
+        )
           throw new Error(moveBidL2Response.value.message);
 
         return moveBidL2Response;

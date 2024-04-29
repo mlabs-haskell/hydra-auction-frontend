@@ -9,7 +9,6 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { getLocalStorageItem } from 'src/utils/localStorage';
 import { contractOutputResultSchema } from 'src/schemas/contractOutputSchema';
-import { useMixpanel } from 'react-mixpanel-browser';
 
 export type HookResponse = {
   data: AuctionInfo[] | undefined;
@@ -26,13 +25,10 @@ export const useActiveAuctions = (
   auctionFilters?: AuctionFilters,
   refetch?: boolean
 ) => {
-  const mixPanel = useMixpanel();
   const activeAuctions = useQuery({
     queryKey: [QUERY_AUCTIONS_QUERY_KEY, config],
     queryFn: async () => {
       console.log('useActiveAuctions');
-      console.log({ mixPanel });
-      // mixPanel && mixPanel.track('Querying Auctions');
       return await queryAuctions(config, auctionFilters);
     },
     refetchInterval: refetch ? 10000 : Infinity,

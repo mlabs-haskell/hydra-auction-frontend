@@ -38,6 +38,7 @@
     "react-router-dom": "^6.20.1",
     "react-scripts": "5.0.1",
     "react-toastify": "^10.0.4",
+    "react-use-websocket": "^3.0.0",
     "spago": "^0.21.0",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",

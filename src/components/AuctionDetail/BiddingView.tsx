@@ -7,12 +7,13 @@ import {
 
 import { PlaceBidForm } from '../PlaceBid/PlaceBid';
 import { formatLovelaceToAda } from '../../utils/currency';
-import { Button } from '../shadcn/Button';
+
 import { contractOutputResultSchema } from 'src/schemas/contractOutputSchema';
 import AuctionBidState from './AuctionBidState';
 import { useStandingBidState } from 'src/hooks/api/standingBidState';
 import { PlaceBidL2Form } from '../PlaceBidL2/PlaceBidL2';
-
+import useWebSocket from 'react-use-websocket';
+import { useEffect, useState } from 'react';
 type BiddingViewProps = {
   config: ContractConfig;
   auctionInfo: AuctionInfo;
@@ -25,12 +26,37 @@ export default function BiddingView({
   sellerSignature,
 }: BiddingViewProps) {
   const { data: standingBidState } = useStandingBidState(config, auctionInfo);
+  const [standingBidL2, setStandingBidL2] = useState<string>('');
+  const { lastMessage, readyState } = useWebSocket(
+    auctionInfo.delegateInfo?.wsServers[0] ?? ''
+  );
+
+  useEffect(() => {
+    console.log({ readyState });
+    console.log({ message: lastMessage?.data });
+
+    try {
+      const jsonMsg = lastMessage?.data;
+      const msg = JSON.parse(jsonMsg);
+      if (msg) {
+        if (msg.tag === 'StandingBid') {
+          setStandingBidL2(msg.value.price);
+        }
+      }
+      console.log({ wsMessage: msg });
+    } catch (err) {
+      console.log(err);
+    }
+  }, [lastMessage, readyState]);
 
   let formattedPrice = '';
-  if (contractOutputResultSchema.safeParse(standingBidState).success) {
+  if (standingBidL2) {
+    formattedPrice = formatLovelaceToAda(standingBidL2);
+  } else if (contractOutputResultSchema.safeParse(standingBidState).success) {
     const standingBidValue = standingBidState?.value as StandingBidState;
     formattedPrice = formatLovelaceToAda(standingBidValue?.price);
   }
+  console.log({ standingBidState });
 
   return (
     <div className="w-full flex flex-col gap-10">
@@ -38,18 +64,16 @@ export default function BiddingView({
         auctionTerms={auctionInfo.auctionTerms}
         formattedPrice={formattedPrice}
       />
-      <div className="flex w-full gap-1">
-        <Button className="w-full">Place Bid</Button>
-      </div>
+      <div className="w-full">Place Bid</div>
       <PlaceBidForm
         auctionInfo={auctionInfo}
         sellerSignature={sellerSignature}
         config={config}
         standingBid={formattedPrice ?? ''}
       />
-      <div className="flex w-full gap-1">
-        <Button className="w-full">Place Bid on L2</Button>
-      </div>
+
+      <div className="w-full">Place Bid on L2</div>
+
       <PlaceBidL2Form
         config={config}
         auctionCs={auctionInfo.auctionId}

@@ -24,15 +24,18 @@ export const useAnnounceAuction = (config: ContractConfig) => {
       );
       logContractToast({
         contractResponse: announceAuctionResponse,
-        toastSuccessMsg:
-          'Auction announced successfully! It may take a couple of minutes for the auction to appear.',
+        toastSuccessMsg: `Auction announced successfully! It may take a couple of minutes for the auction to appear.`,
         toastErrorMsg: 'Auction announcement failed:',
       });
+      toast.success(
+        `auctionMetadataOref: ${announceAuctionResponse?.value?.auctionInfo.metadataOref.transactionId}`
+      );
 
       const announceAuctionValidated = contractOutputResultSchema.safeParse(
         announceAuctionResponse
       );
       if (announceAuctionValidated.success) {
+        mixPanel && mixPanel.track('Auction Announced');
         setTimeout(() => {
           window.location.replace('/auction-list');
         }, 5000);
@@ -40,7 +43,6 @@ export const useAnnounceAuction = (config: ContractConfig) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_AUCTIONS_QUERY_KEY] });
-      mixPanel && mixPanel.track('Auction Announced');
     },
     onError: (error) => {
       toast.error(`Auction announcement failed: ${JSON.stringify(error)}`);

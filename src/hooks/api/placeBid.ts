@@ -31,6 +31,9 @@ export const usePlaceBid = (
       console.log({ placeBidParams: params });
       const placeBidResponse = await placeBid(config, params);
       console.log({ placeBidResponse });
+      if (placeBidResponse.tag === 'error') {
+        throw new Error(placeBidResponse.value.message);
+      }
       logContractToast({
         contractResponse: placeBidResponse,
         toastSuccessMsg: `You succesfully placed a bid for ${ADA_CURRENCY_SYMBOL}${formattedPrice}.`,
@@ -40,8 +43,8 @@ export const usePlaceBid = (
       return placeBidResponse;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_AUCTIONS_QUERY_KEY] });
       mixPanel && mixPanel.track('Bid Placed');
+      queryClient.invalidateQueries({ queryKey: [QUERY_AUCTIONS_QUERY_KEY] });
     },
     onError: (error) => {
       console.log('PLACE BID MUTATION ERROR', error);

@@ -18,7 +18,7 @@ export const WEBSOCKET_DEFAULT_STATE: WebSocketContextType = {
   wsUrl: '',
   wss: null,
   readyState: WebSocketReadyState.CLOSED,
-  setWsUrl: () => {},
+  setWsUrl: (url: string) => {},
 };
 
 export const WebSocketContext = createContext(WEBSOCKET_DEFAULT_STATE);
