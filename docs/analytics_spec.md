@@ -33,14 +33,151 @@ Once your project has been created, you'll be able to use your project token to 
 
 As a product owner you can view all events privately through your dashboard. The events outlined here will automatically begin to appear, and you may choose to include more events if you wish.
 
-
-
 ## For End Users
 
 To present these analytics to the users, you can create your own custom boards and have them embedded in the auction page.
 
 https://docs.mixpanel.com/docs/features/embeds
 
-TODO: Create Board Embedding Tutorial
+__TODO__: Create Board Embedding Tutorial
 
 # Implementation
+
+## Types
+There are a few common types that appear across multiple analytics events. We make use of [Zod](https://zod.dev/) to ensure the robustness of these types. Here are their definitions:
+
+```typescript
+// z = zod
+export const unitSchema = z.string().regex(/^[a-f0-9]{56,184}$/i);
+export type unit = z.infer<typeof cardanoUnitSchema>;
+
+export type userType = "Bidder" | "Seller";
+```
+
+All events extend the following `Event` type:
+```typescript
+{
+  type: string,
+  unitId: unit,
+  walletAddr: Address | undefined
+}
+```
+
+## Events
+
+### Auction Viewed
+Triggers when the "View Auction" page is opened.
+
+__Event Properties__
+```typescript
+{
+  type: "AuctionViewed",
+  unitId: unit,
+  walletAddr: Address | undefined,
+  userType: userType,
+}
+```
+
+### Auction Analytics Viewed
+Triggers when the "Auction Analytics" view is opened.
+
+__Event Properties__
+```typescript
+{
+  type: "AuctionAnalyticsViewed",
+  unitId: unit,
+  walletAddr: Address | undefined,
+  userType: userType,
+}
+```
+
+### Auctions Announced
+Triggers when the `announceAuction` transaction succeeds.
+
+__Event Properties__
+```typescript
+{
+  type: "AuctionAnnounceSucceeded",
+  unitId: unit,
+  walletAddr: Address,
+  delegateGroupUrl: string,
+  minDeposit: number,
+  startingBid: number
+}
+```
+
+### Deposit Placed on Auction
+Triggers when the `enterAuction` transaction succeeds.
+
+__Event Properties__
+```typescript
+{
+  type: "EnterAuctionSucceeded",
+  unitId: unit,
+  walletAddr: Address
+}
+```
+
+### Bidder Authorized
+Triggers when the `authorizeBidders` transaction succeeds.
+
+__Event Properties__
+```typescript
+{
+  type: "AuthorizeBiddersSucceeded",
+  unitId: unit,
+  walletAddr: Address,
+  bidders: string[] //bidder verification keys
+}
+```
+
+### Auction Started
+Triggers when the `startBidding` transaction succeeds.
+
+__Event Properties__
+```typescript
+{
+  type: "StartBiddingSucceeded",
+  unitId: unit,
+  walletAddr: Address
+}
+```
+
+### Bid Placed
+Triggers when the `placeBid` or `placeBidL2` transactions succeed.
+
+__Event Properties__
+```typescript
+{
+  type: "PlaceBidSucceeded",
+  unitId: unit,
+  walletAddr: Address,
+  layer: number, // 1 | 2
+  amount: number
+}
+```
+
+### Lot Claimed
+Triggers when the `claimAuctionLotBidder` or `claimAuctionLotSeller` transactions succeed.
+
+__Event Properties__
+```typescript
+{
+  type: "ClaimLotSucceeded",
+  unitId: unit,
+  walletAddr: Address,
+  user: userType,
+}
+```
+
+### Deposit Refunded
+Triggers when the `claimDepositLoser` transaction succeeds.
+
+__Event Properties__
+```typescript
+{
+  type: "DepositRefundSucceeded",
+  unitId: unit,
+  walletAddr: Address
+}
+```
