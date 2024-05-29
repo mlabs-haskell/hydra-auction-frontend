@@ -3,35 +3,39 @@ import {
   AnnounceAuctionContractParams,
   announceAuction,
   WalletApp,
+  ContractConfig,
 } from 'hydra-auction-offchain';
 import { QUERY_AUCTIONS_QUERY_KEY } from './auctions';
 import { toast } from 'react-toastify';
 import { logContractToast } from 'src/utils/contract';
 import { contractOutputResultSchema } from 'src/schemas/contractOutputSchema';
+import { useMixpanel } from 'react-mixpanel-browser';
 
-export const useAnnounceAuction = (walletName: string) => {
+export const useAnnounceAuction = (config: ContractConfig) => {
   const queryClient = useQueryClient();
-  const walletApp: WalletApp = walletName as WalletApp;
-
+  const mixPanel = useMixpanel();
   const announceAuctionMutation = useMutation({
     mutationFn: async (auctionParams: AnnounceAuctionContractParams) => {
       toast.info('Creating auction...');
-      console.log({ auctionParams, walletApp });
+      console.log({ auctionParams, config });
       const announceAuctionResponse: any = await announceAuction(
-        walletApp,
+        config,
         auctionParams
       );
       logContractToast({
         contractResponse: announceAuctionResponse,
-        toastSuccessMsg:
-          'Auction announced successfully! It may take a couple of minutes for the auction to appear.',
+        toastSuccessMsg: `Auction announced successfully! It may take a couple of minutes for the auction to appear.`,
         toastErrorMsg: 'Auction announcement failed:',
       });
+      toast.success(
+        `auctionMetadataOref: ${announceAuctionResponse?.value?.auctionInfo.metadataOref.transactionId}`
+      );
 
       const announceAuctionValidated = contractOutputResultSchema.safeParse(
         announceAuctionResponse
       );
       if (announceAuctionValidated.success) {
+        mixPanel && mixPanel.track('Auction Announced');
         setTimeout(() => {
           window.location.replace('/auction-list');
         }, 5000);

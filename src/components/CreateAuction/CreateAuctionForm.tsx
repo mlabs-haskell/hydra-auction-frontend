@@ -13,6 +13,7 @@ import { auctionTermsInputSchema } from 'src/schemas/auctionTermsSchema';
 import { removePolicyIdFromAssetUnit } from 'src/utils/formatting';
 import { toast } from 'react-toastify';
 import { ONE_DAY_MS, formatDate } from 'src/utils/date';
+import { getConfig } from 'src/utils/config';
 
 type CreateAuctionFormProps = {
   className?: string;
@@ -27,10 +28,11 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
     mockAnnounceAuctionParams.auctionTerms
   );
 
-  const { name: walletApp } = useWallet();
-  const { data: assets, isError } = useExtendedAssets(walletApp as WalletApp);
+  const { name: walletName } = useWallet();
+  const config = getConfig('network', walletName as WalletApp);
+  const { data: assets, isError } = useExtendedAssets(walletName as WalletApp);
   const { mutate: announceAuction, isPending: isAnnounceAuctionPending } =
-    useAnnounceAuction(walletApp);
+    useAnnounceAuction(config);
 
   // Auto set the cleanup to two days after purchase deadline every time purchase deadline is set
   useEffect(() => {
@@ -103,12 +105,13 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
           ...auctionFormValidated.data,
           auctionLot: [auctionLot],
           biddingStart:
-            Number(auctionFormValidated.data.biddingStart) < Date.now()
+            Number(auctionFormValidated.data.biddingStart) < Date.now() + 10000
               ? (Date.now() + 30000).toString()
               : auctionFormValidated.data.biddingStart,
         },
         additionalAuctionLotOrefs:
           mockAnnounceAuctionParams.additionalAuctionLotOrefs, // Empty array for now but can be implemented
+        delegateInfo: mockAnnounceAuctionParams.delegateInfo,
       };
       console.log({ announceAuctionParams: params });
       announceAuction(params);
@@ -119,7 +122,7 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
     console.log({ inputId });
     setAuctionFormData({
       ...auctionFormData,
-      [inputId]: value,
+      [inputId]: String(value),
     });
   };
 

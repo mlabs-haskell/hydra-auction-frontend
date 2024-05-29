@@ -13,19 +13,23 @@ import { useAssetMetadata } from 'src/hooks/api/assets';
 import { useCleanupAuction } from 'src/hooks/api/cleanup';
 import { Button } from '../shadcn/Button';
 import { removeLocalStorageItem } from 'src/utils/localStorage';
+import { getConfig } from 'src/utils/config';
+import { useMixpanel } from 'react-mixpanel-browser';
+import { useEffect } from 'react';
 
 const MOCK_NFT_TITLE = 'My NFT';
 
 // TODO: Claims and cleanup components are always showing, we will implement the conditions when the APIs are ready
 export default function AuctionDetail() {
   // TODO: Display some badge if the user is already a bidder, and for the state of the auction
-
+  const mixPanel = useMixpanel();
   // Use url params to get the auctionId
   const urlParams = getUrlParams();
   const auctionId = urlParams.get('auctionId') || '';
   const { name: walletName, wallet, connected } = useWallet();
   const walletApp: WalletApp = walletName as WalletApp;
-  const { data: auctions, isLoading, isError } = useActiveAuctions(walletApp);
+  const config = getConfig('network', walletApp);
+  const { data: auctions, isLoading, isError } = useActiveAuctions(config);
   const { data: walletAddress } = useWalletAddress(wallet, connected);
 
   // With auctionId we find the auction details from the queryAuctions cache
@@ -34,9 +38,13 @@ export default function AuctionDetail() {
   );
   const assetUnit = getAuctionAssetUnit(auctionInfo);
 
-  const cleanupAuction = useCleanupAuction(walletApp);
+  const cleanupAuction = useCleanupAuction(config);
 
   const { data: assetMetadata } = useAssetMetadata(assetUnit);
+
+  useEffect(() => {
+    mixPanel.track('Auction Viewed');
+  }, []);
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error getting auction...</div>;
@@ -64,14 +72,11 @@ export default function AuctionDetail() {
         {/* NOTE: If you want to make testing easier, just show both bidder and seller auction details without any conditions */}
         {isSeller ? (
           <div className="w-full">
-            <AuctionDetailSeller
-              walletApp={walletApp}
-              auctionInfo={auctionInfo}
-            />
+            <AuctionDetailSeller config={config} auctionInfo={auctionInfo} />
           </div>
         ) : (
           <AuctionDetailBidder
-            walletApp={walletApp}
+            config={config}
             walletAddress={walletAddress}
             auctionInfo={auctionInfo}
           />

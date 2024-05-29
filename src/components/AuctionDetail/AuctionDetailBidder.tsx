@@ -1,4 +1,8 @@
-import { AuctionInfo, ContractOutput, WalletApp } from 'hydra-auction-offchain';
+import {
+  AuctionInfo,
+  ContractConfig,
+  ContractOutput,
+} from 'hydra-auction-offchain';
 import EnterAuction from '../EnterAuction/EnterAuction';
 import BiddingView from './BiddingView';
 import { BidderClaims } from './BidderClaims';
@@ -16,18 +20,18 @@ function getValidatedSellerSignature(
   return null;
 }
 type AuctionDetailBidderProps = {
-  walletApp: WalletApp;
+  config: ContractConfig;
   auctionInfo: AuctionInfo;
   walletAddress: string;
 };
 
 export default function AuctionDetailBidder({
-  walletApp,
+  config,
   auctionInfo,
   walletAddress,
 }: AuctionDetailBidderProps) {
   const { data: sellerSignature } = useDiscoverSellerSignature(
-    walletApp,
+    config,
     walletAddress,
     {
       auctionCs: auctionInfo.auctionId,
@@ -42,7 +46,7 @@ export default function AuctionDetailBidder({
       <div className="text-title3 text-center mb-3">Bidder Options</div>
       {validatedSellerSignature ? (
         <BiddingView
-          walletApp={walletApp}
+          config={config}
           auctionInfo={auctionInfo}
           sellerSignature={validatedSellerSignature}
         />

@@ -1,5 +1,6 @@
 import {
   AuctionInfo,
+  ContractConfig,
   VerificationKey,
   WalletApp,
 } from 'hydra-auction-offchain';
@@ -13,20 +14,20 @@ import { useDiscoverBidders } from 'src/hooks/api/discoverBidders';
 import { useAuthorizeBidders } from 'src/hooks/api/authorizeBidders';
 
 type DiscoverAuthorizeBiddersProps = {
-  walletApp: WalletApp;
+  config: ContractConfig;
   auctionInfo: AuctionInfo;
   disabled?: boolean;
 };
 
 // TODO: should be a checkbox dropdown, to select all bidders, then a submit button to authorize
 export const DiscoverAuthorizeBidders = ({
-  walletApp,
+  config,
   auctionInfo,
   disabled,
 }: DiscoverAuthorizeBiddersProps) => {
-  const { data: bidders } = useDiscoverBidders(walletApp, auctionInfo);
+  const { data: bidders } = useDiscoverBidders(config, auctionInfo);
   const { mutate: authorizeBidders, isPending: isAuthorizeBiddersPending } =
-    useAuthorizeBidders(walletApp);
+    useAuthorizeBidders(config);
   const [selectedBidders, setSelectedBidders] = useState<VerificationKey[]>([]);
   console.log({ bidders });
 

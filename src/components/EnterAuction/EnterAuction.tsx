@@ -10,6 +10,7 @@ import { useEnterAuction } from 'src/hooks/api/enterAuction';
 import { useWallet } from '@meshsdk/react';
 import { Button } from '../shadcn/Button';
 import { useWalletAddress } from 'src/hooks/api/user';
+import { getConfig } from 'src/utils/config';
 
 type EnterAuctionFormProps = {
   auction: AuctionInfo;
@@ -19,8 +20,9 @@ type EnterAuctionFormProps = {
 export const EnterAuctionForm = ({ auction }: EnterAuctionFormProps) => {
   const { name: walletApp, wallet, connected } = useWallet();
   const { data: walletAddress } = useWalletAddress(wallet, connected);
+  const config = getConfig('network', walletApp as WalletApp);
   const { mutate: enterAuction, isPending: isEnterAuctionPending } =
-    useEnterAuction(walletApp as WalletApp);
+    useEnterAuction(config);
 
   const [enterAuctionFormData, setEnterAuctionFormData] =
     useState<EnterAuctionContractParams>({

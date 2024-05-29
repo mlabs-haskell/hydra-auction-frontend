@@ -3,25 +3,24 @@ import { PlaceBidFormT } from 'src/schemas/placeBidFormSchema';
 
 import { NumberInput } from '../Inputs/NumberInput';
 import { usePlaceBid } from '../../hooks/api/placeBid';
-import { AuctionInfo } from 'hydra-auction-offchain';
-import { WalletApp } from 'hydra-auction-offchain';
+import { AuctionInfo, ContractConfig } from 'hydra-auction-offchain';
 
 type PlaceBidFormProps = {
+  config: ContractConfig;
   auctionInfo: AuctionInfo;
   sellerSignature: string;
   standingBid: string;
-  walletApp: WalletApp;
 };
 
 export const PlaceBidForm = ({
+  config,
   auctionInfo,
   sellerSignature,
   standingBid,
-  walletApp,
 }: PlaceBidFormProps) => {
   console.log({ sellerSignature });
   const { mutate: placeBidMutation, isPending: isPlaceBidPending } =
-    usePlaceBid(auctionInfo, sellerSignature, walletApp);
+    usePlaceBid(config, auctionInfo, sellerSignature);
 
   const placeBidFormData = useRef<PlaceBidFormT>({
     bidAmount: 0,

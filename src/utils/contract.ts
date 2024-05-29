@@ -6,6 +6,7 @@ import {
   type ContractOutputError,
   ByteArray,
   BidderInfoCandidate,
+  ContractConfig,
 } from 'hydra-auction-offchain';
 import { toast } from 'react-toastify';
 import { contractOutputResultSchema } from 'src/schemas/contractOutputSchema';
@@ -22,8 +23,14 @@ export async function logConfirmContract<T extends { txHash: TransactionHash }>(
   if (output.tag !== 'result') {
     throw new Error(label + ' contract failed.');
   }
+  const config: ContractConfig = {
+    tag: 'network',
+    network: 'Preprod',
+    blockfrostApiKey: process.env.REACT_APP_BLOCKFROST_API_KEY || '',
+    walletApp: walletApp,
+  };
   // My understanding is this awaits until the contract output can be verified on blockfrost
-  await awaitTxConfirmed(walletApp, output.value.txHash ?? output.value);
+  await awaitTxConfirmed(config, output.value.txHash ?? output.value);
 }
 
 type ToastContractLogger = {
