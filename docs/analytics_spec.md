@@ -44,13 +44,9 @@ __TODO__: Create Board Embedding Tutorial
 # Implementation
 
 ## Types
-There are a few common types that appear across multiple analytics events. We make use of [Zod](https://zod.dev/) to ensure the robustness of these types. Here are their definitions:
+We include a `userType` type which can be extended to allow for more types of users in the future.
 
 ```typescript
-// z = zod
-export const unitSchema = z.string().regex(/^[a-f0-9]{56,184}$/i);
-export type unit = z.infer<typeof cardanoUnitSchema>;
-
 export type userType = "Bidder" | "Seller";
 ```
 
@@ -58,7 +54,7 @@ All events extend the following `Event` type:
 ```typescript
 {
   type: string,
-  unitId: unit,
+  auctionId: currencySymbol,
   walletAddr: Address | undefined
 }
 ```
@@ -72,7 +68,7 @@ __Event Properties__
 ```typescript
 {
   type: "AuctionViewed",
-  unitId: unit,
+  auctionId: currencySymbol,
   walletAddr: Address | undefined,
   userType: userType,
 }
@@ -85,7 +81,7 @@ __Event Properties__
 ```typescript
 {
   type: "AuctionAnalyticsViewed",
-  unitId: unit,
+  auctionId: currencySymbol,
   walletAddr: Address | undefined,
   userType: userType,
 }
@@ -98,7 +94,7 @@ __Event Properties__
 ```typescript
 {
   type: "AuctionAnnounceSucceeded",
-  unitId: unit,
+  auctionId: currencySymbol,
   walletAddr: Address,
   delegateGroupUrl: string,
   minDeposit: number,
@@ -113,7 +109,7 @@ __Event Properties__
 ```typescript
 {
   type: "EnterAuctionSucceeded",
-  unitId: unit,
+  auctionId: currencySymbol,
   walletAddr: Address
 }
 ```
@@ -125,7 +121,7 @@ __Event Properties__
 ```typescript
 {
   type: "AuthorizeBiddersSucceeded",
-  unitId: unit,
+  auctionId: currencySymbol,
   walletAddr: Address,
   bidders: string[] //bidder verification keys
 }
@@ -138,7 +134,7 @@ __Event Properties__
 ```typescript
 {
   type: "StartBiddingSucceeded",
-  unitId: unit,
+  auctionId: currencySymbol,
   walletAddr: Address
 }
 ```
@@ -150,7 +146,7 @@ __Event Properties__
 ```typescript
 {
   type: "PlaceBidSucceeded",
-  unitId: unit,
+  auctionId: currencySymbol,
   walletAddr: Address,
   layer: number, // 1 | 2
   amount: number
@@ -164,7 +160,7 @@ __Event Properties__
 ```typescript
 {
   type: "ClaimLotSucceeded",
-  unitId: unit,
+  auctionId: currencySymbol,
   walletAddr: Address,
   user: userType,
 }
@@ -177,7 +173,7 @@ __Event Properties__
 ```typescript
 {
   type: "DepositRefundSucceeded",
-  unitId: unit,
+  auctionId: currencySymbol,
   walletAddr: Address
 }
 ```
