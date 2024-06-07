@@ -39,14 +39,42 @@ To present these analytics to the users, you can create your own custom boards a
 
 https://docs.mixpanel.com/docs/features/embeds
 
+### Marketplace Board
+This board shows metrics that relate to the entire marketplace, such as:
+
+- announced auctions sorted by delegate group
+- announced auctions sorted by submitting wallet
+- announced auctions sorted by lot
+- started auctions sorted by lot
+- bids placed sorted by submitting wallet
+
+### Seller Board
+This board would show metrics relevant to the seller, to be displayed when a user views an auction that they listed:
+
+- auction views filtered by auctionId
+- deposits placed filtered by auctionId
+- bids placed filtered by auctionId
+- refunds filtered by auctionId
+
+### Bidder Board
+This board would show metrics relevant to prospective bidders, to be displayed when a user views an auction that they haven't listed:
+
+- announced auctions filtered by lot
+- deposits placed filtered by auctionId
+- bids placed filtered by auctionId
+
 __TODO__: Create Board Embedding Tutorial
 
 # Implementation
 
 ## Types
-We include a `userType` type which can be extended to allow for more types of users in the future.
+There are a few common types that appear across multiple analytics events. We make use of [Zod](https://zod.dev/) to ensure the robustness of these types. Here are their definitions:
 
 ```typescript
+// z = zod
+export const unitSchema = z.string().regex(/^[a-f0-9]{56,184}$/i);
+export type unit = z.infer<typeof cardanoUnitSchema>;
+
 export type userType = "Bidder" | "Seller";
 ```
 
@@ -62,7 +90,7 @@ All events extend the following `Event` type:
 ## Events
 
 ### Auction Viewed
-Triggers when the "View Auction" page is opened.
+Triggers when the "View Auction" page is opened. Intended for use by the seller.
 
 __Event Properties__
 ```typescript
@@ -75,7 +103,7 @@ __Event Properties__
 ```
 
 ### Auction Analytics Viewed
-Triggers when the "Auction Analytics" view is opened.
+Triggers when the "Auction Analytics" view is opened. Intended for use by the implementer.
 
 __Event Properties__
 ```typescript
@@ -88,7 +116,7 @@ __Event Properties__
 ```
 
 ### Auctions Announced
-Triggers when the `announceAuction` transaction succeeds.
+Triggers when the `announceAuction` transaction succeeds. Intended for general use.
 
 __Event Properties__
 ```typescript
@@ -98,12 +126,13 @@ __Event Properties__
   walletAddr: Address,
   delegateGroupUrl: string,
   minDeposit: number,
-  startingBid: number
+  startingBid: number,
+  lot: unit
 }
 ```
 
 ### Deposit Placed on Auction
-Triggers when the `enterAuction` transaction succeeds.
+Triggers when the `enterAuction` transaction succeeds. Intended for use by seller.
 
 __Event Properties__
 ```typescript
@@ -115,7 +144,7 @@ __Event Properties__
 ```
 
 ### Bidder Authorized
-Triggers when the `authorizeBidders` transaction succeeds.
+Triggers when the `authorizeBidders` transaction succeeds. Intended for use by seller, bidder.
 
 __Event Properties__
 ```typescript
@@ -128,7 +157,7 @@ __Event Properties__
 ```
 
 ### Auction Started
-Triggers when the `startBidding` transaction succeeds.
+Triggers when the `startBidding` transaction succeeds. Intended for general use.
 
 __Event Properties__
 ```typescript
@@ -140,7 +169,7 @@ __Event Properties__
 ```
 
 ### Bid Placed
-Triggers when the `placeBid` or `placeBidL2` transactions succeed.
+Triggers when the `placeBid` or `placeBidL2` transactions succeed. Intended for use by seller, bidder.
 
 __Event Properties__
 ```typescript
@@ -154,7 +183,7 @@ __Event Properties__
 ```
 
 ### Lot Claimed
-Triggers when the `claimAuctionLotBidder` or `claimAuctionLotSeller` transactions succeed.
+Triggers when the `claimAuctionLotBidder` or `claimAuctionLotSeller` transactions succeed. Intended for use by seller, implementer.
 
 __Event Properties__
 ```typescript
@@ -167,7 +196,7 @@ __Event Properties__
 ```
 
 ### Deposit Refunded
-Triggers when the `claimDepositLoser` transaction succeeds.
+Triggers when the `claimDepositLoser` transaction succeeds. Intended for use by seller.
 
 __Event Properties__
 ```typescript
