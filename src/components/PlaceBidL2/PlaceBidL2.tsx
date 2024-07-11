@@ -11,6 +11,7 @@ import {
   DelegateInfo,
 } from 'hydra-auction-offchain';
 import { usePlaceBidL2 } from 'src/hooks/api/placeBidL2';
+import { adaToLovelace, lovelaceToAda } from 'src/utils/currency';
 
 type PlaceBidL2FormProps = {
   config: ContractConfig;
@@ -51,11 +52,13 @@ export const PlaceBidL2Form = ({
       <NumberInput
         label="Bid Amount"
         inputId="bidAmount"
-        placeholder={String(placeBidL2FormData.current.bidAmount) || ''}
+        placeholder={
+          String(lovelaceToAda(placeBidL2FormData.current.bidAmount)) || ''
+        }
         onChange={(_, value) => {
           return (placeBidL2FormData.current = {
             ...placeBidL2FormData.current,
-            bidAmount: Number(value),
+            bidAmount: adaToLovelace(value),
           });
         }}
       />

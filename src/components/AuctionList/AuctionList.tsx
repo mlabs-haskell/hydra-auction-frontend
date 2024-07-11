@@ -2,14 +2,18 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useActiveAuctions } from '../../hooks/api/auctions';
 import AuctionCard from '../AuctionCard/AuctionCard';
 import { useWallet } from '@meshsdk/react';
-import { AuctionInfo, WalletApp } from 'hydra-auction-offchain';
+import { AuctionInfo, WalletApp, queryAuctions } from 'hydra-auction-offchain';
 
 import { useEffect, useState } from 'react';
 import {
   METADATA_QUERY_KEY,
   getAndStoreAssetMetadata,
 } from 'src/hooks/api/assets';
-import { getLocalStorageItem } from 'src/utils/localStorage';
+import {
+  getLocalStorageItem,
+  removeLocalStorageItem,
+  setLocalStorageItem,
+} from 'src/utils/localStorage';
 import { getAuctionAssetUnit } from 'src/utils/auction';
 import { useWalletAddress } from 'src/hooks/api/user';
 import {
@@ -19,7 +23,7 @@ import {
 import { DropDown } from '../DropDown/DropDown';
 import { getConfig } from 'src/utils/config';
 
-export default function AuctionList() {
+function AuctionList() {
   const { name: walletName, wallet, connected } = useWallet();
   const { data: walletAddress } = useWalletAddress(wallet, connected);
   const walletApp: WalletApp = walletName as WalletApp;
@@ -27,12 +31,6 @@ export default function AuctionList() {
   const { data: auctions } = useActiveAuctions(config, undefined, false);
 
   const queryClient = useQueryClient();
-
-  const localMetadata = getLocalStorageItem('metadata');
-
-  console.log({ walletApp });
-  console.log({ auctions });
-  console.log({ localMetadata });
 
   const [auctionsWithImage, setAuctionsWithImage] = useState<
     AuctionInfo[] | null
@@ -50,17 +48,7 @@ export default function AuctionList() {
     const filteredAuctions = await Promise.all(
       auctions.map(async (auction) => {
         const assetUnit = getAuctionAssetUnit(auction);
-
-        await queryClient.prefetchQuery({
-          queryKey: [METADATA_QUERY_KEY, assetUnit],
-          queryFn: async () => await getAndStoreAssetMetadata(assetUnit),
-        });
-
-        const nftHasImage: any = queryClient.getQueryData([
-          METADATA_QUERY_KEY,
-          assetUnit,
-        ]);
-
+        const nftHasImage: any = await getAndStoreAssetMetadata(assetUnit);
         return nftHasImage?.image !== undefined ? auction : null;
       })
     );
@@ -143,3 +131,5 @@ export default function AuctionList() {
     </>
   );
 }
+
+export default AuctionList;

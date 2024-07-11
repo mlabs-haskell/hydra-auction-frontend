@@ -7,12 +7,14 @@ import {
 } from 'hydra-auction-offchain';
 import { useMixpanel } from 'react-mixpanel-browser';
 import { toast } from 'react-toastify';
-import { contractOutputResultSchema } from 'src/schemas/contractOutputSchema';
-import { logContractToast } from 'src/utils/contract';
+import { getValidContractResponse } from 'src/utils/contract';
 
 export const AUTHORIZE_BIDDERS_QUERY_KEY = 'authorize-bidders';
 
-export const useAuthorizeBidders = (config: ContractConfig) => {
+export const useAuthorizeBidders = (
+  config: ContractConfig,
+  auctionId: string
+) => {
   const mixPanel = useMixpanel();
   const authorizeBiddersMutation = useMutation({
     mutationFn: async (
@@ -28,32 +30,32 @@ export const useAuthorizeBidders = (config: ContractConfig) => {
         config,
         authorizeBiddersParams
       );
-      logContractToast({
-        contractResponse: authorizeBiddersResponse,
-        toastSuccessMsg: `Successfully authorized ${authorizeBiddersParams.biddersToAuthorize.length}  bidders`,
-        toastErrorMsg: 'Authorizing bidders failed',
-      });
       console.log({ authorizeBiddersResponse });
-      const validatedAuthorizeBiddersResponse =
-        contractOutputResultSchema.safeParse(authorizeBiddersResponse);
-      if (validatedAuthorizeBiddersResponse.success) {
-        toast.info('Confirming authorized bidders contract...');
-        await awaitTxConfirmed(
-          config,
-          validatedAuthorizeBiddersResponse.data.value
-        );
-
-        return authorizeBiddersResponse;
-      }
-      return null;
+      const authorizeBiddersValidated = getValidContractResponse(
+        authorizeBiddersResponse
+      );
+      return {
+        params: authorizeBiddersParams,
+        contract: authorizeBiddersValidated,
+        auctionId,
+      };
     },
     onError: (error) => {
       console.error('Error authorizing bidders', error);
-      toast.error(`Authorizing bidders failed: ${error}`);
+      toast.error(`Authorizing bidders failed: ${error.message}`);
     },
-    onSuccess: (_, variables) => {
-      toast.success('Confirmed authorized bidders contract');
-      mixPanel && mixPanel.track('Authorized Bidders');
+    onSuccess: async (authorizeBiddersValidated) => {
+      if (authorizeBiddersValidated?.contract) {
+        toast.update('Authorizing bidders (this may take a few minutes)...');
+        await awaitTxConfirmed(config, authorizeBiddersValidated.contract);
+        toast.success('Confirmed authorized bidders contract');
+
+        mixPanel?.track('AuthorizeBiddersSucceeded', {
+          auctionId: authorizeBiddersValidated?.auctionId,
+          walletAddr: undefined,
+          bidders: authorizeBiddersValidated?.params.biddersToAuthorize,
+        });
+      }
     },
   });
   return authorizeBiddersMutation;

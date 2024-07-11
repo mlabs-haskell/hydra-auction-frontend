@@ -2,13 +2,13 @@ import { useMutation } from '@tanstack/react-query';
 import {
   AuctionInfo,
   ContractConfig,
-  WalletApp,
   claimAuctionLotBidder,
   claimAuctionLotSeller,
   claimDepositLoser,
 } from 'hydra-auction-offchain';
 import { useMixpanel } from 'react-mixpanel-browser';
-import { logContractToast } from 'src/utils/contract';
+import { toast } from 'react-toastify';
+import { getValidContractResponse } from 'src/utils/contract';
 
 // Bidder wins auction
 export const useClaimAuctionLotBidder = (config: ContractConfig) => {
@@ -20,15 +20,20 @@ export const useClaimAuctionLotBidder = (config: ContractConfig) => {
         auctionInfo
       );
       console.log({ claimAuctionLotBidderResponse });
-      logContractToast({
-        contractResponse: claimAuctionLotBidderResponse,
-        toastSuccessMsg: 'Auction lot claimed successfully.',
-        toastErrorMsg: 'Auction lot claim failed:',
-      });
-      return claimAuctionLotBidderResponse;
+      const validatedClaimAuctionLotBidder = getValidContractResponse(
+        claimAuctionLotBidderResponse
+      );
+      return validatedClaimAuctionLotBidder;
     },
-    onSuccess: (_, variables) => {
-      mixPanel && mixPanel.track('Claimed Auction Lot Bidder');
+    onSuccess: () => {
+      toast.success('Auction lot claimed successfully.');
+      mixPanel?.track('ClaimLotSucceeded', {
+        userType: 'bidder',
+      });
+    },
+    onError: (error) => {
+      console.error('Error claiming auction lot bidder', error);
+      toast.error(`Auction lot claim failed: ${error.message}`);
     },
   });
 
@@ -40,10 +45,24 @@ export const useClaimAuctionLotSeller = (config: ContractConfig) => {
   const mixPanel = useMixpanel();
   const claimAuctionLotSellerMutation = useMutation({
     mutationFn: async (auctionInfo: AuctionInfo) => {
-      return await claimAuctionLotSeller(config, auctionInfo);
+      const claimAuctionLotSellerResponse = await claimAuctionLotSeller(
+        config,
+        auctionInfo
+      );
+      console.log({ claimAuctionLotSellerResponse });
+      const claimAuctionLotSellerValidated = getValidContractResponse(
+        claimAuctionLotSellerResponse
+      );
+
+      return claimAuctionLotSellerValidated;
     },
-    onSuccess: (_, variables) => {
-      mixPanel && mixPanel.track('Claimed Auction Lot Seller');
+    onSuccess: () => {
+      toast.success('Auction lot claimed successfully.');
+      mixPanel?.track('Claimed Auction Lot Seller');
+    },
+    onError: (error) => {
+      console.error('Error claiming auction lot seller', error);
+      toast.error(`Auction lot claim failed: ${error.message}`);
     },
   });
 
@@ -55,10 +74,23 @@ export const useClaimDepositLoser = (config: ContractConfig) => {
   const mixPanel = useMixpanel();
   const claimDepositLoserMutation = useMutation({
     mutationFn: async (auctionInfo: AuctionInfo) => {
-      return await claimDepositLoser(config, auctionInfo);
+      const claimDepositLoserResponse = await claimDepositLoser(
+        config,
+        auctionInfo
+      );
+      console.log({ claimDepositLoserResponse });
+      const claimDepositLoserValidated = getValidContractResponse(
+        claimDepositLoserResponse
+      );
+      return claimDepositLoserValidated;
     },
-    onSuccess: (_, variables) => {
-      mixPanel && mixPanel.track('Claimed Deposit Loser');
+    onSuccess: () => {
+      toast.success('Deposit claimed successfully.');
+      mixPanel?.track('Claimed Deposit Loser');
+    },
+    onError: (error) => {
+      console.error('Error claiming deposit loser', error);
+      toast.error(`Deposit claim failed: ${error.message}`);
     },
   });
 

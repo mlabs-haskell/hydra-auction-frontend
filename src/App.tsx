@@ -14,6 +14,7 @@ import { Bounce, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { WebSocketProvider } from './providers/WebSocketProvider';
 import MixPanelProvider from './providers/MixPanelProvider';
+import Analytics from './components/Analytics/Analytics';
 require('dotenv').config();
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
                       path="/create-auction-list"
                       element={<CreateAuctionList />}
                     />
+                    <Route path="/analytics" element={<Analytics />} />
                     {/* TODO: collection/wallet routes */}
                   </Routes>
                 </Layout>

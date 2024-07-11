@@ -1,65 +1,40 @@
 import {
   ContractOutput,
   TransactionHash,
-  WalletApp,
   awaitTxConfirmed,
-  type ContractOutputError,
-  ByteArray,
-  BidderInfoCandidate,
   ContractConfig,
 } from 'hydra-auction-offchain';
-import { toast } from 'react-toastify';
-import { contractOutputResultSchema } from 'src/schemas/contractOutputSchema';
+import {
+  contractOutputErrorSchema,
+  contractOutputResultSchema,
+} from 'src/schemas/contractOutputSchema';
 
 export const POLICY_ID_LENGTH = 56;
 
 // For testing validity of contract outputs and logging - copied from hydra-auction-offchain demo
 export async function logConfirmContract<T extends { txHash: TransactionHash }>(
   label: string,
-  walletApp: WalletApp,
+  config: ContractConfig,
   output: ContractOutput<T | TransactionHash | any>
 ): Promise<void> {
   console.log(label + ':', output);
   if (output.tag !== 'result') {
     throw new Error(label + ' contract failed.');
   }
-  const config: ContractConfig = {
-    tag: 'network',
-    network: 'Preprod',
-    blockfrostApiKey: process.env.REACT_APP_BLOCKFROST_API_KEY || '',
-    walletApp: walletApp,
-  };
-  // My understanding is this awaits until the contract output can be verified on blockfrost
   await awaitTxConfirmed(config, output.value.txHash ?? output.value);
 }
 
-type ToastContractLogger = {
-  contractResponse: ContractOutput<any>;
-  toastSuccessMsg: string;
-  toastErrorMsg: string;
-  onSuccess?: () => void;
-};
-export const logContractToast = ({
-  contractResponse,
-  toastSuccessMsg,
-  toastErrorMsg,
-}: ToastContractLogger) => {
-  const contractResult = contractOutputResultSchema.safeParse(contractResponse);
-  if (contractResult.success) {
-    // TODO: If contract response is object or array then map keys/values and check for null/undefined for value
-    if (
-      contractResponse.value !== null &&
-      contractResponse.value !== undefined
-    ) {
-      toast.success(`${toastSuccessMsg}`);
-    } else {
-      toast.error(`${toastErrorMsg} no value returned from contract.`);
-    }
-  } else {
-    toast.error(
-      `${toastErrorMsg} ${
-        contractResponse.value.message ?? contractResponse.value.info
-      }`
-    );
+export const getValidContractResponse = <T>(
+  contractResponse: ContractOutput<T>
+): T | null => {
+  const contractSchemaValidated =
+    contractOutputResultSchema.safeParse(contractResponse);
+  const contractErrorSchemaValidated =
+    contractOutputErrorSchema.safeParse(contractResponse);
+  if (contractSchemaValidated.success) {
+    return contractSchemaValidated.data.value;
+  } else if (contractErrorSchemaValidated.success) {
+    throw new Error(contractErrorSchemaValidated.data.value.message);
   }
+  return null;
 };

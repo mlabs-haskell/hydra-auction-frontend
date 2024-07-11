@@ -8,7 +8,8 @@ import {
 } from 'hydra-auction-offchain';
 import { useQuery } from '@tanstack/react-query';
 import { getLocalStorageItem } from 'src/utils/localStorage';
-import { contractOutputResultSchema } from 'src/schemas/contractOutputSchema';
+import { BASE_REFETCH_INTERVAL } from 'src/utils/refetch';
+import { getValidContractResponse } from 'src/utils/contract';
 
 export type HookResponse = {
   data: AuctionInfo[] | undefined;
@@ -28,10 +29,10 @@ export const useActiveAuctions = (
   const activeAuctions = useQuery({
     queryKey: [QUERY_AUCTIONS_QUERY_KEY, config],
     queryFn: async () => {
-      console.log('useActiveAuctions');
-      return await queryAuctions(config, auctionFilters);
+      const auctions = await queryAuctions(config, auctionFilters);
+      return auctions;
     },
-    refetchInterval: refetch ? 10000 : Infinity,
+    refetchInterval: refetch ? BASE_REFETCH_INTERVAL : Infinity,
     enabled: !!config,
   });
 
@@ -62,13 +63,14 @@ export const useAuctionsEntered = (
 };
 
 export const useAuctionsAuthorized = (
-  // Not ideal we should have a way to do this without signing for each
+  // To get all auctions we are authorized to bid on
   config: ContractConfig,
   walletAddress?: string,
-  auctions?: AuctionInfo[]
+  auctions?: AuctionInfo[],
+  walletVk?: string
 ) => {
   return useQuery({
-    queryKey: [AUCTIONS_AUTHORIZED_QUERY_KEY, config, walletAddress],
+    queryKey: [AUCTIONS_AUTHORIZED_QUERY_KEY, config, walletAddress, walletVk],
     queryFn: async () => {
       if (auctions && walletAddress && config) {
         const authorizedAuctions = await Promise.all(
@@ -76,18 +78,17 @@ export const useAuctionsAuthorized = (
             const sellerSigParams: DiscoverSellerSigContractParams = {
               auctionCs: auction.auctionId,
               sellerAddress: walletAddress,
+              bidderVk: walletVk ?? '',
             };
 
             const sellerSignatureResponse = await discoverSellerSignature(
               config,
               sellerSigParams
             );
-            const validatedSellerSignature =
-              contractOutputResultSchema.safeParse(sellerSignatureResponse);
-            if (
-              validatedSellerSignature.success &&
-              validatedSellerSignature.data
-            ) {
+            const sellerSignatureValidated = getValidContractResponse(
+              sellerSignatureResponse
+            );
+            if (sellerSignatureValidated) {
               return auction.auctionId;
             }
           })
@@ -96,6 +97,6 @@ export const useAuctionsAuthorized = (
       }
       return [];
     },
-    enabled: !!walletAddress && !!auctions,
+    enabled: !!walletAddress && !!auctions && !!walletVk,
   });
 };

@@ -6,7 +6,7 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
 export default function Topbar() {
   return (
-    <header className="bg-white shadow-sm">
+    <header className="bg-white shadow sticky top-0 z-50">
       <nav className="flex">
         <ul className="flex ml-10 items-center">
           <li className="mr-10 hidden md:block text-3xl">
@@ -35,6 +35,11 @@ export default function Topbar() {
               to="/create-auction-list"
             >
               Create
+            </Link>
+          </li>
+          <li className="ml-3 pr-3 ">
+            <Link className="hover:text-black text-slate-700" to="/analytics">
+              Analytics
             </Link>
           </li>
           {/* <li className="ml-3 pr-3 ">
