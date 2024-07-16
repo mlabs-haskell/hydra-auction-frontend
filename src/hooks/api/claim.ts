@@ -32,7 +32,7 @@ export const useClaimAuctionLotBidder = (config: ContractConfig) => {
       });
     },
     onError: (error) => {
-      console.error('Error claiming auction lot bidder', error);
+      console.error('Error claiming auction lot as winning bidder.', error);
       toast.error(`Auction lot claim failed: ${error.message}`);
     },
   });
@@ -58,10 +58,10 @@ export const useClaimAuctionLotSeller = (config: ContractConfig) => {
     },
     onSuccess: () => {
       toast.success('Auction lot claimed successfully.');
-      mixPanel?.track('Claimed Auction Lot Seller');
+      mixPanel?.track('Reclaimed Auction Lot as Seller');
     },
     onError: (error) => {
-      console.error('Error claiming auction lot seller', error);
+      console.error('Error claiming auction lot as seller.', error);
       toast.error(`Auction lot claim failed: ${error.message}`);
     },
   });
@@ -89,7 +89,7 @@ export const useClaimDepositLoser = (config: ContractConfig) => {
       mixPanel?.track('Claimed Deposit Loser');
     },
     onError: (error) => {
-      console.error('Error claiming deposit loser', error);
+      console.error('Error claiming loser deposit.', error);
       toast.error(`Deposit claim failed: ${error.message}`);
     },
   });

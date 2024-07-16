@@ -48,7 +48,7 @@ export const useAuthorizeBidders = (
       if (authorizeBiddersValidated?.contract) {
         toast.update('Authorizing bidders (this may take a few minutes)...');
         await awaitTxConfirmed(config, authorizeBiddersValidated.contract);
-        toast.success('Confirmed authorized bidders contract');
+        toast.success('Confirmed authorized bidders contract.');
 
         mixPanel?.track('AuthorizeBiddersSucceeded', {
           auctionId: authorizeBiddersValidated?.auctionId,

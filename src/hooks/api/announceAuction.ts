@@ -41,7 +41,7 @@ export const useAnnounceAuction = (
         'Auction created, processing your auction now... This may take a few minutes.'
       );
       await awaitTxConfirmed(config, announceAuctionValidated?.txHash ?? '');
-      toast.success('Auction processing complete');
+      toast.success('Auction processing complete.');
 
       // Easier to copy in transactionId to the hydra node for L2
       toast.success(
