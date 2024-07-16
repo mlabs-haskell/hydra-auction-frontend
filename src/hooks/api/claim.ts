@@ -89,7 +89,7 @@ export const useClaimDepositLoser = (config: ContractConfig) => {
       mixPanel?.track('Claimed Deposit Loser');
     },
     onError: (error) => {
-      console.error('Error claiming deposit loser', error);
+      console.error('Error claiming loser deposit.', error);
       toast.error(`Deposit claim failed: ${error.message}`);
     },
   });
