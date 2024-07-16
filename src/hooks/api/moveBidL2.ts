@@ -26,7 +26,7 @@ export const useMoveBidL2 = (config: ContractConfig) => {
       mixPanel?.track('Bidding moved to L2');
     },
     onError: (error) => {
-      toast.error(` Moving bid to L2 failed: ${error.message}`);
+      toast.error(`Moving bid to L2 failed: ${error.message}`);
     },
   });
 
