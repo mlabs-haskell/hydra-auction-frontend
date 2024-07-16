@@ -32,7 +32,7 @@ export const useClaimAuctionLotBidder = (config: ContractConfig) => {
       });
     },
     onError: (error) => {
-      console.error('Error claiming auction lot bidder', error);
+      console.error('Error claiming auction lot as winning bidder.', error);
       toast.error(`Auction lot claim failed: ${error.message}`);
     },
   });
