@@ -78,10 +78,7 @@ export const EnterAuctionForm = ({ auction }: EnterAuctionFormProps) => {
           onChange={(inputId, val) =>
             handleInputChange(inputId, adaToLovelace(val))
           }
-          value={
-            lovelaceToAda(enterAuctionFormData.depositAmount || undefined) ??
-            undefined
-          }
+          value={lovelaceToAda(enterAuctionFormData.depositAmount || undefined)}
         />
         <input
           disabled={isEnterAuctionPending}

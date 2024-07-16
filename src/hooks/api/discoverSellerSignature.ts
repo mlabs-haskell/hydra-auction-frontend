@@ -26,7 +26,6 @@ export const useDiscoverSellerSignature = (
       console.log('useDiscoverSellerSignature');
       console.log({ discoverSellerSignatureParams: params });
 
-      console.log({ sellerSigParams: params });
       const sellerSignatureResponse = await discoverSellerSignature(
         config,
         params

@@ -2,18 +2,11 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useActiveAuctions } from '../../hooks/api/auctions';
 import AuctionCard from '../AuctionCard/AuctionCard';
 import { useWallet } from '@meshsdk/react';
-import { AuctionInfo, WalletApp, queryAuctions } from 'hydra-auction-offchain';
+import { AuctionInfo, WalletApp } from 'hydra-auction-offchain';
 
 import { useEffect, useState } from 'react';
-import {
-  METADATA_QUERY_KEY,
-  getAndStoreAssetMetadata,
-} from 'src/hooks/api/assets';
-import {
-  getLocalStorageItem,
-  removeLocalStorageItem,
-  setLocalStorageItem,
-} from 'src/utils/localStorage';
+import { getAndStoreAssetMetadata } from 'src/hooks/api/assets';
+
 import { getAuctionAssetUnit } from 'src/utils/auction';
 import { useWalletAddress } from 'src/hooks/api/user';
 import {
@@ -23,14 +16,12 @@ import {
 import { DropDown } from '../DropDown/DropDown';
 import { getConfig } from 'src/utils/config';
 
-function AuctionList() {
+export default function AuctionList() {
   const { name: walletName, wallet, connected } = useWallet();
   const { data: walletAddress } = useWalletAddress(wallet, connected);
   const walletApp: WalletApp = walletName as WalletApp;
   const config = getConfig('network', walletApp);
   const { data: auctions } = useActiveAuctions(config, undefined, false);
-
-  const queryClient = useQueryClient();
 
   const [auctionsWithImage, setAuctionsWithImage] = useState<
     AuctionInfo[] | null
@@ -131,5 +122,3 @@ function AuctionList() {
     </>
   );
 }
-
-export default AuctionList;
