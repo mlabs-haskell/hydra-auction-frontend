@@ -61,7 +61,7 @@ export const useClaimAuctionLotSeller = (config: ContractConfig) => {
       mixPanel?.track('Reclaimed Auction Lot as Seller');
     },
     onError: (error) => {
-      console.error('Error claiming auction lot seller', error);
+      console.error('Error claiming auction lot as seller.', error);
       toast.error(`Auction lot claim failed: ${error.message}`);
     },
   });
