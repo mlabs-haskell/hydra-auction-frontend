@@ -25,7 +25,7 @@
 
 # Requirements
 
-Hydra Auction is designed in part to be a framework for development of hydra-based products. The analytics system outlined in this document is designed specifically to be extensible in a discrete manner, such that the developers of these future products have control over the analytics gathered and those provided to users.
+Hydra Auction is designed in part to be a framework for development of Hydra-based products. The analytics system outlined in this document is designed specifically to be extensible in a discrete manner, such that the developers of these future products have control over the analytics gathered and those provided to users.
 
 For the purposes of demonstration, we selected the following set of useful metrics to display to product owners & end users:
 
@@ -48,7 +48,7 @@ We've selected [Mixpanel](https://mixpanel.com) as a third party tool to help fa
 
 ## Setup
 
-When adapting the hydra-auction SDK for use, if they want to make use of our analytics design, the product owners are expected to create a Mixpanel project. Free accounts handle up to 20 million events per month.
+When adapting the Hydra-Auction SDK for use, if they want to make use of our analytics design, the product owners are expected to create a Mixpanel project. Free accounts handle up to 20 million events per month.
 
 ### Setting up a Mixpanel Account
 In order to receive events and use them in a custom board, you need to create a Mixpanel account.
@@ -102,7 +102,7 @@ Copy the board link and paste it into the `REACT_APP_MIXPANEL_BOARD_LINK`. The b
 
 Note: This embedding will only work with a public Mixpanel board.
 
-Once your project has been created, you'll be able to use your project token to connection your adapted hydra-auction to your mixpanel project, and should see our premade events begin to appear in your Mixpanel dashboard.
+Once your project has been created, you'll be able to use your project token to connection your adapted Hydra-Auction to your Mixpanel project, and should see our premade events begin to appear in your Mixpanel dashboard.
 
 # Implementation
 
