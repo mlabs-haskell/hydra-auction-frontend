@@ -4,13 +4,16 @@ import {
   DiscoverSellerSigContractParams,
   discoverSellerSignature,
 } from 'hydra-auction-offchain';
+import { getValidContractResponse } from 'src/utils/contract';
+import { BASE_REFETCH_INTERVAL } from 'src/utils/refetch';
 
 export const DISCOVER_SELLER_SIGNATURE_QUERY_KEY = 'discover-seller-signature';
 
 export const useDiscoverSellerSignature = (
   config: ContractConfig,
   walletAddress: string,
-  params: DiscoverSellerSigContractParams
+  params: DiscoverSellerSigContractParams,
+  enabled: boolean
 ) => {
   const sellerSigQuery = useQuery({
     queryKey: [
@@ -28,9 +31,13 @@ export const useDiscoverSellerSignature = (
         params
       );
       console.log({ sellerSignatureResponse });
-      return sellerSignatureResponse;
+      const sellerSignatureValidated = getValidContractResponse(
+        sellerSignatureResponse
+      );
+      return sellerSignatureValidated;
     },
-    enabled: !!config && !!walletAddress && !!params.auctionCs,
+    enabled: !!config && !!walletAddress && !!params.auctionCs && !!enabled,
+    refetchInterval: BASE_REFETCH_INTERVAL,
   });
   return sellerSigQuery;
 };

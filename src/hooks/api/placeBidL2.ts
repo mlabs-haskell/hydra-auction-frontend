@@ -6,6 +6,7 @@ import {
 } from 'hydra-auction-offchain';
 import { useMixpanel } from 'react-mixpanel-browser';
 import { toast } from 'react-toastify';
+import { getValidContractResponse } from 'src/utils/contract';
 
 export const usePlaceBidL2 = (config: ContractConfig) => {
   const mixPanel = useMixpanel();
@@ -15,25 +16,17 @@ export const usePlaceBidL2 = (config: ContractConfig) => {
       console.log('Placing bid L2');
       const placeBidL2Response = await placeBidL2(config, params);
       console.log({ placeBidL2Response });
-      if (
-        placeBidL2Response?.tag === 'error' ||
-        placeBidL2Response?.value?.tag?.toLowerCase() === 'error'
-      ) {
-        throw new Error(
-          placeBidL2Response?.value?.value?.tag ??
-            placeBidL2Response?.value?.message
-        );
-      }
-      console.log({ placeBidL2Response });
+      const placeBidL2Validated = getValidContractResponse(placeBidL2Response);
 
-      return placeBidL2Response;
+      return placeBidL2Validated;
     },
     onSuccess: () => {
       toast.success('Bid placed successfully on L2');
-      mixPanel && mixPanel.track('Bid placed succesfully on L2');
+      mixPanel?.track('Bid placed succesfully on L2');
     },
     onError: (error) => {
-      toast.error(error.message);
+      toast.error(`Placing bid on L2 failed: ${error.message}`);
+      console.log(error);
     },
   });
 

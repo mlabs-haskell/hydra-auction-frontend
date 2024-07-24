@@ -4,9 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 const SELLER_ADDRESS_QUERY_KEY = 'seller-address';
 export const useWalletAddress = (wallet: BrowserWallet, connected: boolean) => {
   const walletAddressQuery = useQuery({
-    queryKey: [SELLER_ADDRESS_QUERY_KEY],
+    queryKey: [SELLER_ADDRESS_QUERY_KEY, wallet, connected],
     queryFn: async () => {
-      console.log('useWalletAddress');
       const sellerAddresses = await wallet.getUsedAddresses();
       return sellerAddresses[0] ?? '';
     },

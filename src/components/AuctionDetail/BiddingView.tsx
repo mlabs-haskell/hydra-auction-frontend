@@ -27,6 +27,7 @@ export default function BiddingView({
 }: BiddingViewProps) {
   const { data: standingBidState } = useStandingBidState(config, auctionInfo);
   const [standingBidL2, setStandingBidL2] = useState<string>('');
+  const [formattedPrice, setFormattedPrice] = useState<string>('');
   const { lastMessage, readyState } = useWebSocket(
     auctionInfo.delegateInfo?.wsServers[0] ?? ''
   );
@@ -49,14 +50,14 @@ export default function BiddingView({
     }
   }, [lastMessage, readyState]);
 
-  let formattedPrice = '';
-  if (standingBidL2) {
-    formattedPrice = formatLovelaceToAda(standingBidL2);
-  } else if (contractOutputResultSchema.safeParse(standingBidState).success) {
-    const standingBidValue = standingBidState?.value as StandingBidState;
-    formattedPrice = formatLovelaceToAda(standingBidValue?.price);
-  }
-  console.log({ standingBidState });
+  useEffect(() => {
+    if (standingBidL2) {
+      setFormattedPrice(formatLovelaceToAda(standingBidL2));
+    } else if (standingBidState) {
+      setFormattedPrice(formatLovelaceToAda(standingBidState?.price));
+    }
+    console.log({ standingBidState });
+  }, [standingBidState]);
 
   return (
     <div className="w-full flex flex-col gap-10">

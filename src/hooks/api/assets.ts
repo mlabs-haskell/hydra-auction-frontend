@@ -27,6 +27,7 @@ export const useExtendedAssets = (walletApp: WalletApp) => {
 
 export const METADATA_QUERY_KEY = 'asset-metadata';
 
+// this isn't sustainable, as we will end up with large amount of old auctions over time. but works for now to prevent excess calls to blockfrost
 export const getAndStoreAssetMetadata = async (assetUnit: string) => {
   const localMetadata = getLocalStorageItem('metadata') || [];
   const assetMetadataIndex = localMetadata?.findIndex(
@@ -36,7 +37,7 @@ export const getAndStoreAssetMetadata = async (assetUnit: string) => {
   if (assetMetadataIndex !== -1) {
     return localMetadata[assetMetadataIndex];
   }
-
+  console.log('no metadata');
   try {
     const assetMetaData = await blockfrostProvider.fetchAssetMetadata(
       assetUnit
@@ -54,9 +55,19 @@ export const getAndStoreAssetMetadata = async (assetUnit: string) => {
         extendedAssetMetadata,
       ]);
       return extendedAssetMetadata;
+    } else {
+      const extendedAssetMetadata = {
+        unit: assetUnit,
+        image: undefined,
+        name: undefined,
+        description: undefined,
+      };
+      setLocalStorageItem('metadata', [
+        ...localMetadata,
+        extendedAssetMetadata,
+      ]);
+      return extendedAssetMetadata;
     }
-
-    return null;
   } catch (error) {
     console.log(error);
   }

@@ -11,6 +11,7 @@ import { useWallet } from '@meshsdk/react';
 import { Button } from '../shadcn/Button';
 import { useWalletAddress } from 'src/hooks/api/user';
 import { getConfig } from 'src/utils/config';
+import { adaToLovelace, lovelaceToAda } from 'src/utils/currency';
 
 type EnterAuctionFormProps = {
   auction: AuctionInfo;
@@ -74,8 +75,10 @@ export const EnterAuctionForm = ({ auction }: EnterAuctionFormProps) => {
           label="Deposit amount"
           inputId="depositAmount"
           placeholder={`Minimum Deposit: ${auction.auctionTerms.minDepositAmount} ADA`}
-          onChange={handleInputChange}
-          value={enterAuctionFormData.depositAmount ?? undefined}
+          onChange={(inputId, val) =>
+            handleInputChange(inputId, adaToLovelace(val))
+          }
+          value={lovelaceToAda(enterAuctionFormData.depositAmount || undefined)}
         />
         <input
           disabled={isEnterAuctionPending}

@@ -19,7 +19,7 @@ export const DropdownCheckbox = ({
   disabled,
 }: {
   children: React.ReactNode;
-  label: string;
+  label: string | React.ReactNode;
   subLabel: string;
   disabled?: boolean;
 }) => {
@@ -41,12 +41,12 @@ export const DropdownCheckbox = ({
           onClick={() => setMenuOpen(!menuOpen)}
         >
           <button className="text-dim w-full">
-            <div className="flex items-center gap-3 justify-between ">
-              <div>{label}</div>
+            <div className="flex items-center gap-3 ">
+              {label}
               {menuOpen ? (
-                <ChevronUpIcon className="fill-current text-black" />
+                <ChevronUpIcon className="ml-auto fill-current text-black" />
               ) : (
-                <ChevronDownIcon className="fill-current text-black" />
+                <ChevronDownIcon className="ml-auto fill-current text-black" />
               )}
             </div>
           </button>

@@ -1,7 +1,11 @@
 import { AssetMetadata } from '@meshsdk/core';
 import { ListBulletIcon } from '@radix-ui/react-icons';
 import { AuctionInfo } from 'hydra-auction-offchain';
-import { numberWithCommas } from 'src/utils/currency';
+import {
+  ADA_CURRENCY_SYMBOL,
+  formatLovelaceToAda,
+  numberWithCommas,
+} from 'src/utils/currency';
 
 const MOCK_NFT_DESCRIPTION = 'Mock NFT Description 🐶';
 
@@ -15,7 +19,9 @@ const AuctionTermCard = ({
   return (
     <div>
       <div className="text-sm text-dim">{label}</div>
-      <div className=" font-bold ">{numberWithCommas(value || '')}</div>
+      <div className=" font-bold ">
+        {ADA_CURRENCY_SYMBOL} {numberWithCommas(value || '')}
+      </div>
     </div>
   );
 };
@@ -44,19 +50,23 @@ export default function AuctionSubDetail({
       <div className="grid md:grid-cols-2 gap-3 mb-4">
         <AuctionTermCard
           label="Minimum Deposit"
-          value={auctionInfo?.auctionTerms.minDepositAmount}
+          value={formatLovelaceToAda(
+            auctionInfo?.auctionTerms.minDepositAmount
+          )}
         />
         <AuctionTermCard
           label="Minimum Bid Increment"
-          value={auctionInfo?.auctionTerms.minBidIncrement}
+          value={formatLovelaceToAda(auctionInfo?.auctionTerms.minBidIncrement)}
         />
         <AuctionTermCard
           label="Delegate Auction Fee"
-          value={auctionInfo?.auctionTerms.auctionFeePerDelegate}
+          value={formatLovelaceToAda(
+            auctionInfo?.auctionTerms.auctionFeePerDelegate
+          )}
         />
         <AuctionTermCard
           label="Starting Bid"
-          value={auctionInfo?.auctionTerms.startingBid}
+          value={formatLovelaceToAda(auctionInfo?.auctionTerms.startingBid)}
         />
       </div>
     </div>

@@ -1,9 +1,12 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { PlaceBidFormT } from 'src/schemas/placeBidFormSchema';
 
 import { NumberInput } from '../Inputs/NumberInput';
 import { usePlaceBid } from '../../hooks/api/placeBid';
 import { AuctionInfo, ContractConfig } from 'hydra-auction-offchain';
+import { useWallet } from '@meshsdk/react';
+import { useWalletAddress } from 'src/hooks/api/user';
+import { adaToLovelace, lovelaceToAda } from 'src/utils/currency';
 
 type PlaceBidFormProps = {
   config: ContractConfig;
@@ -19,8 +22,10 @@ export const PlaceBidForm = ({
   standingBid,
 }: PlaceBidFormProps) => {
   console.log({ sellerSignature });
+  const { wallet, connected } = useWallet();
+  const { data: address } = useWalletAddress(wallet, connected);
   const { mutate: placeBidMutation, isPending: isPlaceBidPending } =
-    usePlaceBid(config, auctionInfo, sellerSignature);
+    usePlaceBid(config, auctionInfo, sellerSignature, address || '');
 
   const placeBidFormData = useRef<PlaceBidFormT>({
     bidAmount: 0,
@@ -49,16 +54,19 @@ export const PlaceBidForm = ({
     );
     console.log({ placeBidResponse });
   };
+
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       <NumberInput
         label="Bid Amount"
         inputId="bidAmount"
-        placeholder={String(placeBidFormData.current.bidAmount) || ''}
+        placeholder={
+          String(lovelaceToAda(placeBidFormData.current.bidAmount)) || ''
+        }
         onChange={(_, value) => {
           return (placeBidFormData.current = {
             ...placeBidFormData.current,
-            bidAmount: Number(value),
+            bidAmount: adaToLovelace(value),
           });
         }}
       />

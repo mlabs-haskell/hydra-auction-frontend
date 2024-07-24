@@ -5,11 +5,8 @@ import { useWallet } from '@meshsdk/react';
 import { AuctionInfo, WalletApp } from 'hydra-auction-offchain';
 
 import { useEffect, useState } from 'react';
-import {
-  METADATA_QUERY_KEY,
-  getAndStoreAssetMetadata,
-} from 'src/hooks/api/assets';
-import { getLocalStorageItem } from 'src/utils/localStorage';
+import { getAndStoreAssetMetadata } from 'src/hooks/api/assets';
+
 import { getAuctionAssetUnit } from 'src/utils/auction';
 import { useWalletAddress } from 'src/hooks/api/user';
 import {
@@ -25,14 +22,6 @@ export default function AuctionList() {
   const walletApp: WalletApp = walletName as WalletApp;
   const config = getConfig('network', walletApp);
   const { data: auctions } = useActiveAuctions(config, undefined, false);
-
-  const queryClient = useQueryClient();
-
-  const localMetadata = getLocalStorageItem('metadata');
-
-  console.log({ walletApp });
-  console.log({ auctions });
-  console.log({ localMetadata });
 
   const [auctionsWithImage, setAuctionsWithImage] = useState<
     AuctionInfo[] | null
@@ -50,17 +39,7 @@ export default function AuctionList() {
     const filteredAuctions = await Promise.all(
       auctions.map(async (auction) => {
         const assetUnit = getAuctionAssetUnit(auction);
-
-        await queryClient.prefetchQuery({
-          queryKey: [METADATA_QUERY_KEY, assetUnit],
-          queryFn: async () => await getAndStoreAssetMetadata(assetUnit),
-        });
-
-        const nftHasImage: any = queryClient.getQueryData([
-          METADATA_QUERY_KEY,
-          assetUnit,
-        ]);
-
+        const nftHasImage: any = await getAndStoreAssetMetadata(assetUnit);
         return nftHasImage?.image !== undefined ? auction : null;
       })
     );

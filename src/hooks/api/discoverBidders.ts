@@ -4,6 +4,7 @@ import {
   ContractConfig,
   discoverBidders,
 } from 'hydra-auction-offchain';
+import { BASE_REFETCH_INTERVAL } from 'src/utils/refetch';
 
 export const DISCOVER_BIDDERS_QUERY_KEY = 'discover-bidders';
 
@@ -24,6 +25,7 @@ export const useDiscoverBidders = (
       console.log({ discoverBiddersResponse });
       return discoverBiddersResponse;
     },
+    refetchInterval: BASE_REFETCH_INTERVAL,
   });
 
   return discoverBiddersQuery;

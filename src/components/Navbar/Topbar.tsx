@@ -4,9 +4,23 @@ import { StringInput } from '../Inputs/StringInput';
 
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
+const TAB_ROUTES = {
+  ANALYTICS: {
+    href: '/analytics',
+    label: 'Analytics',
+  },
+  EXPLORE: {
+    href: '/auction-list',
+    label: 'Explore',
+  },
+  CREATE: {
+    href: '/create-auction-list',
+    label: 'Create',
+  },
+};
 export default function Topbar() {
   return (
-    <header className="bg-white shadow-sm">
+    <header className="bg-white shadow sticky top-0 z-50">
       <nav className="flex">
         <ul className="flex ml-10 items-center">
           <li className="mr-10 hidden md:block text-3xl">
@@ -24,43 +38,29 @@ export default function Topbar() {
           <li className="pr-3">
             <Link
               className="hover:text-black text-slate-700"
-              to="/auction-list"
+              to={TAB_ROUTES.EXPLORE.href}
             >
-              Explore
+              {TAB_ROUTES.EXPLORE.label}
             </Link>
           </li>
           <li className="ml-3 pr-3 ">
             <Link
               className="hover:text-black text-slate-700"
-              to="/create-auction-list"
+              to={TAB_ROUTES.CREATE.href}
             >
-              Create
-            </Link>
-          </li>
-          {/* <li className="ml-3 pr-3 ">
-            <Link
-              className="hover:text-black text-slate-700"
-              to="/create-auction"
-            >
-              Announce Auction Form
-            </Link>
-          </li> */}
-          {/* <li className="ml-3 pr-3 ">
-            <Link
-              className="hover:text-black text-slate-700"
-              to="/enter-auction"
-            >
-              Enter Auction Form
+              {TAB_ROUTES.CREATE.label}
             </Link>
           </li>
           <li className="ml-3 pr-3 ">
-            <Link className="hover:text-black text-slate-700" to="/place-bid">
-              Place Bid Form
+            <Link
+              className="hover:text-black text-slate-700"
+              to={TAB_ROUTES.ANALYTICS.href}
+            >
+              {TAB_ROUTES.ANALYTICS.label}
             </Link>
-          </li> */}
+          </li>
 
           <li className="ml-3 pr-3">
-            {/* <CardanoWallet isDark={false} /> */}
             <CustomWallet isDark={false} />
           </li>
         </ul>

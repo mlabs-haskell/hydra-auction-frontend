@@ -42,23 +42,30 @@ export default function AuctionDetail() {
 
   const { data: assetMetadata } = useAssetMetadata(assetUnit);
 
+  // Identifying if we are the seller or a bidder of this auction
+  const isSeller = getIsSeller(walletAddress, auctionInfo);
+
+  console.log({ auctionInfo });
+
+  console.log({ isSeller });
+  const handleCleanupAuction = () => {
+    if (auctionInfo) {
+      cleanupAuction.mutate(auctionInfo);
+    }
+  };
+
   useEffect(() => {
-    mixPanel.track('Auction Viewed');
+    mixPanel.track('AuctionViewed', {
+      auctionId: auctionId,
+      walletAddr: walletAddress,
+      userType: isSeller ? 'Seller' : 'Bidder',
+    });
   }, []);
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error getting auction...</div>;
   if (!auctionInfo) return <div>Error finding auction...</div>;
   if (!walletAddress || !walletName) return <div>Wallet not valid</div>;
-
-  // Identifying if we are the seller or a bidder of this auction
-  const isSeller = getIsSeller(walletAddress, auctionInfo);
-  console.log({ auctionInfo });
-
-  console.log({ isSeller });
-  const handleCleanupAuction = () => {
-    cleanupAuction.mutate(auctionInfo);
-  };
 
   return (
     <div className="grid lg:grid-cols-2 gap-3">

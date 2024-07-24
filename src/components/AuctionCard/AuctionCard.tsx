@@ -1,8 +1,4 @@
-import {
-  AuctionInfo,
-  StandingBidState,
-  WalletApp,
-} from 'hydra-auction-offchain';
+import { AuctionInfo, WalletApp } from 'hydra-auction-offchain';
 import AuctionStateRemaining from '../Time/AuctionStateRemaining';
 import IpfsImage from '../IpfsImage/IpfsImage';
 
@@ -13,10 +9,10 @@ import { useWallet } from '@meshsdk/react';
 import {
   ADA_CURRENCY_SYMBOL,
   formatLovelaceToAda,
+  lovelaceToAda,
   numberWithCommas,
 } from 'src/utils/currency';
 import { TimerIcon } from '@radix-ui/react-icons';
-import { contractOutputResultSchema } from 'src/schemas/contractOutputSchema';
 import { useStandingBidState } from 'src/hooks/api/standingBidState';
 import { getConfig } from 'src/utils/config';
 
@@ -32,17 +28,13 @@ function AuctionCard({ auctionInfo }: AuctionCardProps) {
     useAssetMetadata(assetUnit);
   const { name: walletApp } = useWallet();
   const config = getConfig('network', walletApp as WalletApp);
-  const { data: standingBidState, isLoading: isLoadingStandingBidState } =
-    useStandingBidState(config, auctionInfo);
+  const { data: standingBidState } = useStandingBidState(config, auctionInfo);
 
   let formattedPrice = '';
-  if (contractOutputResultSchema.safeParse(standingBidState).success) {
-    const standingBidValue = standingBidState?.value as StandingBidState;
-    formattedPrice = formatLovelaceToAda(standingBidValue?.price);
+  if (standingBidState) {
+    formattedPrice = formatLovelaceToAda(standingBidState?.price);
   }
 
-  if (isLoadingMetadata || isLoadingStandingBidState)
-    return <div>Loading...</div>;
   return (
     <div className="border rounded-lg overflow-hidden shadow-md hover:bg-slate-200 h-full">
       <a
@@ -50,10 +42,12 @@ function AuctionCard({ auctionInfo }: AuctionCardProps) {
         href={`/auction?auctionId=${auctionInfo.auctionId}`}
       >
         <div className="aspect-w-1 aspect-h-1 w-full h-full max-h-72 overflow-hidden justify-center items-center">
-          <IpfsImage
-            className="w-full h-full object-cover object-center transition-transform duration-[500ms] hover:scale-110 hover:transform"
-            assetUnit={assetUnit}
-          />
+          {metadata && (
+            <IpfsImage
+              className="w-full h-full object-cover object-center transition-transform duration-[500ms] hover:scale-110 hover:transform"
+              assetUnit={assetUnit}
+            />
+          )}
         </div>
         <div className="flex flex-col items-center w-full p-3">
           <div className="overflow-hidden font-semibold text-title3 w-full mb-1">
@@ -62,10 +56,11 @@ function AuctionCard({ auctionInfo }: AuctionCardProps) {
           <div className="w-full pb-2 border-b border-slate-300 mb-3">
             <div className="flex justify-end gap-2 font-bold mb-1">
               <div>{ADA_CURRENCY_SYMBOL}</div>
-              <div>{formattedPrice}</div>
+              <div>{formatLovelaceToAda(standingBidState?.price)}</div>
             </div>
             <div className="overflow-hidden text-end text-dim">
-              {numberWithCommas(auctionInfo.auctionTerms.minDepositAmount)} Min
+              {ADA_CURRENCY_SYMBOL}{' '}
+              {lovelaceToAda(auctionInfo.auctionTerms.minDepositAmount)} Min
               Deposit
             </div>
           </div>

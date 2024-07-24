@@ -6,6 +6,7 @@ import {
 } from 'hydra-auction-offchain';
 import { useMixpanel } from 'react-mixpanel-browser';
 import { toast } from 'react-toastify';
+import { getValidContractResponse } from 'src/utils/contract';
 
 export const useMoveBidL2 = (config: ContractConfig) => {
   const mixPanel = useMixpanel();
@@ -15,21 +16,17 @@ export const useMoveBidL2 = (config: ContractConfig) => {
         console.log('Moving bid L2');
         const moveBidL2Response = await moveBidL2(config, moveBidParams);
         console.log({ moveBidL2Response });
-        if (
-          moveBidL2Response?.tag === 'error' ||
-          moveBidL2Response?.value?.tag?.toLowerCase() === 'error'
-        )
-          throw new Error(moveBidL2Response.value.message);
+        const moveBidL2Validated = getValidContractResponse(moveBidL2Response);
 
-        return moveBidL2Response;
+        return moveBidL2Validated;
       }
     },
     onSuccess: () => {
       toast.success('Bidding moved to L2');
-      mixPanel && mixPanel.track('Bidding moved to L2');
+      mixPanel?.track('Bidding moved to L2');
     },
     onError: (error) => {
-      toast.error(error.message);
+      toast.error(`Moving bid to L2 failed: ${error.message}`);
     },
   });
 

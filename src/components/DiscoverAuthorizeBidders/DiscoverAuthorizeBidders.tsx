@@ -27,7 +27,7 @@ export const DiscoverAuthorizeBidders = ({
 }: DiscoverAuthorizeBiddersProps) => {
   const { data: bidders } = useDiscoverBidders(config, auctionInfo);
   const { mutate: authorizeBidders, isPending: isAuthorizeBiddersPending } =
-    useAuthorizeBidders(config);
+    useAuthorizeBidders(config, auctionInfo.auctionId);
   const [selectedBidders, setSelectedBidders] = useState<VerificationKey[]>([]);
   console.log({ bidders });
 
@@ -60,7 +60,14 @@ export const DiscoverAuthorizeBidders = ({
       <div className={'flex flex-col gap-6 justify-center items-center w-full'}>
         <DropdownCheckbox
           disabled={disabled || isAuthorizeBiddersPending}
-          label="Select bidders to authorize"
+          label={
+            <div className="flex justify-between items-center w-full">
+              <span>Bidders to authorize</span>
+              <span className="text-black font-bold">
+                {bidders?.length || 0}
+              </span>
+            </div>
+          }
           subLabel="Bidders"
         >
           {uniqueBidders?.map((bidderVk: VerificationKey, index: number) => {

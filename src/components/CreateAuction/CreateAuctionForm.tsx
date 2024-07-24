@@ -14,6 +14,8 @@ import { removePolicyIdFromAssetUnit } from 'src/utils/formatting';
 import { toast } from 'react-toastify';
 import { ONE_DAY_MS, formatDate } from 'src/utils/date';
 import { getConfig } from 'src/utils/config';
+import { useWalletAddress } from 'src/hooks/api/user';
+import { adaToLovelace, lovelaceToAda } from 'src/utils/currency';
 
 type CreateAuctionFormProps = {
   className?: string;
@@ -28,11 +30,15 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
     mockAnnounceAuctionParams.auctionTerms
   );
 
-  const { name: walletName } = useWallet();
+  const { name: walletName, wallet, connected } = useWallet();
+  const { data: address } = useWalletAddress(wallet, connected);
+
   const config = getConfig('network', walletName as WalletApp);
   const { data: assets, isError } = useExtendedAssets(walletName as WalletApp);
+  console.log({ address });
   const { mutate: announceAuction, isPending: isAnnounceAuctionPending } =
-    useAnnounceAuction(config);
+    useAnnounceAuction(config, address || '');
+  //
 
   // Auto set the cleanup to two days after purchase deadline every time purchase deadline is set
   useEffect(() => {
@@ -119,7 +125,6 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
   };
 
   const handleAuctionInputChange = (inputId: string, value: any) => {
-    console.log({ inputId });
     setAuctionFormData({
       ...auctionFormData,
       [inputId]: String(value),
@@ -154,8 +159,12 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
         <NumberInput
           label="Auction Fee Per Delegate"
           inputId="auctionFeePerDelegate"
-          onChange={handleAuctionInputChange}
-          placeholder={auctionFormData.auctionFeePerDelegate}
+          onChange={(inputId, val) =>
+            handleAuctionInputChange(inputId, adaToLovelace(val))
+          }
+          placeholder={String(
+            lovelaceToAda(auctionFormData.auctionFeePerDelegate)
+          )}
         />
         <div className="flex gap-4 my-8 flex-wrap">
           <DateTimeInput
@@ -194,20 +203,28 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
           <NumberInput
             label="Starting Bid"
             inputId="startingBid"
-            onChange={handleAuctionInputChange}
-            placeholder={auctionFormData.startingBid}
+            onChange={(inputId, val) =>
+              handleAuctionInputChange(inputId, adaToLovelace(val))
+            }
+            placeholder={String(lovelaceToAda(auctionFormData.startingBid))}
           />
           <NumberInput
             label="Min Bid Increment"
             inputId="minBidIncrement"
-            onChange={handleAuctionInputChange}
-            placeholder={auctionFormData.minBidIncrement}
+            onChange={(inputId, val) =>
+              handleAuctionInputChange(inputId, adaToLovelace(val))
+            }
+            placeholder={String(lovelaceToAda(auctionFormData.minBidIncrement))}
           />
           <NumberInput
             label="Min Deposit Amount"
             inputId="minDepositAmount"
-            onChange={handleAuctionInputChange}
-            placeholder={auctionFormData.minDepositAmount}
+            onChange={(inputId, val) =>
+              handleAuctionInputChange(inputId, adaToLovelace(val))
+            }
+            placeholder={String(
+              lovelaceToAda(auctionFormData.minDepositAmount)
+            )}
           />
         </div>
 

@@ -8,7 +8,11 @@ export function lovelaceToAda(amount: number | string | undefined) {
   return Number(amount) / 1_000_000;
 }
 
+export function adaToLovelace(amount: number | string | undefined) {
+  return Number(amount) * 1_000_000;
+}
+
 export function formatLovelaceToAda(amount: number | string | undefined) {
   const formattedNum = numberWithCommas(lovelaceToAda(amount));
-  return formattedNum !== 'NaN' ? formattedNum : '-';
+  return formattedNum !== 'NaN' && formattedNum ? formattedNum : '-';
 }
