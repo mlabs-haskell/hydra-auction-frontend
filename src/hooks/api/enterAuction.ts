@@ -12,6 +12,7 @@ import {
 import { getValidContractResponse } from 'src/utils/contract';
 import { AUCTIONS_ENTERED_QUERY_KEY } from './auctions';
 import { useMixpanel } from 'react-mixpanel-browser';
+import { trackError } from 'src/utils/errorTracking';
 
 export type AuctionBiddingItem = {
   auctionId: string;
@@ -100,7 +101,8 @@ export const useEnterAuction = (config: ContractConfig) => {
         ],
       });
     },
-    onError: (error) => {
+    onError: (error, params) => {
+      trackError(error, 'enterAuction', mixPanel, params);
       toast.error(`Entering auction failed: ${error.message}`);
       console.log('ENTER AUCTION MUTATION ERROR', error);
     },

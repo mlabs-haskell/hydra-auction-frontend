@@ -7,6 +7,7 @@ import {
 import { useMixpanel } from 'react-mixpanel-browser';
 import { toast } from 'react-toastify';
 import { getValidContractResponse } from 'src/utils/contract';
+import { trackError } from 'src/utils/errorTracking';
 
 export const usePlaceBidL2 = (config: ContractConfig) => {
   const mixPanel = useMixpanel();
@@ -24,7 +25,8 @@ export const usePlaceBidL2 = (config: ContractConfig) => {
       toast.success('Bid placed successfully on L2');
       mixPanel?.track('Bid placed succesfully on L2');
     },
-    onError: (error) => {
+    onError: (error, params) => {
+      trackError(error, 'placeBidL2', mixPanel, params);
       toast.error(`Placing bid on L2 failed: ${error.message}`);
       console.log(error);
     },

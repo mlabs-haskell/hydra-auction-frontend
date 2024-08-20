@@ -8,6 +8,7 @@ import {
 import { useMixpanel } from 'react-mixpanel-browser';
 import { toast } from 'react-toastify';
 import { getValidContractResponse } from 'src/utils/contract';
+import { trackError } from 'src/utils/errorTracking';
 
 export const AUTHORIZE_BIDDERS_QUERY_KEY = 'authorize-bidders';
 
@@ -40,7 +41,8 @@ export const useAuthorizeBidders = (
         auctionId,
       };
     },
-    onError: (error) => {
+    onError: (error, params) => {
+      trackError(error, 'authorizeBidders', mixPanel, params);
       console.error('Error authorizing bidders', error);
       toast.error(`Authorizing bidders failed: ${error.message}`);
     },
