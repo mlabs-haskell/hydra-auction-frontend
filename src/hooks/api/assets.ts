@@ -14,7 +14,6 @@ export const useExtendedAssets = (walletApp: WalletApp) => {
   const assetsQuery = useQuery({
     queryKey: [EXTENDED_ASSETS_QUERY_KEY, walletApp],
     queryFn: async () => {
-      console.log('useExtendedAssets');
       const wallet = await BrowserWallet.enable(walletApp);
       const fetchedAssets = await wallet.getAssets();
       return fetchedAssets;

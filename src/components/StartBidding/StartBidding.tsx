@@ -15,21 +15,23 @@ export default function StartBidding({
   const { wallet } = useWallet();
 
   const [address, setAddress] = useState('');
-
   const { mutate: startBidding, isPending: isStartBiddingPending } =
     useStartBidding(config, address);
 
   const handleStartBidding = () => {
-    startBidding({
-      auctionInfo: auctionInfo,
-    });
+    if (address) {
+      startBidding({
+        auctionInfo: auctionInfo,
+      });
+    }
   };
 
   useEffect(() => {
     if (wallet) {
-      wallet
-        .getUsedAddresses()
-        .then((addresses) => addresses?.length > 0 && setAddress(addresses[0]));
+      const usedWalletAddresses = wallet.getUsedAddresses();
+      usedWalletAddresses?.then(
+        (addresses) => addresses?.length > 0 && setAddress(addresses[0])
+      );
     }
   }, [wallet]);
   return (

@@ -38,7 +38,10 @@ export default function AuctionDetailBidder({
     }
   }, [sellerSignature]);
   return (
-    <div className="w-full flex flex-col items-center gap-12">
+    <div
+      data-testid="bidder-detail"
+      className="w-full flex flex-col items-center gap-12"
+    >
       <div className="text-title3 text-center mb-3">Bidder Options</div>
       {sellerSignature ? (
         <BiddingView

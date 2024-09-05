@@ -21,7 +21,6 @@ export const PlaceBidForm = ({
   sellerSignature,
   standingBid,
 }: PlaceBidFormProps) => {
-  console.log({ sellerSignature });
   const { wallet, connected } = useWallet();
   const { data: address } = useWalletAddress(wallet, connected);
   const { mutate: placeBidMutation, isPending: isPlaceBidPending } =

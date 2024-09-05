@@ -23,12 +23,19 @@
     "paths": {
       "api": [
         "./public/dist/api.d.ts"
+      ],
+      "src/*": [
+        "src/*"
       ]
     },
     "typeRoots": [
       "./public/dist",
-      "./public"
+      "./public",
+      "./node_modules/@types"
     ],
+    "types": [
+      "jest"
+    ]
   },
   "include": [
     "src"

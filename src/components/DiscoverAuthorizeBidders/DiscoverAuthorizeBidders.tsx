@@ -29,7 +29,6 @@ export const DiscoverAuthorizeBidders = ({
   const { mutate: authorizeBidders, isPending: isAuthorizeBiddersPending } =
     useAuthorizeBidders(config, auctionInfo.auctionId);
   const [selectedBidders, setSelectedBidders] = useState<VerificationKey[]>([]);
-  console.log({ bidders });
 
   // Only list bidders that have a valid deposit amount
   const bidderKeys = bidders
@@ -87,6 +86,7 @@ export const DiscoverAuthorizeBidders = ({
           disabled={isAuthorizeBiddersPending || disabled}
           className={`w-full`}
           onClick={handleAuthorize}
+          type="submit"
         >
           Authorize
         </Button>

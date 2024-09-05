@@ -23,7 +23,6 @@ export const useDiscoverSellerSignature = (
       params.auctionCs,
     ],
     queryFn: async () => {
-      console.log('useDiscoverSellerSignature');
       console.log({ discoverSellerSignatureParams: params });
 
       const sellerSignatureResponse = await discoverSellerSignature(

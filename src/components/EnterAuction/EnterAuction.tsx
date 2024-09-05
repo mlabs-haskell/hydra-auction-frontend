@@ -12,6 +12,7 @@ import { Button } from '../shadcn/Button';
 import { useWalletAddress } from 'src/hooks/api/user';
 import { getConfig } from 'src/utils/config';
 import { adaToLovelace, lovelaceToAda } from 'src/utils/currency';
+import { toast } from 'react-toastify';
 
 type EnterAuctionFormProps = {
   auction: AuctionInfo;
@@ -49,6 +50,7 @@ export const EnterAuctionForm = ({ auction }: EnterAuctionFormProps) => {
       .safeParse(enterAuctionFormData);
 
     if (!auctionForm.success) {
+      toast.error(`Entering auction failed: ${auctionForm.error}`);
       console.log(auctionForm.error);
     } else {
       if (walletAddress) {
@@ -74,7 +76,9 @@ export const EnterAuctionForm = ({ auction }: EnterAuctionFormProps) => {
           disabled={isEnterAuctionPending}
           label="Deposit amount"
           inputId="depositAmount"
-          placeholder={`Minimum Deposit: ${auction.auctionTerms.minDepositAmount} ADA`}
+          placeholder={`Minimum Deposit: ${lovelaceToAda(
+            auction.auctionTerms.minDepositAmount
+          )} ADA`}
           onChange={(inputId, val) =>
             handleInputChange(inputId, adaToLovelace(val))
           }

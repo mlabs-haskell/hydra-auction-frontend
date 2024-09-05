@@ -13,7 +13,6 @@ export const usePlaceBidL2 = (config: ContractConfig) => {
 
   const placeBidL2Mutation = useMutation({
     mutationFn: async (params: PlaceBidL2ContractParams) => {
-      console.log('Placing bid L2');
       const placeBidL2Response = await placeBidL2(config, params);
       console.log({ placeBidL2Response });
       const placeBidL2Validated = getValidContractResponse(placeBidL2Response);

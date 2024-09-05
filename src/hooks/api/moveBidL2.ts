@@ -13,7 +13,6 @@ export const useMoveBidL2 = (config: ContractConfig) => {
   const moveBidL2Mutation = useMutation({
     mutationFn: async (moveBidParams: MoveBidL2ContractParams) => {
       if (config) {
-        console.log('Moving bid L2');
         const moveBidL2Response = await moveBidL2(config, moveBidParams);
         console.log({ moveBidL2Response });
         const moveBidL2Validated = getValidContractResponse(moveBidL2Response);

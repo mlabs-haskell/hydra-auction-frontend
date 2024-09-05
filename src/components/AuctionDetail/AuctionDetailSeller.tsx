@@ -14,7 +14,10 @@ export default function AuctionDetailSeller({
   auctionInfo,
 }: AuctionDetailSellerProps) {
   return (
-    <div className="flex flex-col justify-center items-center w-full">
+    <div
+      data-testid="seller-detail"
+      className="flex flex-col justify-center items-center w-full"
+    >
       <div className="flex flex-col  gap-6 items-center w-full">
         <div className="text-title3 text-center mb-3">Seller Options</div>
         <DiscoverAuthorizeBidders config={config} auctionInfo={auctionInfo} />
