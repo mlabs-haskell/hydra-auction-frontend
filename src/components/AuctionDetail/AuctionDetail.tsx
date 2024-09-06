@@ -36,6 +36,7 @@ export default function AuctionDetail() {
   const auctionInfo = auctions?.find(
     (auction) => auction.auctionId === auctionId
   );
+
   const assetUnit = getAuctionAssetUnit(auctionInfo);
 
   const cleanupAuction = useCleanupAuction(config);
@@ -43,11 +44,9 @@ export default function AuctionDetail() {
   const { data: assetMetadata } = useAssetMetadata(assetUnit);
 
   // Identifying if we are the seller or a bidder of this auction
+
   const isSeller = getIsSeller(walletAddress, auctionInfo);
 
-  console.log({ auctionInfo });
-
-  console.log({ isSeller });
   const handleCleanupAuction = () => {
     if (auctionInfo) {
       cleanupAuction.mutate(auctionInfo);

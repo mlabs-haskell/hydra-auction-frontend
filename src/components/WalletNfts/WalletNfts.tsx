@@ -29,7 +29,6 @@ export default function WalletNfts() {
   const { name: walletApp } = useWallet();
 
   const { data: assets, isError } = useExtendedAssets(walletApp as WalletApp);
-  console.log({ walletApp, assets, isError });
 
   if (isError) return <div>Error getting assets...</div>;
   return assets && assets?.length > 0 ? (

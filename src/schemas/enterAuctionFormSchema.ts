@@ -9,10 +9,12 @@ export const enterAuctionFormSchema = z.object({
     bidderDepositAddr: z.string(),
     feeEscrowAddr: z.string(),
     standingBidAddr: z.string(),
-    metadataOref: z.object({
-      index: z.string(),
-      transactionId: z.string(),
-    }),
+    metadataOref: z.nullable(
+      z.object({
+        index: z.string(),
+        transactionId: z.string(),
+      })
+    ),
     delegateInfo: z.object({
       httpServers: z.array(z.string()),
       wsServers: z.array(z.string()),

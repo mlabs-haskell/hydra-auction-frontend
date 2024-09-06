@@ -25,7 +25,6 @@
     "esbuild-plugin-polyfill-node": "^0.3.0",
     "esbuild-plugin-wasm": "^1.1.0",
     "events": "^3.3.0",
-    "http2": "^3.3.7",
     "https-browserify": "^1.0.0",
     "hydra-auction-offchain": "git+ssh://git@github.com:mlabs-haskell/hydra-auction-offchain",
     "os-browserify": "^0.3.0",
@@ -53,8 +52,9 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "test": "craco test",
-    "eject": "react-scripts eject"
+    "test": "jest",
+    "eject": "react-scripts eject",
+    "test-v": "vitest"
   },
   "eslintConfig": {
     "extends": [
@@ -76,9 +76,17 @@
   },
   "devDependencies": {
     "@craco/craco": "^7.1.0",
-    "@types/node": "^16.18.66",
+    "@testing-library/jest-dom": "^6.4.8",
+    "@testing-library/react": "^16.0.0",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^22.4.1",
     "@types/react": "^18.2.39",
     "@types/react-dom": "^18.2.17",
-    "tailwindcss": "^3.3.5"
+    "jest": "^29.0.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jsdom": "^24.1.1",
+    "tailwindcss": "^3.3.5",
+    "ts-jest": "^29.2.4",
+    "vitest": "^2.0.5"
   }
 }

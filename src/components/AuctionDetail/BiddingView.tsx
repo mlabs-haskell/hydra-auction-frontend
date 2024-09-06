@@ -33,9 +33,6 @@ export default function BiddingView({
   );
 
   useEffect(() => {
-    console.log({ readyState });
-    console.log({ message: lastMessage?.data });
-
     try {
       const jsonMsg = lastMessage?.data;
       const msg = JSON.parse(jsonMsg);
@@ -44,7 +41,6 @@ export default function BiddingView({
           setStandingBidL2(msg.value.price);
         }
       }
-      console.log({ wsMessage: msg });
     } catch (err) {
       console.log(err);
     }
@@ -56,11 +52,10 @@ export default function BiddingView({
     } else if (standingBidState) {
       setFormattedPrice(formatLovelaceToAda(standingBidState?.price));
     }
-    console.log({ standingBidState });
   }, [standingBidState]);
 
   return (
-    <div className="w-full flex flex-col gap-10">
+    <div className="w-full flex flex-col gap-10" data-testid="bidding-view">
       <AuctionBidState
         auctionTerms={auctionInfo.auctionTerms}
         formattedPrice={formattedPrice}

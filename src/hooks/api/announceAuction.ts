@@ -24,7 +24,6 @@ export const useAnnounceAuction = (
       if (!walletAddress) {
         throw new Error('Wallet address not found');
       }
-      console.log({ auctionParams, config });
       const announceAuctionResponse = await announceAuction(
         config,
         auctionParams

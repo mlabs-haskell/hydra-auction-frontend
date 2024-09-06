@@ -16,7 +16,6 @@ export const useCleanupAuction = (config: ContractConfig) => {
       return cleanupValidated;
     },
     onSuccess: () => {
-      console.log('Auction cleaned up successfully');
       toast.success('Auction cleaned up successfully');
     },
     onError: (error) => {

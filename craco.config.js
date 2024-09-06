@@ -28,7 +28,6 @@ module.exports = {
         url: require.resolve('url'),
         buffer: require.resolve('buffer/'),
         assert: require.resolve('assert/'),
-        http2: require.resolve('http2/'), // Note: There may not be a direct browser equivalent for http2
         dgram: false, // dgram is not typically available in the browser
         process: require.resolve('process'),
       };
@@ -47,6 +46,13 @@ module.exports = {
       );
 
       return webpackConfig;
+    },
+  },
+  jest: {
+    configure: {
+      globals: {
+        CONFIG: true,
+      },
     },
   },
 };

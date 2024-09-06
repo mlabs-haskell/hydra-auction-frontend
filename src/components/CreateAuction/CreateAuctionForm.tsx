@@ -35,7 +35,6 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
 
   const config = getConfig('network', walletName as WalletApp);
   const { data: assets, isError } = useExtendedAssets(walletName as WalletApp);
-  console.log({ address });
   const { mutate: announceAuction, isPending: isAnnounceAuctionPending } =
     useAnnounceAuction(config, address || '');
   //
@@ -62,7 +61,6 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
   }
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const auctionFormValidated = auctionTermsInputSchema
       .refine((data) => data.biddingEnd > data.biddingStart, {
         message: 'Bidding end must be after bidding start',
@@ -121,6 +119,7 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
       };
       console.log({ announceAuctionParams: params });
       announceAuction(params);
+      console.log('ANNOUNCE AUCTION MUTATION CALLED');
     }
   };
 
