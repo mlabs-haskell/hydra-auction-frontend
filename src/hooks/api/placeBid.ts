@@ -11,6 +11,7 @@ import { getValidContractResponse } from 'src/utils/contract';
 import { ADA_CURRENCY_SYMBOL, formatLovelaceToAda } from 'src/utils/currency';
 import { useMixpanel } from 'react-mixpanel-browser';
 import { STANDING_BID_STATE_QUERY_KEY } from './standingBidState';
+import { trackError } from 'src/utils/errorTracking';
 
 export const usePlaceBid = (
   config: ContractConfig,
@@ -58,7 +59,8 @@ export const usePlaceBid = (
         queryKey: [STANDING_BID_STATE_QUERY_KEY, config, auctionInfo.auctionId],
       });
     },
-    onError: (error) => {
+    onError: (error, params) => {
+      trackError(error, 'placeBid', mixPanel, params);
       console.log('PLACE BID MUTATION ERROR', error);
       toast.error(`Failed to place bid ${error.message}`);
     },

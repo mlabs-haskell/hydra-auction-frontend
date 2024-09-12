@@ -9,6 +9,7 @@ import {
 import { useMixpanel } from 'react-mixpanel-browser';
 import { toast } from 'react-toastify';
 import { getValidContractResponse } from 'src/utils/contract';
+import { trackError } from 'src/utils/errorTracking';
 
 // Bidder wins auction
 export const useClaimAuctionLotBidder = (config: ContractConfig) => {
@@ -31,7 +32,8 @@ export const useClaimAuctionLotBidder = (config: ContractConfig) => {
         userType: 'bidder',
       });
     },
-    onError: (error) => {
+    onError: (error, params) => {
+      trackError(error, 'claimAuctionLotBidder', mixPanel, params);
       console.error('Error claiming auction lot as winning bidder.', error);
       toast.error(`Auction lot claim failed: ${error.message}`);
     },
@@ -60,7 +62,8 @@ export const useClaimAuctionLotSeller = (config: ContractConfig) => {
       toast.success('Auction lot claimed successfully.');
       mixPanel?.track('Reclaimed Auction Lot as Seller');
     },
-    onError: (error) => {
+    onError: (error, params) => {
+      trackError(error, 'claimAuctionLotSeller', mixPanel, params);
       console.error('Error claiming auction lot as seller.', error);
       toast.error(`Auction lot claim failed: ${error.message}`);
     },
@@ -88,7 +91,8 @@ export const useClaimDepositLoser = (config: ContractConfig) => {
       toast.success('Deposit claimed successfully.');
       mixPanel?.track('Claimed Deposit Loser');
     },
-    onError: (error) => {
+    onError: (error, params) => {
+      trackError(error, 'claimDepositLoser', mixPanel, params);
       console.error('Error claiming loser deposit.', error);
       toast.error(`Deposit claim failed: ${error.message}`);
     },

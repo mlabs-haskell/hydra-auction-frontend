@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import { getValidContractResponse } from 'src/utils/contract';
 import { useMixpanel } from 'react-mixpanel-browser';
 import { getAuctionAssetUnit } from 'src/utils/auction';
+import { trackError } from 'src/utils/errorTracking';
 
 export const useAnnounceAuction = (
   config: ContractConfig,
@@ -64,7 +65,8 @@ export const useAnnounceAuction = (
         queryKey: [QUERY_AUCTIONS_QUERY_KEY, config],
       });
     },
-    onError: (error) => {
+    onError: (error: Error, params) => {
+      trackError(error, 'announceAuction', mixPanel, params);
       toast.error(`Auction announcement failed: ${error.message}`);
       console.error('Error announcing auction', error);
     },

@@ -8,6 +8,7 @@ import { useMixpanel } from 'react-mixpanel-browser';
 import { toast } from 'react-toastify';
 import { getAuctionAssetUnit } from 'src/utils/auction';
 import { getValidContractResponse } from 'src/utils/contract';
+import { trackError } from 'src/utils/errorTracking';
 
 export const START_BIDDING_QUERY_KEY = 'start-bidding';
 
@@ -38,7 +39,8 @@ export const useStartBidding = (config: ContractConfig, walletAddr: string) => {
         walletAddr: walletAddr,
       });
     },
-    onError: (error) => {
+    onError: (error, params) => {
+      trackError(error, 'startBidding', mixPanel, params);
       console.log({ l: 'startBidding error', error });
       toast.error(`Start bidding failed: ${error.message}`);
     },

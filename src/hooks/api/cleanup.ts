@@ -4,10 +4,13 @@ import {
   ContractConfig,
   cleanupAuction,
 } from 'hydra-auction-offchain';
+import { useMixpanel } from 'react-mixpanel-browser';
 import { toast } from 'react-toastify';
 import { getValidContractResponse } from 'src/utils/contract';
+import { trackError } from 'src/utils/errorTracking';
 
 export const useCleanupAuction = (config: ContractConfig) => {
+  const mixPanel = useMixpanel();
   const cleanupMutation = useMutation({
     mutationFn: async (auctionInfo: AuctionInfo) => {
       const cleanupResponse = await cleanupAuction(config, auctionInfo);
@@ -18,7 +21,8 @@ export const useCleanupAuction = (config: ContractConfig) => {
     onSuccess: () => {
       toast.success('Auction cleaned up successfully');
     },
-    onError: (error) => {
+    onError: (error, params) => {
+      trackError(error, 'cleanupAuction', mixPanel, params);
       console.error('Error cleaning up auction', error);
       toast.error(`Auction cleanup failed: ${error.message}`);
     },
