@@ -27,7 +27,7 @@
     "esbuild-plugin-wasm": "^1.1.0",
     "events": "^3.3.0",
     "https-browserify": "^1.0.0",
-    "hydra-auction-offchain": "git+ssh://git@github.com:mlabs-haskell/hydra-auction-offchain",
+    "hydra-auction-offchain": "^0.3.0",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "postcss": "^8.4.31",
