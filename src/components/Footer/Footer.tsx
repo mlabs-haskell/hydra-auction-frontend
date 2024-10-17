@@ -9,17 +9,26 @@ export default function Footer() {
             Join the Hydra Auction community
           </p>
           <div className="flex text-pink-600 gap-5 items-center">
-            <a href="http://github.com" target="_blank" rel="noreferrer">
-              <img src="/images/github.png" alt="github" />
+            <a href="https://ikigaitech.org" target="_blank" rel="noreferrer">
+              <img src="/images/ikigai-logo.png" alt="twitter" className='w-6 h-6'/>
             </a>
-            <a href="http://facebook.com" target="_blank" rel="noreferrer">
-              <img src="/images/fb.png" alt="facebook" />
-            </a>
-            <a href="http://instagram.com" target="_blank" rel="noreferrer">
-              <img src="/images/ig.png" alt="instagram" />
-            </a>
-            <a href="http://twitter.com" target="_blank" rel="noreferrer">
+            <a href="https://twitter.com/ikigai_tech" target="_blank" rel="noreferrer">
               <img src="/images/twitter.png" alt="twitter" />
+            </a>
+            <a href="https://github.com/mlabs-haskell/hydra-auction-frontend" target="_blank" rel="noreferrer">
+              <img src="/images/github.png" alt="github - frontend code" />
+            </a>
+            <a href="https://github.com/mlabs-haskell/hydra-auction-offchain" target="_blank" rel="noreferrer">
+              <img src="/images/github.png" alt="github - offchain library" />
+            </a>
+            <a href="https://mlabs.city" target="_blank" rel="noreferrer">
+              <img src="/images/mlabs.png" alt="twitter" className='w-6 h-6'/>
+            </a>
+            <a href="https://twitter.com/MLabs10" target="_blank" rel="noreferrer">
+              <img src="/images/twitter.png" alt="twitter" className='w-6 h-6'/>
+            </a>
+            <a href="https://github.com/mlabs-haskell/hydra-auction-onchain" target="_blank" rel="noreferrer">
+              <img src="/images/github.png" alt="github - onchain contracts" />
             </a>
           </div>
           <div className="flex ">
