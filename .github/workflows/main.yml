@@ -1,0 +1,30 @@
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'pnpm'
+          
+      - name: install packages
+        run: pnpm install
+
+      - name: create build
+        run: pnpm run build
+
+      - name: deploy to github pages
+        uses: actions/deploy-pages@v4
+        with:
+          path: "build/"
