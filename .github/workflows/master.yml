@@ -5,6 +5,12 @@ on:
   pull_request:
     branches:
     - master
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   deploy-frontend:
     runs-on: ubuntu-22.04
