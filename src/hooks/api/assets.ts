@@ -1,5 +1,4 @@
 import { BrowserWallet } from '@meshsdk/core';
-import { resolveMedia } from '@meshsdk/react';
 import { useQuery } from '@tanstack/react-query';
 import { WalletApp } from 'hydra-auction-offchain';
 import { blockfrostProvider } from 'src/providers/BlockFrostProvider';
@@ -8,6 +7,7 @@ import {
   getLocalStorageItem,
   setLocalStorageItem,
 } from 'src/utils/localStorage';
+import { resolveMedia } from 'src/utils/resolveMedia';
 
 export const EXTENDED_ASSETS_QUERY_KEY = 'extended-assets';
 export const useExtendedAssets = (walletApp: WalletApp) => {

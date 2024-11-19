@@ -1,5 +1,5 @@
-import { resolveMedia } from '@meshsdk/react';
 import { blockfrostProvider } from 'src/providers/BlockFrostProvider';
+import { resolveMedia } from './resolveMedia';
 
 export const getImageUrl = async (assetUnit: string) => {
   const assetMetaData = await blockfrostProvider.fetchAssetMetadata(assetUnit);
