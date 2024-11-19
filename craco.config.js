@@ -42,7 +42,17 @@ module.exports = {
         new webpack.ProvidePlugin({
           process: 'process',
           Buffer: ['buffer', 'Buffer'],
-        })
+        }),
+        {
+          apply: (compiler) => {
+            compiler.hooks.done.tap('DonePlugin', (stats) => {
+              console.log('Compile is done !');
+              setTimeout(() => {
+                process.exit(0);
+              });
+            });
+          }
+        }
       );
 
       return webpackConfig;
