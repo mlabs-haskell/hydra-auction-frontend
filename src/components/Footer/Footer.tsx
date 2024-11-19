@@ -18,9 +18,6 @@ export default function Footer() {
             <a href="https://github.com/mlabs-haskell/hydra-auction-frontend" target="_blank" rel="noreferrer">
               <img src="/images/github.png" alt="github - frontend code" />
             </a>
-            <a href="https://github.com/mlabs-haskell/hydra-auction-offchain" target="_blank" rel="noreferrer">
-              <img src="/images/github.png" alt="github - offchain library" />
-            </a>
             <a href="https://mlabs.city" target="_blank" rel="noreferrer">
               <img src="/images/mlabs.png" alt="twitter" className='w-6 h-6'/>
             </a>
@@ -29,6 +26,9 @@ export default function Footer() {
             </a>
             <a href="https://github.com/mlabs-haskell/hydra-auction-onchain" target="_blank" rel="noreferrer">
               <img src="/images/github.png" alt="github - onchain contracts" />
+            </a>
+            <a href="https://github.com/mlabs-haskell/hydra-auction-offchain" target="_blank" rel="noreferrer">
+              <img src="/images/github.png" alt="github - offchain library" />
             </a>
           </div>
           <div className="flex ">
