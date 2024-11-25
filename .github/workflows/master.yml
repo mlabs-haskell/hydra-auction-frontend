@@ -30,6 +30,12 @@ jobs:
       - name: create build
         run: pnpm run build
 
+      - name: Fix permissions
+        run: |
+          chmod -c -R +rX "build/" | while read line; do
+            echo "::warning title=Invalid file permissions automatically fixed::$line"
+          done
+
       - name: upload build artifacts
         uses: actions/upload-artifact@v4
         with:
