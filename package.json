@@ -52,7 +52,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "craco build --config ./craco.buildconfig.js",
     "test": "jest",
     "eject": "react-scripts eject",
     "test-v": "vitest"
