@@ -16,6 +16,7 @@ import { removeLocalStorageItem } from 'src/utils/localStorage';
 import { getConfig } from 'src/utils/config';
 import { useMixpanel } from 'react-mixpanel-browser';
 import { useEffect } from 'react';
+import { BrowserWallet } from '@meshsdk/core';
 
 const MOCK_NFT_TITLE = 'My NFT';
 
@@ -30,7 +31,7 @@ export default function AuctionDetail() {
   const walletApp: WalletApp = walletName as WalletApp;
   const config = getConfig('network', walletApp);
   const { data: auctions, isLoading, isError } = useActiveAuctions(config);
-  const { data: walletAddress } = useWalletAddress(wallet, connected);
+  const { data: walletAddress } = useWalletAddress(wallet as BrowserWallet, connected);
 
   // With auctionId we find the auction details from the queryAuctions cache
   const auctionInfo = auctions?.find(

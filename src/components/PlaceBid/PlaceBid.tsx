@@ -7,6 +7,7 @@ import { AuctionInfo, ContractConfig } from 'hydra-auction-offchain';
 import { useWallet } from '@meshsdk/react';
 import { useWalletAddress } from 'src/hooks/api/user';
 import { adaToLovelace, lovelaceToAda } from 'src/utils/currency';
+import { BrowserWallet } from '@meshsdk/core';
 
 type PlaceBidFormProps = {
   config: ContractConfig;
@@ -22,7 +23,7 @@ export const PlaceBidForm = ({
   standingBid,
 }: PlaceBidFormProps) => {
   const { wallet, connected } = useWallet();
-  const { data: address } = useWalletAddress(wallet, connected);
+  const { data: address } = useWalletAddress(wallet as BrowserWallet, connected);
   const { mutate: placeBidMutation, isPending: isPlaceBidPending } =
     usePlaceBid(config, auctionInfo, sellerSignature, address || '');
 
