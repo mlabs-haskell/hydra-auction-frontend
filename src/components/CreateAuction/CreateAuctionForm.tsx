@@ -16,6 +16,7 @@ import { ONE_DAY_MS, formatDate } from 'src/utils/date';
 import { getConfig } from 'src/utils/config';
 import { useWalletAddress } from 'src/hooks/api/user';
 import { adaToLovelace, lovelaceToAda } from 'src/utils/currency';
+import { BrowserWallet } from '@meshsdk/core';
 
 type CreateAuctionFormProps = {
   className?: string;
@@ -31,7 +32,7 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
   );
 
   const { name: walletName, wallet, connected } = useWallet();
-  const { data: address } = useWalletAddress(wallet, connected);
+  const { data: address } = useWalletAddress(wallet as BrowserWallet, connected);
 
   const config = getConfig('network', walletName as WalletApp);
   const { data: assets, isError } = useExtendedAssets(walletName as WalletApp);
