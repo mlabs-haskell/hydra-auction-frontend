@@ -15,10 +15,11 @@ import {
 } from 'src/utils/auctionState';
 import { DropDown } from '../DropDown/DropDown';
 import { getConfig } from 'src/utils/config';
+import { BrowserWallet } from '@meshsdk/core';
 
 export default function AuctionList() {
   const { name: walletName, wallet, connected } = useWallet();
-  const { data: walletAddress } = useWalletAddress(wallet, connected);
+  const { data: walletAddress } = useWalletAddress(wallet as BrowserWallet, connected);
   const walletApp: WalletApp = walletName as WalletApp;
   const config = getConfig('network', walletApp);
   const { data: auctions } = useActiveAuctions(config, undefined, false);

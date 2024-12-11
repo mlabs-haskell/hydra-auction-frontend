@@ -13,6 +13,7 @@ import { useWalletAddress } from 'src/hooks/api/user';
 import { getConfig } from 'src/utils/config';
 import { adaToLovelace, lovelaceToAda } from 'src/utils/currency';
 import { toast } from 'react-toastify';
+import { BrowserWallet } from '@meshsdk/core';
 
 type EnterAuctionFormProps = {
   auction: AuctionInfo;
@@ -21,7 +22,7 @@ type EnterAuctionFormProps = {
 // TODO: we are setting the default deposit to minimum deposit, they can enter an alternative if they wish
 export const EnterAuctionForm = ({ auction }: EnterAuctionFormProps) => {
   const { name: walletApp, wallet, connected } = useWallet();
-  const { data: walletAddress } = useWalletAddress(wallet, connected);
+  const { data: walletAddress } = useWalletAddress(wallet as BrowserWallet, connected);
   const config = getConfig('network', walletApp as WalletApp);
   const { mutate: enterAuction, isPending: isEnterAuctionPending } =
     useEnterAuction(config);
