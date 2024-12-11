@@ -16,19 +16,15 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'pnpm'
           
       - name: install packages
-        run: pnpm install
+        run: npm install
 
       - name: create build
-        run: pnpm run build
+        run: npm run build
 
       - name: Fix permissions
         run: |
