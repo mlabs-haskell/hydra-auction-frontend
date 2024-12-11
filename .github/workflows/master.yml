@@ -25,6 +25,8 @@ jobs:
 
       - name: create build
         run: npm run build
+        env:
+          CI: ""
 
       - name: Fix permissions
         run: |
