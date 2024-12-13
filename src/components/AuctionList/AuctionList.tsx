@@ -1,4 +1,3 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { useActiveAuctions } from '../../hooks/api/auctions';
 import AuctionCard from '../AuctionCard/AuctionCard';
 import { useWallet } from '@meshsdk/react';

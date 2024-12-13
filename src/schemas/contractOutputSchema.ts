@@ -1,4 +1,4 @@
-import { ZodObject, z } from 'zod';
+import { z } from 'zod';
 
 export const contractOutputResultSchema = z.object({
   tag: z.literal('result'),

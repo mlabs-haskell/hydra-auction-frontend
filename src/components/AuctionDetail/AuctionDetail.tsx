@@ -12,7 +12,6 @@ import AuctionSubDetail from './AuctionSubDetail';
 import { useAssetMetadata } from 'src/hooks/api/assets';
 import { useCleanupAuction } from 'src/hooks/api/cleanup';
 import { Button } from '../shadcn/Button';
-import { removeLocalStorageItem } from 'src/utils/localStorage';
 import { getConfig } from 'src/utils/config';
 import { useMixpanel } from 'react-mixpanel-browser';
 import { useEffect } from 'react';

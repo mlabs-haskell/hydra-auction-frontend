@@ -9,7 +9,7 @@ type CustomWalletProps = {
 export default function CustomWallet(
   { isDark }: CustomWalletProps = { isDark: false }
 ) {
-  const { connect, name: walletName, connected, wallet } = useWallet();
+  const { connect, name: walletName, connected } = useWallet();
 
   useEffect(() => {
     const lastConnectedWallet = localStorage.getItem('lastConnectedWallet');

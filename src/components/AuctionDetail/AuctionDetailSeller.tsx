@@ -1,4 +1,4 @@
-import { AuctionInfo, ContractConfig, WalletApp } from 'hydra-auction-offchain';
+import { AuctionInfo, ContractConfig } from 'hydra-auction-offchain';
 import { DiscoverAuthorizeBidders } from '../DiscoverAuthorizeBidders/DiscoverAuthorizeBidders';
 import { SellerClaims } from './SellerClaims';
 import StartBidding from '../StartBidding/StartBidding';
