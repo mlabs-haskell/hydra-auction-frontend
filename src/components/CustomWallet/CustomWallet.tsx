@@ -24,7 +24,7 @@ export default function CustomWallet(
       }
     }
     connectWallet();
-  }, []);
+  }, [connect, connected]);
 
   const storeConnection = () => {
     setLocalStorageItem('lastConnectedWallet', {

@@ -61,7 +61,7 @@ export const TimeRemaining = ({
     }, 1000);
 
     return () => clearInterval(timerInterval);
-  }, [endDate]);
+  }, [endDate, calculateTimeRemaining]);
 
   if (size === 'large') {
     if (timeRemaining.expired)

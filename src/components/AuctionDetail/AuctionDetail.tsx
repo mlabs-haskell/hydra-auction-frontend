@@ -59,7 +59,7 @@ export default function AuctionDetail() {
       walletAddr: walletAddress,
       userType: isSeller ? 'Seller' : 'Bidder',
     });
-  }, []);
+  }, [isSeller, auctionId, mixPanel, walletAddress]);
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error getting auction...</div>;

@@ -90,7 +90,7 @@ export default function AuctionList() {
           setFilteredAuctions(auctionsWithImage);
       }
     }
-  }, [activeFilter, auctions, auctionsWithImage]);
+  }, [activeFilter, auctions, auctionsWithImage, walletAddress]);
 
   return (
     <>

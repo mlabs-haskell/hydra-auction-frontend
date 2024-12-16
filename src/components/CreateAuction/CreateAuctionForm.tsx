@@ -18,10 +18,7 @@ import { useWalletAddress } from 'src/hooks/api/user';
 import { adaToLovelace, lovelaceToAda } from 'src/utils/currency';
 import { BrowserWallet } from '@meshsdk/core';
 
-type CreateAuctionFormProps = {
-  className?: string;
-};
-const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
+const CreateAuctionForm = () => {
   const { data: delegateGroup } = useDelegates();
   const urlParams = getUrlParams();
   const assetUnit = urlParams.get('assetUnit');
@@ -40,6 +37,13 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
     useAnnounceAuction(config, address || '');
   //
 
+  const handleAuctionInputChange = (inputId: string, value: any) => {
+    setAuctionFormData({
+      ...auctionFormData,
+      [inputId]: String(value),
+    });
+  };
+
   // Auto set the cleanup to two days after purchase deadline every time purchase deadline is set
   useEffect(() => {
     if (auctionFormData.purchaseDeadline) {
@@ -48,7 +52,7 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
         String(Number(auctionFormData.purchaseDeadline) + ONE_DAY_MS * 2)
       );
     }
-  }, [auctionFormData.purchaseDeadline]);
+  }, [handleAuctionInputChange, auctionFormData.purchaseDeadline]);
 
   if (isError) {
     return null;
@@ -122,13 +126,6 @@ const CreateAuctionForm = ({ className }: CreateAuctionFormProps) => {
       announceAuction(params);
       console.log('ANNOUNCE AUCTION MUTATION CALLED');
     }
-  };
-
-  const handleAuctionInputChange = (inputId: string, value: any) => {
-    setAuctionFormData({
-      ...auctionFormData,
-      [inputId]: String(value),
-    });
   };
 
   // To allow for multiple auction lots once it is supported
