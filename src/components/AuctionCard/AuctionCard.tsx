@@ -38,7 +38,7 @@ function AuctionCard({ auctionInfo }: AuctionCardProps) {
         <div className="aspect-w-1 aspect-h-1 w-full h-full max-h-72 overflow-hidden justify-center items-center">
           {metadata && (
             <IpfsImage
-              className="w-full h-full object-cover object-center transition-transform duration-[500ms] hover:scale-110 hover:transform"
+              className="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-110 hover:transform"
               assetUnit={assetUnit}
             />
           )}

@@ -16,7 +16,7 @@ const WalletNftCard = ({ assetName, assetUnit }: WalletNftCardProps) => {
     <a href={`/create-auction?assetUnit=${assetUnit}&assetName=${assetName}`}>
       <div className="aspect-w-1 aspect-h-1 w-full h-full max-h-64 overflow-hidden justify-center items-center mb-2">
         <IpfsImage
-          className="w-full h-64 object-cover object-center transition-transform duration-[500ms] hover:scale-110 hover:transform"
+          className="w-full h-64 object-cover object-center transition-transform duration-500 hover:scale-110 hover:transform"
           assetUnit={assetUnit}
         />
       </div>
