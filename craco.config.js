@@ -43,6 +43,7 @@ module.exports = {
           Buffer: ['buffer', 'Buffer'],
         })
       );
+      webpackConfig.ignoreWarnings = [{module: /node_modules\/@emurgo\//}, /Failed to parse source map/]
 
       return webpackConfig;
     },

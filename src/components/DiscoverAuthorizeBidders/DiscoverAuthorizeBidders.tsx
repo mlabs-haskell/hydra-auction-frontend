@@ -2,7 +2,6 @@ import {
   AuctionInfo,
   ContractConfig,
   VerificationKey,
-  WalletApp,
 } from 'hydra-auction-offchain';
 
 import { useState } from 'react';

@@ -1,14 +1,11 @@
 import {
   AuctionInfo,
-  ContractConfig,
-  StandingBidState,
-  WalletApp,
+  ContractConfig
 } from 'hydra-auction-offchain';
 
 import { PlaceBidForm } from '../PlaceBid/PlaceBid';
 import { formatLovelaceToAda } from '../../utils/currency';
 
-import { contractOutputResultSchema } from 'src/schemas/contractOutputSchema';
 import AuctionBidState from './AuctionBidState';
 import { useStandingBidState } from 'src/hooks/api/standingBidState';
 import { PlaceBidL2Form } from '../PlaceBidL2/PlaceBidL2';
@@ -44,7 +41,7 @@ export default function BiddingView({
     } catch (err) {
       console.log(err);
     }
-  }, [lastMessage, readyState]);
+  }, [lastMessage, readyState, setStandingBidL2]);
 
   useEffect(() => {
     if (standingBidL2) {
@@ -52,7 +49,7 @@ export default function BiddingView({
     } else if (standingBidState) {
       setFormattedPrice(formatLovelaceToAda(standingBidState?.price));
     }
-  }, [standingBidState]);
+  }, [standingBidState, standingBidL2]);
 
   return (
     <div className="w-full flex flex-col gap-10" data-testid="bidding-view">

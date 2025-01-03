@@ -1,4 +1,3 @@
-import { AuctionTerms } from 'hydra-auction-offchain';
 import { TimeRemaining } from './TimeRemaining';
 import { useEffect, useState } from 'react';
 

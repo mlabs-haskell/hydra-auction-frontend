@@ -10,7 +10,6 @@ import {
   ADA_CURRENCY_SYMBOL,
   formatLovelaceToAda,
   lovelaceToAda,
-  numberWithCommas,
 } from 'src/utils/currency';
 import { TimerIcon } from '@radix-ui/react-icons';
 import { useStandingBidState } from 'src/hooks/api/standingBidState';
@@ -24,16 +23,11 @@ function AuctionCard({ auctionInfo }: AuctionCardProps) {
   // For now, since we are just listing singular assets, we use the auctionLot[0] object
 
   const assetUnit = getAuctionAssetUnit(auctionInfo);
-  const { data: metadata, isLoading: isLoadingMetadata } =
+  const { data: metadata } =
     useAssetMetadata(assetUnit);
   const { name: walletApp } = useWallet();
   const config = getConfig('network', walletApp as WalletApp);
   const { data: standingBidState } = useStandingBidState(config, auctionInfo);
-
-  let formattedPrice = '';
-  if (standingBidState) {
-    formattedPrice = formatLovelaceToAda(standingBidState?.price);
-  }
 
   return (
     <div className="border rounded-lg overflow-hidden shadow-md hover:bg-slate-200 h-full">
@@ -44,7 +38,7 @@ function AuctionCard({ auctionInfo }: AuctionCardProps) {
         <div className="aspect-w-1 aspect-h-1 w-full h-full max-h-72 overflow-hidden justify-center items-center">
           {metadata && (
             <IpfsImage
-              className="w-full h-full object-cover object-center transition-transform duration-[500ms] hover:scale-110 hover:transform"
+              className="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-110 hover:transform"
               assetUnit={assetUnit}
             />
           )}

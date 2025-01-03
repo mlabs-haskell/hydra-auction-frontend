@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 // Component to display the time remaining for an auction
 // TODO: add color coding to warn auction is ending soon
@@ -35,9 +35,7 @@ export const TimeRemaining = ({
   endDate: number;
   size?: string;
 }) => {
-  const [timeRemaining, setTimeRemaining] = useState(calculateTimeRemaining());
-
-  function calculateTimeRemaining() {
+   const calculateTimeRemaining = useCallback(() => {
     const currentTime = Date.now();
     const timeDiff = endDate - currentTime;
     const expired = timeDiff < 0;
@@ -53,7 +51,9 @@ export const TimeRemaining = ({
     const seconds = totalSeconds % secsInMin;
 
     return { days, hours, minutes, seconds, expired };
-  }
+  }, [endDate])
+
+  const [timeRemaining, setTimeRemaining] = useState(calculateTimeRemaining());
 
   useEffect(() => {
     const timerInterval = setInterval(() => {
@@ -61,7 +61,7 @@ export const TimeRemaining = ({
     }, 1000);
 
     return () => clearInterval(timerInterval);
-  }, [endDate]);
+  }, [endDate, calculateTimeRemaining]);
 
   if (size === 'large') {
     if (timeRemaining.expired)

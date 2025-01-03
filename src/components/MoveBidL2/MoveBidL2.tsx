@@ -1,7 +1,6 @@
 import { AuctionDetailSellerProps } from '../AuctionDetail/AuctionDetailSeller';
 import { Button } from '../shadcn/Button';
 import { useMoveBidL2 } from 'src/hooks/api/moveBidL2';
-import { getConfig } from 'src/utils/config';
 
 type StartBiddingProps = AuctionDetailSellerProps & {
   disabled?: boolean;
