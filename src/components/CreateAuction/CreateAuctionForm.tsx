@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { NumberInput } from '../Inputs/NumberInput';
 import { DateTimeInput } from '../Inputs/DateInput';
 import { DropDown } from '../DropDown/DropDown';
@@ -37,12 +37,12 @@ const CreateAuctionForm = () => {
     useAnnounceAuction(config, address || '');
   //
 
-  const handleAuctionInputChange = (inputId: string, value: any) => {
+  const handleAuctionInputChange = useCallback((inputId: string, value: any) => {
     setAuctionFormData({
       ...auctionFormData,
       [inputId]: String(value),
     });
-  };
+  }, [auctionFormData]);
 
   // Auto set the cleanup to two days after purchase deadline every time purchase deadline is set
   useEffect(() => {
