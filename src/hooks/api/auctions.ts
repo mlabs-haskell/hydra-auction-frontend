@@ -32,6 +32,7 @@ export const useActiveAuctions = (
       const auctions = await queryAuctions(config, auctionFilters);
       return auctions;
     },
+    retry: false,
     refetchInterval: refetch ? BASE_REFETCH_INTERVAL : Infinity,
     enabled: !!config,
   });
