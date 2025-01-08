@@ -33,8 +33,15 @@ export default function CustomWallet(
     });
   };
 
+  const handleButtonClick = () => {
+    // Blur the active element to avoid aria-hidden issues
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  };
+
   return (
-    <div>
+    <div onClick={handleButtonClick}>
       <CardanoWallet isDark={isDark} onConnected={storeConnection} />
     </div>
   );
