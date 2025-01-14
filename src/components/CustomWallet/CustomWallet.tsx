@@ -24,7 +24,8 @@ export default function CustomWallet(
       }
     }
     connectWallet();
-  }, [connect, connected]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // if this is not empty or not included it will mysteriously re-render over the clicks placed.
 
   const storeConnection = () => {
     setLocalStorageItem('lastConnectedWallet', {
