@@ -24,11 +24,11 @@ jobs:
         run: npm install
 
       - name: create build
+        env:
+          REACT_APP_BLOCKFROST_API_KEY: ${{ secrets.REACT_APP_BLOCKFROST_API_KEY }}
         run: |
           echo "API_KEY=$REACT_APP_BLOCKFROST_API_KEY"
           npm run build
-        env:
-          REACT_APP_BLOCKFROST_API_KEY: ${{ secrets.REACT_APP_BLOCKFROST_API_KEY }}
 
       - name: Fix permissions
         run: |
