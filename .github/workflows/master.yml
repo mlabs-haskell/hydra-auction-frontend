@@ -25,6 +25,8 @@ jobs:
 
       - name: create build
         run: npm run build
+        env:
+          REACT_APP_BLOCKFROST_API_KEY: ${{ secrets.REACT_APP_BLOCKFROST_API_KEY }}
 
       - name: Fix permissions
         run: |
