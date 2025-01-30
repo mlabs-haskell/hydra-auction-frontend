@@ -2,13 +2,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { NumberInput } from '../Inputs/NumberInput';
 import { DateTimeInput } from '../Inputs/DateInput';
 import { DropDown } from '../DropDown/DropDown';
-import { AuctionTermsInput, WalletApp } from 'hydra-auction-offchain';
+import { AuctionTermsInput, DelegateInfo, WalletApp } from 'hydra-auction-offchain';
 import { generateMockAnnounceAuctionParams } from 'src/mocks/announceAuction.mock';
 import { getUrlParams } from 'src/utils/getUrlParams';
 import { useExtendedAssets } from 'src/hooks/api/assets';
 import { useAnnounceAuction } from 'src/hooks/api/announceAuction';
 import { useWallet } from '@meshsdk/react';
-import { useDelegates } from 'src/hooks/api/delegates';
+import { useGetDelegates } from 'src/hooks/api/delegates';
 import { auctionTermsInputSchema } from 'src/schemas/auctionTermsSchema';
 import { removePolicyIdFromAssetUnit } from 'src/utils/formatting';
 import { toast } from 'react-toastify';
@@ -19,23 +19,26 @@ import { adaToLovelace, lovelaceToAda } from 'src/utils/currency';
 import { BrowserWallet } from '@meshsdk/core';
 
 const CreateAuctionForm = () => {
-  const { data: delegateGroup } = useDelegates();
   const urlParams = getUrlParams();
   const assetUnit = urlParams.get('assetUnit');
 
   const mockAnnounceAuctionParams = generateMockAnnounceAuctionParams();
-  const [auctionFormData, setAuctionFormData] = useState<AuctionTermsInput>(
-    mockAnnounceAuctionParams.auctionTerms
-  );
-
   const { name: walletName, wallet, connected } = useWallet();
+  const config = getConfig('network', walletName as WalletApp);
+  const { data: delegateGroups } = useGetDelegates(config);
+
+  const [auctionFormData, setAuctionFormData] = useState<AuctionTermsInput & DelegateInfo>({
+    ...mockAnnounceAuctionParams.auctionTerms,
+    httpServers: delegateGroups ? delegateGroups[0]?.delegateGroupServers.httpServers : [],
+    wsServers: delegateGroups ? delegateGroups[0]?.delegateGroupServers.wsServers : [],
+  });
+
+
   const { data: address } = useWalletAddress(wallet as BrowserWallet, connected);
 
-  const config = getConfig('network', walletName as WalletApp);
   const { data: assets, isError } = useExtendedAssets(walletName as WalletApp);
   const { mutate: announceAuction, isPending: isAnnounceAuctionPending } =
     useAnnounceAuction(config, address || '');
-  //
 
   const handleAuctionInputChange = useCallback((inputId: string, value: any) => {
     setAuctionFormData({
@@ -119,8 +122,8 @@ const CreateAuctionForm = () => {
               : auctionFormValidated.data.biddingStart,
         },
         additionalAuctionLotOrefs:
-          mockAnnounceAuctionParams.additionalAuctionLotOrefs, // Empty array for now but can be implemented
-        delegateInfo: mockAnnounceAuctionParams.delegateInfo,
+          mockAnnounceAuctionParams.additionalAuctionLotOrefs, // Empty array for now but can be implemented later
+        delegateInfo: { wsServers: auctionFormData.wsServers, httpServers: auctionFormData.httpServers},
       };
       console.log({ announceAuctionParams: params });
       announceAuction(params);
@@ -145,12 +148,15 @@ const CreateAuctionForm = () => {
         {/* <AuctionLotList onChangeAuctionLotList={handleAuctionLotsChange} /> */}
         <div className="text-callout mb-1 text-gray-700">Delegates</div>
         <DropDown
-          options={delegateGroup?.delegates.map((delegate) => {
+          options={(delegateGroups || []).map((group) => {
             return {
-              label: delegate,
-              accessor: delegate,
+              label: `${group.delegateGroupMetadata} (${group.delegateGroupId})`,
+              accessor: group.delegateGroupId,
             };
           })}
+          onChange={(index) => {
+            handleAuctionInputChange('delegates', delegateGroups ? delegateGroups[index]?.delegateGroupMasterKeys : []);
+          }}
           title="Delegates"
         />
         <NumberInput

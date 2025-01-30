@@ -1,13 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-import { MOCK_GET_DELEGATES } from 'src/mocks/getDelegates.mock';
+import { queryDelegateGroups, ContractConfig, DelegateGroupInfo } from 'hydra-auction-offchain';
 
 const DELEGATES_QUERY_KEY = 'delegates';
 
-export const useDelegates = () => {
+export const useGetDelegates = (config: ContractConfig) => {
   const delegatesQuery = useQuery({
-    queryKey: [DELEGATES_QUERY_KEY],
+    queryKey: [DELEGATES_QUERY_KEY, config],
     queryFn: async () => {
-      return MOCK_GET_DELEGATES;
+      const delegateGroups: DelegateGroupInfo[] = await queryDelegateGroups(config);
+      return delegateGroups;
     },
   });
   return delegatesQuery;
