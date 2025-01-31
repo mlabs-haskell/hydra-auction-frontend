@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { NumberInput } from '../Inputs/NumberInput';
 import { DateTimeInput } from '../Inputs/DateInput';
 import { DropDown } from '../DropDown/DropDown';
@@ -49,22 +49,36 @@ const CreateAuctionForm = () => {
   const { mutate: announceAuction, isPending: isAnnounceAuctionPending } =
     useAnnounceAuction(config, address || '');
 
-  const handleAuctionInputChange = useCallback((inputId: string, value: any) => {
+  const handleTermsInputChange = useCallback((inputId: string, value: any) => {
+    let auctionTerms = {
+      ...auctionFormData.auctionTerms,
+      [inputId]:  String(value),
+    }
+
+    if (inputId === 'purchaseDeadline' && 
+      Number(auctionFormData.auctionTerms.cleanup) < Number(value) + ONE_DAY_MS * 2) 
+    {
+      auctionTerms.cleanup = String(Number(value) + ONE_DAY_MS * 2);
+    }
+
     setAuctionFormData({
       ...auctionFormData,
-      [inputId]: String(value),
+      auctionTerms
     });
   }, [auctionFormData]);
 
-  // Auto set the cleanup to two days after purchase deadline every time purchase deadline is set
-  useEffect(() => {
-    if (auctionFormData.auctionTerms.purchaseDeadline) {
-      handleAuctionInputChange(
-        'cleanup',
-        String(Number(auctionFormData.auctionTerms.purchaseDeadline) + ONE_DAY_MS * 2)
-      );
-    }
-  }, [handleAuctionInputChange, auctionFormData.auctionTerms.purchaseDeadline]);
+  const handleDelegatesInputChange = useCallback((index: number) => {
+    if(!delegateGroups) return;
+    const delegateGroup = delegateGroups[index];
+    setAuctionFormData({
+      ...auctionFormData,
+      auctionTerms: {
+        ...auctionFormData.auctionTerms,
+        delegates: delegateGroup.delegateGroupMasterKeys,
+      },
+      delegateInfo: delegateGroup.delegateGroupServers
+    });
+  }, [auctionFormData, delegateGroups]);
 
   if (isError) {
     return null;
@@ -163,16 +177,14 @@ const CreateAuctionForm = () => {
               accessor: group.delegateGroupId,
             };
           })}
-          onChange={(index) => {
-            handleAuctionInputChange('delegates', delegateGroups ? delegateGroups[index]?.delegateGroupMasterKeys : []);
-          }}
+          onChange={handleDelegatesInputChange}
           title="Delegates"
         />
         <NumberInput
           label="Auction Fee Per Delegate"
           inputId="auctionFeePerDelegate"
           onChange={(inputId, val) =>
-            handleAuctionInputChange(inputId, adaToLovelace(val))
+            handleTermsInputChange(inputId, adaToLovelace(val))
           }
           placeholder={String(
             lovelaceToAda(auctionFormData.auctionTerms.auctionFeePerDelegate)
@@ -182,7 +194,7 @@ const CreateAuctionForm = () => {
           <DateTimeInput
             label="Bidding Start"
             inputId="biddingStart"
-            onChange={handleAuctionInputChange}
+            onChange={handleTermsInputChange}
             inputValue={
               auctionFormData.auctionTerms.biddingStart
                 ? formatDate(new Date(Number(auctionFormData.auctionTerms.biddingStart)))
@@ -192,17 +204,17 @@ const CreateAuctionForm = () => {
           <DateTimeInput
             label="Bidding End"
             inputId="biddingEnd"
-            onChange={handleAuctionInputChange}
+            onChange={handleTermsInputChange}
           />
           <DateTimeInput
             label="Purchase Deadline"
             inputId="purchaseDeadline"
-            onChange={handleAuctionInputChange}
+            onChange={handleTermsInputChange}
           />
           <DateTimeInput
             label="Cleanup"
             inputId="cleanup"
-            onChange={handleAuctionInputChange}
+            onChange={handleTermsInputChange}
             inputValue={
               auctionFormData.auctionTerms.cleanup
                 ? formatDate(new Date(Number(auctionFormData.auctionTerms.cleanup)))
@@ -216,7 +228,7 @@ const CreateAuctionForm = () => {
             label="Starting Bid"
             inputId="startingBid"
             onChange={(inputId, val) =>
-              handleAuctionInputChange(inputId, adaToLovelace(val))
+              handleTermsInputChange(inputId, adaToLovelace(val))
             }
             placeholder={String(lovelaceToAda(auctionFormData.auctionTerms.startingBid))}
           />
@@ -224,7 +236,7 @@ const CreateAuctionForm = () => {
             label="Min Bid Increment"
             inputId="minBidIncrement"
             onChange={(inputId, val) =>
-              handleAuctionInputChange(inputId, adaToLovelace(val))
+              handleTermsInputChange(inputId, adaToLovelace(val))
             }
             placeholder={String(lovelaceToAda(auctionFormData.auctionTerms.minBidIncrement))}
           />
@@ -232,7 +244,7 @@ const CreateAuctionForm = () => {
             label="Min Deposit Amount"
             inputId="minDepositAmount"
             onChange={(inputId, val) =>
-              handleAuctionInputChange(inputId, adaToLovelace(val))
+              handleTermsInputChange(inputId, adaToLovelace(val))
             }
             placeholder={String(
               lovelaceToAda(auctionFormData.auctionTerms.minDepositAmount)
