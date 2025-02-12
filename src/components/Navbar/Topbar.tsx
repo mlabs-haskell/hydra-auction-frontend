@@ -17,6 +17,10 @@ const TAB_ROUTES = {
     href: '/create-auction-list',
     label: 'Create',
   },
+  DELEGATES: { //currently unused in the navbar, we don't have any restrictions on the portal and probably don't want just anyone using it
+    href: '/delegate-portal',
+    label: 'Delegate Portal',
+  }
 };
 export default function Topbar() {
   return (
