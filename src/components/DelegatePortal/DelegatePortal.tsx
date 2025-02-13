@@ -3,11 +3,14 @@ import { RegisterDelegateGroupContractParams, WalletApp } from "hydra-auction-of
 import { useCallback, useState } from "react";
 import { getConfig } from "src/utils/config";
 import { StringInput } from "../Inputs/StringInput";
+import { useRegisterDelegateGroup } from "src/hooks/api/registerDelegates";
 
 const DelegatePortal = () => {
 
   const { name: walletName, wallet, connected } = useWallet();
   const config = getConfig('network', walletName as WalletApp)
+
+
 
   const [delegateGroupParams, setDelegateGroupParams] = useState<RegisterDelegateGroupContractParams>({
     delegateGroupServers: {
@@ -16,6 +19,8 @@ const DelegatePortal = () => {
     },
     delegateGroupMetadata: '',
   })
+
+  const { mutate: reg, isPending: isRegisterDelegatesPending} = useRegisterDelegateGroup(config, delegateGroupParams)
 
   const handleFormInputChange = useCallback((inputId: string, value: any) => {
     if(inputId === 'httpServers' || inputId === 'wsServers') {
@@ -50,6 +55,11 @@ const DelegatePortal = () => {
             inputId="metadata" 
             onChange={handleFormInputChange}
           />
+          <input
+            disabled={isRegisterDelegatesPending}
+            type="submit"
+            className={`mt-8 submit-btn disabled:border-none disabled:pointer-events-none disabled:bg-gray-300 disabled:text-gray-500 disabled:shadow-none`}
+          ></input>
         </form>
       </div>
     </div>

@@ -8,7 +8,7 @@ import { getUrlParams } from 'src/utils/getUrlParams';
 import { useExtendedAssets } from 'src/hooks/api/assets';
 import { useAnnounceAuction } from 'src/hooks/api/announceAuction';
 import { useWallet } from '@meshsdk/react';
-import { useGetDelegates } from 'src/hooks/api/delegates';
+import { useGetDelegates } from 'src/hooks/api/getDelegates';
 import { removePolicyIdFromAssetUnit } from 'src/utils/formatting';
 import { toast } from 'react-toastify';
 import { ONE_DAY_MS, formatDate } from 'src/utils/date';
