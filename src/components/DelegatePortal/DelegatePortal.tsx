@@ -1,10 +1,12 @@
 import { useWallet } from "@meshsdk/react";
 import { RegisterDelegateGroupContractParams, WalletApp } from "hydra-auction-offchain";
-import { useCallback, useState } from "react";
+import { FormEvent, useCallback, useState } from "react";
 import { getConfig } from "src/utils/config";
 import { StringInput } from "../Inputs/StringInput";
 import { useRegisterDelegateGroup } from "src/hooks/api/registerDelegates";
 import { MultiStringInput } from "../Inputs/MultiStringInput";
+import { DelegateInfoSchema } from "src/schemas/delegatesSchema";
+import { toast } from "react-toastify";
 
 const DelegatePortal = () => {
 
@@ -19,7 +21,7 @@ const DelegatePortal = () => {
     delegateGroupMetadata: '',
   })
 
-  const { mutate: reg, isPending: isRegisterDelegatesPending} = useRegisterDelegateGroup(config, delegateGroupParams)
+  const { mutate: registerDelegates, isPending: isRegisterDelegatesPending} = useRegisterDelegateGroup(config, delegateGroupParams)
 
   const handleFormInputChange = useCallback((inputId: string, value: any) => {
     if(inputId === 'httpServers' || inputId === 'wsServers') {
@@ -37,8 +39,27 @@ const DelegatePortal = () => {
       [inputId]: value}))
   }, [])
 
-  const handleSubmit = () => {
-    // Handle form submission logic here
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+
+    const registerDelegatesFormValidated = DelegateInfoSchema
+      .refine((data) => data.delegateGroupServers.wsServers.length > 0, {
+        message: "At least one websocket server is required",
+      })
+      .refine((data) => data.delegateGroupServers.httpServers.length > 0, {
+        message: "At least one http server is required",
+      })
+      .refine((data) => data.delegateGroupMetadata.length > 0, {
+        message: "Delegate group metadata is required",
+      })
+      .safeParse(delegateGroupParams);
+
+    if (!registerDelegatesFormValidated.success) {
+      toast.error(`Error creating delegate group: ${registerDelegatesFormValidated.error.issues[0].message}`);
+      console.log(registerDelegatesFormValidated.error.format());
+    } else {
+      registerDelegates(delegateGroupParams);
+    }
   };
 
   return (
