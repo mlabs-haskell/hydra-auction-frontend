@@ -27,6 +27,7 @@ const mockDelegateGroups: DelegateGroupInfo[] = [
 
 //hardcoded in for now. this could easily be made dynamic for access in an admin panel
 const blacklist: string[] = [
+  // discontinued test groups
   "2e719a96c631c0073927aad5b7e921a2f2118050eae0885d5ec874b7",
   "0c5537eaf2b75cc27972f3b4878c928e420841bc2831aae9dac0d746",
   "9ff4b8b97d182ac5a9b795bd705101dabf838935920c20efad9517f9",

@@ -4,18 +4,17 @@ import { useCallback, useState } from "react";
 import { getConfig } from "src/utils/config";
 import { StringInput } from "../Inputs/StringInput";
 import { useRegisterDelegateGroup } from "src/hooks/api/registerDelegates";
+import { MultiStringInput } from "../Inputs/MultiStringInput";
 
 const DelegatePortal = () => {
 
   const { name: walletName, wallet, connected } = useWallet();
   const config = getConfig('network', walletName as WalletApp)
 
-
-
   const [delegateGroupParams, setDelegateGroupParams] = useState<RegisterDelegateGroupContractParams>({
     delegateGroupServers: {
-      httpServers: [],
-      wsServers: []
+      httpServers: [""],
+      wsServers: [""]
     },
     delegateGroupMetadata: '',
   })
@@ -38,9 +37,9 @@ const DelegatePortal = () => {
       [inputId]: value}))
   }, [])
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-
-  }
+  const handleSubmit = () => {
+    // Handle form submission logic here
+  };
 
   return (
     <div>
@@ -51,8 +50,20 @@ const DelegatePortal = () => {
       <div className="p-0 lg:p-3 mb-3 w-full">
         <form className="block" onSubmit={handleSubmit}>
           <StringInput 
-            label="Metadata" 
-            inputId="metadata" 
+            label="Delegate Group Metadata (Name)" 
+            inputId="delegateGroupMetadata" 
+            onChange={handleFormInputChange}
+          />
+          <MultiStringInput 
+            label="Websocket Servers"
+            inputId="wsServers"
+            values={delegateGroupParams.delegateGroupServers.wsServers}
+            onChange={handleFormInputChange}
+          />
+          <MultiStringInput 
+            label="HTTP Servers"
+            inputId="httpServers"
+            values={delegateGroupParams.delegateGroupServers.httpServers}
             onChange={handleFormInputChange}
           />
           <input
