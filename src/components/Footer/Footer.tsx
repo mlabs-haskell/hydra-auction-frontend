@@ -48,9 +48,9 @@ export default function Footer() {
       </div>
       <div className="h-full flex  items-center">
         <div className="text-white font-bold flex flex-col gap-8">
-          <a href="./">Terms</a>
-          <a href="./">Privacy Policy</a>
-          <a href="./">Contact Us</a>
+          <a href="https://github.com/mlabs-haskell/hydra-auction-frontend/blob/master/LICENSE">Terms</a>
+          <a href="https://github.com/mlabs-haskell/hydra-auction-frontend/issues">Contact Us</a>
+          <a href="./delegate-portal">Register a Delegate Group</a>
         </div>
       </div>
     </footer>

@@ -1,9 +1,11 @@
 import { z } from 'zod';
 
-const DelegatesSchema = z.object({
-  groupName: z.string(),
-  groupUrl: z.string(),
-  delegates: z.array(z.string()),
+export const DelegateInfoSchema = z.object({
+  delegateGroupServers: z.object({
+    httpServers: z.array(z.string()),
+    wsServers: z.array(z.string()),
+  }),
+  delegateGroupMetadata: z.string(),
 });
 
-export type Delegates = z.infer<typeof DelegatesSchema>;
+export type DelegateInfo = z.infer<typeof DelegateInfoSchema>;

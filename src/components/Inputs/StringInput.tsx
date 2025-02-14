@@ -17,7 +17,7 @@ export const StringInput = ({
   inputClassName,
 }: StringInputProps) => {
   return (
-    <div className={clsx(' border-b border-black', className)}>
+    <div className={clsx(className, 'border-b border-black')}>
       <div className="text-callout text-gray-700">
         <label htmlFor={inputId}>{label}</label>
       </div>
