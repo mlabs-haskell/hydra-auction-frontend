@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 
 const DelegatePortal = () => {
 
-  const { name: walletName, wallet, connected } = useWallet();
+  const { name: walletName } = useWallet();
   const config = getConfig('network', walletName as WalletApp)
 
   const [delegateGroupParams, setDelegateGroupParams] = useState<RegisterDelegateGroupContractParams>({
@@ -68,8 +68,8 @@ const DelegatePortal = () => {
         <h1 className="text-title1 mb-4">Register Delegate Group</h1>
         <hr className="border-b border-gray-400 w-32" />
       </div>
-      <div className="p-0 lg:p-3 mb-3 w-full">
-        <form className="block" onSubmit={handleSubmit}>
+      <div className="p-0 lg:p-3 mb-3 flex flex-col justify-center items-center">
+        <form className="block w-1/2" onSubmit={handleSubmit}>
           <StringInput 
             label="Delegate Group Metadata (Name)" 
             inputId="delegateGroupMetadata" 
