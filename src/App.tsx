@@ -1,7 +1,7 @@
 import AuctionList from './components/AuctionList/AuctionList';
 import CreateAuction from './components/CreateAuction/CreateAuction';
 import './App.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route, HashRouter } from 'react-router-dom';
 import AuctionDetail from './components/AuctionDetail/AuctionDetail';
 import ReactQueryProvider from './providers/ReactQueryProvider';
 import Layout from './components/layout';
@@ -19,7 +19,7 @@ import DelegatePortal from './components/DelegatePortal/DelegatePortal';
 require('dotenv').config();
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <MeshProvider>
         <ReactQueryProvider>
           <WebSocketProvider>
@@ -64,7 +64,7 @@ function App() {
           </WebSocketProvider>
         </ReactQueryProvider>
       </MeshProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
