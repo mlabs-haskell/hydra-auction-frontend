@@ -28,10 +28,10 @@ export default function Topbar() {
       <nav className="flex">
         <ul className="flex ml-10 items-center">
           <li className="mr-10 hidden md:block text-3xl">
-            <a href="/">
+            <Link to="/">
               {/* <img src="/images/mlabs.png" alt="MLabs" className="w-20 h-20" /> */}
               Hydra Auction
-            </a>
+            </Link>
           </li>
           <li className=" items-center relative hidden md:flex">
             <MagnifyingGlassIcon className="text-black w-4 h-4 absolute left-0" />
