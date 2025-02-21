@@ -14,6 +14,7 @@ import {
 import { TimerIcon } from '@radix-ui/react-icons';
 import { useStandingBidState } from 'src/hooks/api/standingBidState';
 import { getConfig } from 'src/utils/config';
+import { Link } from 'react-router-dom';
 
 type AuctionCardProps = {
   auctionInfo: AuctionInfo;
@@ -31,9 +32,9 @@ function AuctionCard({ auctionInfo }: AuctionCardProps) {
 
   return (
     <div className="border rounded-lg overflow-hidden shadow-md hover:bg-slate-200 h-full">
-      <a
+      <Link
         className="flex flex-col items-center h-full"
-        href={`/auction?auctionId=${auctionInfo.auctionId}`}
+        to={`/auction?auctionId=${auctionInfo.auctionId}`}
       >
         <div className="aspect-w-1 aspect-h-1 w-full h-full max-h-72 overflow-hidden justify-center items-center">
           {metadata && (
@@ -63,7 +64,7 @@ function AuctionCard({ auctionInfo }: AuctionCardProps) {
             <TimerIcon className="font-bold " />
           </div>
         </div>
-      </a>
+      </Link>
     </div>
   );
 }
