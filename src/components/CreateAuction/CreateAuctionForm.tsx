@@ -1,15 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { NumberInput } from '../Inputs/NumberInput';
 import { DateTimeInput } from '../Inputs/DateInput';
 import { DropDown } from '../DropDown/DropDown';
-import { AuctionTermsInput, WalletApp } from 'hydra-auction-offchain';
+import { AuctionTermsInput, DelegateInfo, TransactionInput, WalletApp } from 'hydra-auction-offchain';
 import { generateMockAnnounceAuctionParams } from 'src/mocks/announceAuction.mock';
 import { getUrlParams } from 'src/utils/getUrlParams';
 import { useExtendedAssets } from 'src/hooks/api/assets';
 import { useAnnounceAuction } from 'src/hooks/api/announceAuction';
 import { useWallet } from '@meshsdk/react';
-import { useDelegates } from 'src/hooks/api/delegates';
-import { auctionTermsInputSchema } from 'src/schemas/auctionTermsSchema';
+import { useGetDelegates } from 'src/hooks/api/getDelegates';
 import { removePolicyIdFromAssetUnit } from 'src/utils/formatting';
 import { toast } from 'react-toastify';
 import { ONE_DAY_MS, formatDate } from 'src/utils/date';
@@ -17,42 +16,69 @@ import { getConfig } from 'src/utils/config';
 import { useWalletAddress } from 'src/hooks/api/user';
 import { adaToLovelace, lovelaceToAda } from 'src/utils/currency';
 import { BrowserWallet } from '@meshsdk/core';
+import { auctionFormSchema } from 'src/schemas/auctionFormSchema';
+
+type AuctionFormData = {
+  auctionTerms: AuctionTermsInput;
+  delegateInfo: DelegateInfo;
+  additionalAuctionLotOrefs: TransactionInput[]
+}
 
 const CreateAuctionForm = () => {
-  const { data: delegateGroup } = useDelegates();
   const urlParams = getUrlParams();
   const assetUnit = urlParams.get('assetUnit');
 
   const mockAnnounceAuctionParams = generateMockAnnounceAuctionParams();
-  const [auctionFormData, setAuctionFormData] = useState<AuctionTermsInput>(
-    mockAnnounceAuctionParams.auctionTerms
-  );
-
   const { name: walletName, wallet, connected } = useWallet();
+  const config = getConfig('network', walletName as WalletApp);
+  const { data: delegateGroups } = useGetDelegates(config);
+
+  const [auctionFormData, setAuctionFormData] = useState<AuctionFormData>({
+    auctionTerms: mockAnnounceAuctionParams.auctionTerms,
+    delegateInfo: {
+      httpServers: delegateGroups ? delegateGroups[0]?.delegateGroupServers.httpServers : [],
+      wsServers: delegateGroups ? delegateGroups[0]?.delegateGroupServers.wsServers : [],
+    },
+    additionalAuctionLotOrefs: [], // Empty array for now but can be implemented later
+  });
+
+
   const { data: address } = useWalletAddress(wallet as BrowserWallet, connected);
 
-  const config = getConfig('network', walletName as WalletApp);
   const { data: assets, isError } = useExtendedAssets(walletName as WalletApp);
   const { mutate: announceAuction, isPending: isAnnounceAuctionPending } =
     useAnnounceAuction(config, address || '');
-  //
 
-  const handleAuctionInputChange = useCallback((inputId: string, value: any) => {
+  const handleTermsInputChange = useCallback((inputId: string, value: any) => {
+    let auctionTerms = {
+      ...auctionFormData.auctionTerms,
+      [inputId]:  String(value),
+    }
+
+    if (inputId === 'purchaseDeadline' && 
+      Number(auctionFormData.auctionTerms.cleanup) < Number(value) + ONE_DAY_MS * 2) 
+    {
+      auctionTerms.cleanup = String(Number(value) + ONE_DAY_MS * 2);
+    }
+
     setAuctionFormData({
       ...auctionFormData,
-      [inputId]: String(value),
+      auctionTerms
     });
   }, [auctionFormData]);
 
-  // Auto set the cleanup to two days after purchase deadline every time purchase deadline is set
-  useEffect(() => {
-    if (auctionFormData.purchaseDeadline) {
-      handleAuctionInputChange(
-        'cleanup',
-        String(Number(auctionFormData.purchaseDeadline) + ONE_DAY_MS * 2)
-      );
-    }
-  }, [handleAuctionInputChange, auctionFormData.purchaseDeadline]);
+  const handleDelegatesInputChange = useCallback((index: number) => {
+    if(!delegateGroups) return;
+    const delegateGroup = delegateGroups[index];
+    setAuctionFormData({
+      ...auctionFormData,
+      auctionTerms: {
+        ...auctionFormData.auctionTerms,
+        delegates: delegateGroup.delegateGroupMasterKeys,
+      },
+      delegateInfo: delegateGroup.delegateGroupServers
+    });
+  }, [auctionFormData, delegateGroups]);
 
   if (isError) {
     return null;
@@ -66,32 +92,32 @@ const CreateAuctionForm = () => {
   }
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const auctionFormValidated = auctionTermsInputSchema
-      .refine((data) => data.biddingEnd > data.biddingStart, {
+    const auctionFormValidated = auctionFormSchema
+      .refine((data) => data.auctionTerms.biddingEnd > data.auctionTerms.biddingStart, {
         message: 'Bidding end must be after bidding start',
       })
-      .refine((data) => data.purchaseDeadline > data.biddingEnd, {
+      .refine((data) => data.auctionTerms.purchaseDeadline > data.auctionTerms.biddingEnd, {
         message: 'Purchase deadline must be after bidding end',
       })
-      .refine((data) => data.cleanup > data.purchaseDeadline, {
+      .refine((data) => data.auctionTerms.cleanup > data.auctionTerms.purchaseDeadline, {
         message: 'Cleanup must be after purchase deadline',
       })
-      .refine((data) => Number(data.minBidIncrement) > 0, {
+      .refine((data) => Number(data.auctionTerms.minBidIncrement) > 0, {
         message: 'New bids must be larger than the standing bid',
       })
-      .refine((data) => Number(data.auctionFeePerDelegate) > 2000000, {
+      .refine((data) => Number(data.auctionTerms.auctionFeePerDelegate) > 2000000, {
         message:
           'The auction fee for each delegate must contain the min 2 ADA for the utxos that will be sent to the delegates during fee distribution',
       })
       .refine(
         (data) =>
-          Number(data.startingBid) >
-          Number(data.auctionFeePerDelegate) * data.delegates.length,
+          Number(data.auctionTerms.startingBid) >
+          Number(data.auctionTerms.auctionFeePerDelegate) * data.auctionTerms.delegates.length,
         {
           message: 'Starting bid must be greater than the total auction fees',
         }
       )
-      .refine((data) => data.delegates.length > 0, {
+      .refine((data) => data.auctionTerms.delegates.length > 0, {
         message: 'Must have at least one delegate',
       })
       .safeParse(auctionFormData);
@@ -111,16 +137,16 @@ const CreateAuctionForm = () => {
 
       const params = {
         auctionTerms: {
-          ...auctionFormValidated.data,
+          ...auctionFormValidated.data.auctionTerms,
           auctionLot: [auctionLot],
           biddingStart:
-            Number(auctionFormValidated.data.biddingStart) < Date.now() + 10000
+            Number(auctionFormValidated.data.auctionTerms.biddingStart) < Date.now() + 10000
               ? (Date.now() + 30000).toString()
-              : auctionFormValidated.data.biddingStart,
+              : auctionFormValidated.data.auctionTerms.biddingStart,
         },
         additionalAuctionLotOrefs:
-          mockAnnounceAuctionParams.additionalAuctionLotOrefs, // Empty array for now but can be implemented
-        delegateInfo: mockAnnounceAuctionParams.delegateInfo,
+        auctionFormValidated.data.additionalAuctionLotOrefs,
+        delegateInfo: auctionFormValidated.data.delegateInfo,
       };
       console.log({ announceAuctionParams: params });
       announceAuction(params);
@@ -145,52 +171,53 @@ const CreateAuctionForm = () => {
         {/* <AuctionLotList onChangeAuctionLotList={handleAuctionLotsChange} /> */}
         <div className="text-callout mb-1 text-gray-700">Delegates</div>
         <DropDown
-          options={delegateGroup?.delegates.map((delegate) => {
+          options={(delegateGroups || []).map((group) => {
             return {
-              label: delegate,
-              accessor: delegate,
+              label: `${group.delegateGroupMetadata} (${group.delegateGroupId})`,
+              accessor: group.delegateGroupId,
             };
           })}
+          onChange={handleDelegatesInputChange}
           title="Delegates"
         />
         <NumberInput
           label="Auction Fee Per Delegate"
           inputId="auctionFeePerDelegate"
           onChange={(inputId, val) =>
-            handleAuctionInputChange(inputId, adaToLovelace(val))
+            handleTermsInputChange(inputId, adaToLovelace(val))
           }
           placeholder={String(
-            lovelaceToAda(auctionFormData.auctionFeePerDelegate)
+            lovelaceToAda(auctionFormData.auctionTerms.auctionFeePerDelegate)
           )}
         />
         <div className="flex gap-4 my-8 flex-wrap">
           <DateTimeInput
             label="Bidding Start"
             inputId="biddingStart"
-            onChange={handleAuctionInputChange}
+            onChange={handleTermsInputChange}
             inputValue={
-              auctionFormData.biddingStart
-                ? formatDate(new Date(Number(auctionFormData.biddingStart)))
+              auctionFormData.auctionTerms.biddingStart
+                ? formatDate(new Date(Number(auctionFormData.auctionTerms.biddingStart)))
                 : formatDate(new Date())
             }
           />
           <DateTimeInput
             label="Bidding End"
             inputId="biddingEnd"
-            onChange={handleAuctionInputChange}
+            onChange={handleTermsInputChange}
           />
           <DateTimeInput
             label="Purchase Deadline"
             inputId="purchaseDeadline"
-            onChange={handleAuctionInputChange}
+            onChange={handleTermsInputChange}
           />
           <DateTimeInput
             label="Cleanup"
             inputId="cleanup"
-            onChange={handleAuctionInputChange}
+            onChange={handleTermsInputChange}
             inputValue={
-              auctionFormData.cleanup
-                ? formatDate(new Date(Number(auctionFormData.cleanup)))
+              auctionFormData.auctionTerms.cleanup
+                ? formatDate(new Date(Number(auctionFormData.auctionTerms.cleanup)))
                 : ''
             }
           />
@@ -201,26 +228,26 @@ const CreateAuctionForm = () => {
             label="Starting Bid"
             inputId="startingBid"
             onChange={(inputId, val) =>
-              handleAuctionInputChange(inputId, adaToLovelace(val))
+              handleTermsInputChange(inputId, adaToLovelace(val))
             }
-            placeholder={String(lovelaceToAda(auctionFormData.startingBid))}
+            placeholder={String(lovelaceToAda(auctionFormData.auctionTerms.startingBid))}
           />
           <NumberInput
             label="Min Bid Increment"
             inputId="minBidIncrement"
             onChange={(inputId, val) =>
-              handleAuctionInputChange(inputId, adaToLovelace(val))
+              handleTermsInputChange(inputId, adaToLovelace(val))
             }
-            placeholder={String(lovelaceToAda(auctionFormData.minBidIncrement))}
+            placeholder={String(lovelaceToAda(auctionFormData.auctionTerms.minBidIncrement))}
           />
           <NumberInput
             label="Min Deposit Amount"
             inputId="minDepositAmount"
             onChange={(inputId, val) =>
-              handleAuctionInputChange(inputId, adaToLovelace(val))
+              handleTermsInputChange(inputId, adaToLovelace(val))
             }
             placeholder={String(
-              lovelaceToAda(auctionFormData.minDepositAmount)
+              lovelaceToAda(auctionFormData.auctionTerms.minDepositAmount)
             )}
           />
         </div>

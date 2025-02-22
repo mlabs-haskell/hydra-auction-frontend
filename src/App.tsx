@@ -1,7 +1,7 @@
 import AuctionList from './components/AuctionList/AuctionList';
 import CreateAuction from './components/CreateAuction/CreateAuction';
 import './App.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import AuctionDetail from './components/AuctionDetail/AuctionDetail';
 import ReactQueryProvider from './providers/ReactQueryProvider';
 import Layout from './components/layout';
@@ -15,6 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { WebSocketProvider } from './providers/WebSocketProvider';
 import MixPanelProvider from './providers/MixPanelProvider';
 import Analytics from './components/Analytics/Analytics';
+import DelegatePortal from './components/DelegatePortal/DelegatePortal';
 require('dotenv').config();
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
                       element={<CreateAuctionList />}
                     />
                     <Route path="/analytics" element={<Analytics />} />
+                    <Route path="/delegate-portal" element={<DelegatePortal/>} />
                     {/* TODO: collection/wallet routes */}
                   </Routes>
                 </Layout>
