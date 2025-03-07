@@ -34,6 +34,8 @@ const blacklist: string[] = [
   "62d07246c1ab4e0d4e9a1494a481a0f2bcd457d58c0295a4c918ea88",
   "94d810ad09938bff80a902526894704b86b78288704770b91fb5c685",
   "54b3234fbe87e1878a95d5e48a64f8f498c9eec14fbd1a81e124a9a7",
+  "e42ba0ee957954bc58e8f2ea4c0e4dc841e581347888cf7ccaf1f173",
+  "2f472b80a7ebb125ead1ae2b657a0faf6bf99f6c411ba99747deb5b6", // using http :/
 ]
 
 export const useGetDelegates = (config: ContractConfig) => {

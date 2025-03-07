@@ -140,8 +140,8 @@ const CreateAuctionForm = () => {
           ...auctionFormValidated.data.auctionTerms,
           auctionLot: [auctionLot],
           biddingStart:
-            Number(auctionFormValidated.data.auctionTerms.biddingStart) < Date.now() + 10000
-              ? (Date.now() + 30000).toString()
+            Number(auctionFormValidated.data.auctionTerms.biddingStart) < Date.now() + 90000
+              ? (Date.now() + 90000).toString()
               : auctionFormValidated.data.auctionTerms.biddingStart,
         },
         additionalAuctionLotOrefs:
