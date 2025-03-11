@@ -24,7 +24,7 @@ describe('PlaceBidForm Component Test', () => {
     jest.clearAllMocks();
   });
 
-  const config = getConfig('network', 'Nami');
+  const config = getConfig('eternl');
   const auctionInfo = generateMockAuctionInfo();
   const sellerSignature = 'mockSellerSignature';
   const standingBid = '1000000'; // 1 ADA in lovelace

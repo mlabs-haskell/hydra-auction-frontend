@@ -22,7 +22,7 @@ describe('StartBidding Component Integration Test', () => {
     jest.clearAllMocks();
   });
 
-  const config = getConfig('network', 'Nami');
+  const config = getConfig('eternl');
   const auctionInfo = generateMockAuctionInfo();
 
   it('fetches wallet address on mount and starts bidding when button is clicked', async () => {

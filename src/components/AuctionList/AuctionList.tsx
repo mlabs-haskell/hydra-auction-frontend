@@ -20,7 +20,7 @@ export default function AuctionList() {
   const { name: walletName, wallet, connected } = useWallet();
   const { data: walletAddress } = useWalletAddress(wallet as BrowserWallet, connected);
   const walletApp: WalletApp = walletName as WalletApp;
-  const config = getConfig('network', walletApp);
+  const config = getConfig(walletApp);
   const { data: auctions } = useActiveAuctions(config, undefined, false);
 
   const [auctionsWithImage, setAuctionsWithImage] = useState<
@@ -95,7 +95,7 @@ export default function AuctionList() {
   return (
     <>
       <div className="flex flex-col justify-center items-center">
-        <h1 className="text-title1 text-center mb-3">Query Auctions</h1>
+        <h1 className="text-title1 text-center mb-3">Browse Auctions</h1>
         <hr className="border-b border-gray-400 w-32 mb-4" />
       </div>
       <div>

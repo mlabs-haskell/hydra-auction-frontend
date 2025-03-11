@@ -30,7 +30,7 @@ const CreateAuctionForm = () => {
 
   const mockAnnounceAuctionParams = generateMockAnnounceAuctionParams();
   const { name: walletName, wallet, connected } = useWallet();
-  const config = getConfig('network', walletName as WalletApp);
+  const config = getConfig(walletName as WalletApp);
   const { data: delegateGroups } = useGetDelegates(config);
 
   const [auctionFormData, setAuctionFormData] = useState<AuctionFormData>({

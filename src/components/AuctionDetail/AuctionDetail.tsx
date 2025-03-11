@@ -28,7 +28,7 @@ export default function AuctionDetail() {
   const auctionId = urlParams.get('auctionId') || '';
   const { name: walletName, wallet, connected } = useWallet();
   const walletApp: WalletApp = walletName as WalletApp;
-  const config = getConfig('network', walletApp);
+  const config = getConfig(walletApp);
   const { data: auctions, isLoading, isError } = useActiveAuctions(config);
   const { data: walletAddress } = useWalletAddress(wallet as BrowserWallet, connected);
 

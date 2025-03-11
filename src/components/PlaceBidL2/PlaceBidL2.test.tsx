@@ -26,7 +26,7 @@ describe('PlaceBidL2Form Component Test', () => {
     jest.clearAllMocks();
   });
 
-  const config = getConfig('network', 'Nami');
+  const config = getConfig('eternl');
   const auctionCs = 'mockCurrencySymbol';
   const auctionInfo = generateMockAuctionInfo();
   const auctionTerms = auctionInfo.auctionTerms;

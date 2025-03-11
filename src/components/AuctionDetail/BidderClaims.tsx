@@ -9,7 +9,7 @@ import { getConfig } from 'src/utils/config';
 
 export const BidderClaims = ({ auctionInfo }: { auctionInfo: AuctionInfo }) => {
   const { name: walletName } = useWallet();
-  const config = getConfig('network', walletName as WalletApp);
+  const config = getConfig(walletName as WalletApp);
   const claimAuctionLot = useClaimAuctionLotBidder(config);
   const claimDeposit = useClaimDepositLoser(config);
 

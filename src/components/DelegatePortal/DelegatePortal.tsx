@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 const DelegatePortal = () => {
 
   const { name: walletName } = useWallet();
-  const config = getConfig('network', walletName as WalletApp)
+  const config = getConfig(walletName as WalletApp)
 
   const [delegateGroupParams, setDelegateGroupParams] = useState<RegisterDelegateGroupContractParams>({
     delegateGroupServers: {

@@ -29,7 +29,7 @@ describe('DiscoverAuthorizeBidders Component Test', () => {
     jest.clearAllMocks();
   });
 
-  const config = getConfig('network', 'Nami');
+  const config = getConfig('eternl');
   const auctionInfo = generateMockAuctionInfo();
   it('renders dropdown and authorize button correctly', () => {
     render(

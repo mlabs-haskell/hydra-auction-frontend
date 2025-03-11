@@ -27,7 +27,7 @@ function AuctionCard({ auctionInfo }: AuctionCardProps) {
   const { data: metadata } =
     useAssetMetadata(assetUnit);
   const { name: walletApp } = useWallet();
-  const config = getConfig('network', walletApp as WalletApp);
+  const config = getConfig(walletApp as WalletApp);
   const { data: standingBidState } = useStandingBidState(config, auctionInfo);
 
   return (

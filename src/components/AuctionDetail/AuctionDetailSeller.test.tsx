@@ -11,7 +11,7 @@ const queryClient = new QueryClient();
 
 describe('AuctionDetailSeller Component', () => {
   const defaultProps: AuctionDetailSellerProps = {
-    config: getConfig('network', 'Nami'),
+    config: getConfig('eternl'),
     auctionInfo: generateMockAuctionInfo(),
   };
   it('renders all child components', () => {

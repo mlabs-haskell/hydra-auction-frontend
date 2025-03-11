@@ -19,7 +19,7 @@ describe('MoveBidL2 Component Integration Test', () => {
     jest.clearAllMocks();
   });
 
-  const config = getConfig('network', 'Nami');
+  const config = getConfig('eternl');
   const auctionInfo = generateMockAuctionInfo();
 
   it('moves bidding to L2 when button is clicked', async () => {
