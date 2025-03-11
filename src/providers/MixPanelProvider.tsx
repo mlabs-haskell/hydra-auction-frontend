@@ -1,6 +1,11 @@
 import { MixpanelProvider } from 'react-mixpanel-browser';
 
 const MIXPANEL_TOKEN = process.env.REACT_APP_MIXPANEL_TOKEN || '';
+const MIXPANEL_PAGE = process.env.REACT_APP_MIXPANEL_BOARD || '';
+
+export function getMixpanelPage() {
+  return MIXPANEL_PAGE;
+}
 
 // [OPTIONAL] Custom options to pass to `mixpanel.init()`.
 const MIXPANEL_CONFIG = {
