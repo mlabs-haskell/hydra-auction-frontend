@@ -4,7 +4,7 @@ import IpfsImage from '../IpfsImage/IpfsImage';
 import { useWallet } from '@meshsdk/react';
 import { WalletApp } from 'hydra-auction-offchain';
 import { getIsSeller } from 'src/utils/auctionState';
-import { useWalletAddress } from 'src/hooks/api/user';
+import { useWalletAddresses } from 'src/hooks/api/user';
 import AuctionDetailSeller from './AuctionDetailSeller';
 import AuctionDetailBidder from './AuctionDetailBidder';
 import { getAuctionAssetUnit } from 'src/utils/auction';
@@ -30,7 +30,7 @@ export default function AuctionDetail() {
   const walletApp: WalletApp = walletName as WalletApp;
   const config = getConfig(walletApp);
   const { data: auctions, isLoading, isError } = useActiveAuctions(config);
-  const { data: walletAddress } = useWalletAddress(wallet as BrowserWallet, connected);
+  const { data: walletAddresses } = useWalletAddresses(wallet as BrowserWallet, connected);
 
   // With auctionId we find the auction details from the queryAuctions cache
   const auctionInfo = auctions?.find(
@@ -45,7 +45,8 @@ export default function AuctionDetail() {
 
   // Identifying if we are the seller or a bidder of this auction
 
-  const isSeller = getIsSeller(walletAddress, auctionInfo);
+  const isSeller = getIsSeller(walletAddresses, auctionInfo);
+
 
   const handleCleanupAuction = () => {
     if (auctionInfo) {
@@ -56,15 +57,15 @@ export default function AuctionDetail() {
   useEffect(() => {
     mixPanel.track('AuctionViewed', {
       auctionId: auctionId,
-      walletAddr: walletAddress,
+      walletAddr: auctionInfo?.auctionTerms.sellerAddress,
       userType: isSeller ? 'Seller' : 'Bidder',
     });
-  }, [isSeller, auctionId, mixPanel, walletAddress]);
+  }, [isSeller, auctionId, mixPanel, auctionInfo?.auctionTerms.sellerAddress]);
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error getting auction...</div>;
   if (!auctionInfo) return <div>Error finding auction...</div>;
-  if (!walletAddress || !walletName) return <div>Wallet not valid</div>;
+  if (!walletAddresses || !walletName) return <div>Wallet not valid</div>;
 
   return (
     <div className="grid lg:grid-cols-2 gap-3">
@@ -83,7 +84,7 @@ export default function AuctionDetail() {
         ) : (
           <AuctionDetailBidder
             config={config}
-            walletAddress={walletAddress}
+            walletAddress={auctionInfo.auctionTerms.sellerAddress}
             auctionInfo={auctionInfo}
           />
         )}

@@ -13,3 +13,15 @@ export const useWalletAddress = (wallet: BrowserWallet, connected: boolean) => {
   });
   return walletAddressQuery;
 };
+
+export const useWalletAddresses = (wallet: BrowserWallet, connected: boolean) => {
+  const walletAddressesQuery = useQuery({
+    queryKey: [SELLER_ADDRESS_QUERY_KEY, wallet, connected],
+    queryFn: async () => {
+      const sellerAddresses = await wallet.getUsedAddresses();
+      return sellerAddresses ?? [];
+    },
+    enabled: !!connected && !!wallet,
+  });
+  return walletAddressesQuery;
+}
