@@ -32,9 +32,12 @@ export const auctionListFilterOptions = [
   // { accessor: AuctionListSortState.AUTHORIZED, label: 'Authorized' },
 ];
 
-export const getIsSeller = (sellerAddresses?: string[], auction?: any) => {
+export const getIsSeller = (sellerAddresses?: string[] | string, auction?: any) => {
   if (!sellerAddresses || !auction) return false;
-  return sellerAddresses.includes(auction.auctionTerms.sellerAddress);
+  if (typeof sellerAddresses === 'string') {
+    return sellerAddresses.startsWith(auction.auctionTerms.sellerAddress);
+  }
+  return sellerAddresses.find((address) => address.startsWith(auction.auctionTerms.sellerAddress));
 };
 
 // TODO: implement functions that take the POSIX time for pre bidding, and bidding to return whether we should show
