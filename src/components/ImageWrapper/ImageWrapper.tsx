@@ -1,3 +1,5 @@
+import React, { useState } from 'react';
+
 type ImageWrapperProps = React.HTMLProps<HTMLImageElement> & {
   src: string;
   alt: string;
@@ -13,12 +15,17 @@ export default function ImageWrapper({
   className,
   small = false,
 }: ImageWrapperProps) {
+  const [currentSrc, setCurrentSrc] = useState(src);
+
   return (
     <img
       className={className}
       width={small ? SMALL_IMAGE_WIDTH : LARGE_IMAGE_WIDTH}
       alt={alt}
-      src={src}
+      src={currentSrc}
+      onError={() => {
+        setCurrentSrc('./images/404_nft.png');
+      }}
     />
   );
 }

@@ -13,13 +13,12 @@ export default function IpfsImage({
   assetUnit,
 }: IpfsImageProps) {
   const { data: assetMetadata, isLoading } = useAssetMetadata(assetUnit);
-  if (isLoading) return <div>Loading ...</div>;
-
+  const src = isLoading ? './images/loading_nft.png' : assetMetadata?.image || './images/loading_nft.png';
   return (
     <ImageWrapper
       className={className}
       small={small}
-      src={assetMetadata?.image || ''}
+      src={src}
       alt="NFT"
     />
   );
