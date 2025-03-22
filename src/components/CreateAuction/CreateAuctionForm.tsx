@@ -4,7 +4,7 @@ import { DateTimeInput } from '../Inputs/DateInput';
 import { DropDown } from '../DropDown/DropDown';
 import { AuctionTermsInput, DelegateInfo, TransactionInput, WalletApp } from 'hydra-auction-offchain';
 import { generateMockAnnounceAuctionParams } from 'src/mocks/announceAuction.mock';
-import { getUrlParams } from 'src/utils/getUrlParams';
+import { useUrlParams } from 'src/hooks/urlParams';
 import { useExtendedAssets } from 'src/hooks/api/assets';
 import { useAnnounceAuction } from 'src/hooks/api/announceAuction';
 import { useWallet } from '@meshsdk/react';
@@ -25,7 +25,7 @@ type AuctionFormData = {
 }
 
 const CreateAuctionForm = () => {
-  const urlParams = getUrlParams();
+  const urlParams = useUrlParams();
   const assetUnit = urlParams.get('assetUnit');
 
   const mockAnnounceAuctionParams = generateMockAnnounceAuctionParams();

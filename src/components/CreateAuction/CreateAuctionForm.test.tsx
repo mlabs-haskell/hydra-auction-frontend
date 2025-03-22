@@ -14,8 +14,8 @@ jest.mock('src/hooks/api/announceAuction', () => ({
 }));
 
 // Mock the assetUnit from url params
-jest.mock('src/utils/getUrlParams', () => ({
-  getUrlParams: jest.fn(() => new URLSearchParams('assetUnit=mockAssetUnit')),
+jest.mock('src/utils/useUrlParams', () => ({
+  useUrlParams: jest.fn(() => new URLSearchParams('assetUnit=mockAssetUnit')),
 }));
 
 // Mock functions from hooks

@@ -1,5 +1,5 @@
 import { useActiveAuctions } from 'src/hooks/api/auctions';
-import { getUrlParams } from 'src/utils/getUrlParams';
+import { useUrlParams } from 'src/hooks/urlParams';
 import IpfsImage from '../IpfsImage/IpfsImage';
 import { useWallet } from '@meshsdk/react';
 import { WalletApp } from 'hydra-auction-offchain';
@@ -24,7 +24,7 @@ export default function AuctionDetail() {
   // TODO: Display some badge if the user is already a bidder, and for the state of the auction
   const mixPanel = useMixpanel();
   // Use url params to get the auctionId
-  const urlParams = getUrlParams();
+  const urlParams = useUrlParams();
   const auctionId = urlParams.get('auctionId') || '';
   const { name: walletName, wallet, connected } = useWallet();
   const walletApp: WalletApp = walletName as WalletApp;
