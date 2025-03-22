@@ -24,7 +24,7 @@ export default function ImageWrapper({
       alt={alt}
       src={currentSrc}
       onError={() => {
-        setCurrentSrc('./images/404_nft.png');
+        setCurrentSrc('./images/not_found.png');
       }}
     />
   );
