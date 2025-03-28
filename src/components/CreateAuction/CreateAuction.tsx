@@ -1,11 +1,11 @@
-import { getUrlParams } from 'src/utils/getUrlParams';
+import { useUrlParams } from 'src/hooks/urlParams';
 import CreateAuctionTabs from '../CreateAuctionTabs/CreateAuctionTabs';
 import { useAssets } from '@meshsdk/react';
 import CurrentListing from './CurrentListing';
 
 export default function CreateAuction() {
   // Use url params to get the assetUnit
-  const urlParams = getUrlParams();
+  const urlParams = useUrlParams();
   const assetUnit = urlParams.get('assetUnit');
   const assetName = urlParams.get('assetName');
 

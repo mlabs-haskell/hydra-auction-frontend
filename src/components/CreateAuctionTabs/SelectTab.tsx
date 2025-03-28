@@ -1,5 +1,5 @@
 import { useExtendedAssets } from 'src/hooks/api/assets';
-import { getUrlParams } from 'src/utils/getUrlParams';
+import { useUrlParams } from 'src/hooks/urlParams';
 import { DropDown } from '../DropDown/DropDown';
 import { AssetExtended } from '@meshsdk/core';
 import { useWallet } from '@meshsdk/react';
@@ -11,7 +11,7 @@ const SelectTab = () => {
   const { name: walletApp } = useWallet();
   const { data: assets, isError } = useExtendedAssets(walletApp as WalletApp);
 
-  const urlParams = getUrlParams();
+  const urlParams = useUrlParams();
   const assetUnitToList = urlParams.get('assetUnit');
   const assetIndex = useMemo(
     () => assets?.findIndex((asset) => asset.unit === assetUnitToList),
