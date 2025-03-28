@@ -72,10 +72,6 @@ const CreateAuctionForm = () => {
     const delegateGroup = delegateGroups[index];
     setAuctionFormData({
       ...auctionFormData,
-      auctionTerms: {
-        ...auctionFormData.auctionTerms,
-        delegates: delegateGroup.delegateGroupMasterKeys,
-      },
       delegateInfo: delegateGroup.delegateGroupServers
     });
   }, [auctionFormData, delegateGroups]);
@@ -112,12 +108,12 @@ const CreateAuctionForm = () => {
       .refine(
         (data) =>
           Number(data.auctionTerms.startingBid) >
-          Number(data.auctionTerms.auctionFeePerDelegate) * data.auctionTerms.delegates.length,
+          Number(data.auctionTerms.auctionFeePerDelegate) * data.delegateInfo.httpServers.length,
         {
           message: 'Starting bid must be greater than the total auction fees',
         }
       )
-      .refine((data) => data.auctionTerms.delegates.length > 0, {
+      .refine((data) => data.delegateInfo.httpServers.length > 0, {
         message: 'Must have at least one delegate',
       })
       .safeParse(auctionFormData);

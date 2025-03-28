@@ -14,10 +14,7 @@ export const generateMockAnnounceAuctionParams = () => {
           quantity: '1',
         },
       ],
-      delegates: [
-        'ac55de689702d745e77050ce83b77ff9619383bb802e40fb90aa3be4',
-        'e17e5b8c19c89d663c66b3e4943972d7b6dd70a711fade4cf1a6a95a',
-      ],
+      delegates: [],
       biddingStart: '',
       biddingEnd: '',
       purchaseDeadline: '',
