@@ -15,9 +15,20 @@ These will often get overwritten. If the install isn't working, make sure these 
 `npm install`
 
 ## Configuration
-Before you run the server, make sure you set your blockfrost api key in an env file
+Before you run the server, make sure you set your [Blockfrost](https://blockfrost.io) api key in a .gitignored env file (`.env.local`)
 
-```BLOCKFROST_API_KEY=<your key>```
+```
+BLOCKFROST_API_KEY=<your key>
+```
+
+For analytics and health checks, provide a [Mixpanel](https://mixpanel.com) project token & public board id. 
+
+```
+REACT_APP_MIXPANEL_TOKEN=<your token>
+REACT_APP_MIXPANEL_BOARD=<your board id>
+```
+
+There are examples for each of these tokens in `.env.example`
 
 ## Start server
 `npm start`
