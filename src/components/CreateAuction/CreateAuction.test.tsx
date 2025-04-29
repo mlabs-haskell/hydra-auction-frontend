@@ -4,9 +4,9 @@ import { useAssets } from '@meshsdk/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '@testing-library/jest-dom';
 
-// Mock getUrlParams to pass assetUnit and assetName
-jest.mock('src/utils/getUrlParams', () => ({
-  getUrlParams: jest.fn(
+// Mock useUrlParams to pass assetUnit and assetName
+jest.mock('src/utils/useUrlParams', () => ({
+  useUrlParams: jest.fn(
     () =>
       new URLSearchParams({
         assetUnit: 'mockUnit123',
